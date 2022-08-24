@@ -144,8 +144,6 @@ _deploy() {
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
 
-  rm -rf $DOTPATH
-
   info "Deployed!"
 }
 
