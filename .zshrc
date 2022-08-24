@@ -8,7 +8,7 @@ fi
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 
-ZSHHOME="${HOME}/.zsh"
+ZSHHOME="${HOME}/dotfiles/zsh"
 
 if [ -d $ZSHHOME -a -r $ZSHHOME -a \
   -x $ZSHHOME ]; then
