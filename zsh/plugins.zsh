@@ -1,11 +1,11 @@
-# zplug
+#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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 zplug
 source ~/.zplug/init.zsh
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
 # 非同期処理できるようになる
 zplug "mafredri/zsh-async"
 
-zplug romkatv/powerlevel10k, as:theme, depth:1
+zplug "romkatv/powerlevel10k", as:theme, depth:1
 
 zplug "agkozak/zsh-z"
 # 過去に入力したコマンドの履歴が灰色のサジェストで出る
