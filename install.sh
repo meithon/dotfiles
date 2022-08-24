@@ -140,6 +140,7 @@ _deploy() {
     exit 1
   fi
 
+  mkdir -p ~/.config/nvim
   ln -si $DOTPATH/nvim/init.vim ~/.config/nvim/init.vim
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
