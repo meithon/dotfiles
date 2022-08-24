@@ -1,0 +1,32 @@
+" Syntax highlighting
+syntax on
+
+" Set FZF Default to Ripgrep (must install ripgrep)
+let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-ignore-vcs'
+
+" Options viewable by using :options
+" Set options viewable by using :set all
+" Or help for individual configs can be accessed :help <name>
+set nocompatible
+set redrawtime=10000
+set background=dark
+set laststatus=2
+set noerrorbells
+set tabstop=2 softtabstop=2
+set shiftwidth=2
+set expandtab
+set smartindent
+set nu
+set nowrap
+set nobackup
+set undodir=~/.vim/undordir
+set undofile 
+set incsearch
+set relativenumber
+set cursorline
+
+" Column set to column 100
+set colorcolumn=100
+
+" Column color set to grey
+highlight ColorColumn ctermbg=1
