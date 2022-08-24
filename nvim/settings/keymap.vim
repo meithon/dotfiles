@@ -4,7 +4,7 @@ imap jj <Esc>
 " Set mapleader to space
 let mapleader = " "
 " Maps
-nmap <leader>hk :vsplit ~/.config/nvim/hotkeys.md<cr>
+nmap <leader>hk :vsplit ~/dotfiles/nvim/hotkeys.md<cr>
 nmap <leader>gd <Plug>(coc-definition)
 nmap <leader>gr <Plug>(coc-references.md)
 nmap <leader><leader>p :Prettier<cr>
