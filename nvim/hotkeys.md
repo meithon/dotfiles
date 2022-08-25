@@ -15,3 +15,5 @@ Control - p                   : Git files (git ls-files)
 SPACE - SPACE - c             : Comment or Uncomment line
 SPACE - Tab                   : Go to next buffer in list 
 SPACE - Tab - Tab             : Go to prev buffer in list 
+] - g                         : Jump to next hunk (change)
+[ - g                         : Jump to previous hunk (change)
