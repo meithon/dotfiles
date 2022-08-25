@@ -14,7 +14,8 @@ nmap <leader><leader>u :UndotreeToggle<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
 nmap <leader><leader>f :Files<cr>
 nmap <leader><leader><leader>g :GoMetaLinter<cr>
-nnoremap <C-p> :GFiles<CR>
+nmap <leader>e :Fern . -reveal=% -drawer -toggle -width=40<cr>
+
 nnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 vnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 nnoremap <leader><Tab> :bnext<CR>
