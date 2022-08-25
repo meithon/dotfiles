@@ -1,5 +1,9 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
+
+" Git Diff
 Plug 'airblade/vim-gitgutter'
 
 " Make your Vim/Neovim as smart as VSCode
