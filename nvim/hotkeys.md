@@ -1,7 +1,7 @@
 # Hotkeys
 
 SPACE - h - k                 : Show hotkeys
-SPACE - e                     : Show VFiler
+SPACE - e                     : Show Fern
 SPACE - g - d                 : Go to definition
 SPACE - g - r                 : Go to reference
 SPACE - t                     : Toggle nerdtree
