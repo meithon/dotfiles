@@ -1,4 +1,5 @@
 {
+  "snippets.ultisnips.enable": false,
   "suggest.completionItemKindLabels":{
     "function": "\uf794",
     "method":"\uf6a6",
