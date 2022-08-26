@@ -1,7 +1,15 @@
 # Hotkeys
 
 SPACE - h - k                 : Show hotkeys
-SPACE - e                     : Show Fern
+SPACE - e                     : Show filer
+## Git
+SPACE - g - g                 : Git list
+SPACE - g - d                 : Diff
+SPACE - g - a                 : add
+SPACE - g - c                 : commit
+] - g                         : Jump to next hunk (change)
+[ - g                         : Jump to previous hunk (change)
+
 SPACE - g - d                 : Go to definition
 SPACE - g - r                 : Go to reference
 SPACE - t                     : Toggle nerdtree
@@ -15,5 +23,3 @@ Control - p                   : Git files (git ls-files)
 SPACE - SPACE - c             : Comment or Uncomment line
 SPACE - Tab                   : Go to next buffer in list 
 SPACE - Tab - Tab             : Go to prev buffer in list 
-] - g                         : Jump to next hunk (change)
-[ - g                         : Jump to previous hunk (change)

@@ -5,6 +5,10 @@ imap jj <Esc>
 let mapleader = " "
 " Maps
 nmap <leader>hk :vsplit ~/dotfiles/nvim/hotkeys.md<cr>
+nmap <leader>gg :Git<cr>
+nmap <leader>gd :Gvdiffsplit<cr>
+nmap <leader>ga :Gwrite<cr>
+nmap <leader>gc :Git commit<cr>
 nmap <leader>gd <Plug>(coc-definition)
 nmap <leader>gr <Plug>(coc-references.md)
 nmap <leader><leader>p :Prettier<cr>

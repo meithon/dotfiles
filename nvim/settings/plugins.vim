@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'tpope/vim-fugitive'
+
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 
