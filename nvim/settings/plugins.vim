@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Log browser
+Plug 'junegunn/gv.vim'
+
 Plug 'tpope/vim-fugitive'
 
 Plug 'nvim-lua/plenary.nvim'

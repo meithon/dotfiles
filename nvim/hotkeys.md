@@ -4,6 +4,7 @@ SPACE - h - k                 : Show hotkeys
 SPACE - e                     : Show filer
 ## Git
 SPACE - g - g                 : Git list
+SPACE - g - l                 : Git log
 SPACE - g - d                 : Diff
 SPACE - g - a                 : add
 SPACE - g - c                 : commit
