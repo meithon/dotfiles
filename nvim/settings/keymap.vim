@@ -9,8 +9,8 @@ nmap <leader>gg :Git<cr>
 nmap <leader>gd :Gvdiffsplit<cr>
 nmap <leader>ga :Gwrite<cr>
 nmap <leader>gc :Git commit<cr>
-nmap <leader>gd <Plug>(coc-definition)
-nmap <leader>gr <Plug>(coc-references.md)
+nmap <leader>cd <Plug>(coc-definition)
+nmap <leader>cr <Plug>(coc-references.md)
 nmap <leader><leader>p :Prettier<cr>
 nmap <leader><leader>g :GoFmt<cr>
 nmap <leader><leader>b :Black<cr>

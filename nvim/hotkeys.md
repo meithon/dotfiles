@@ -10,8 +10,8 @@ SPACE - g - c                 : commit
 ] - g                         : Jump to next hunk (change)
 [ - g                         : Jump to previous hunk (change)
 
-SPACE - g - d                 : Go to definition
-SPACE - g - r                 : Go to reference
+SPACE - c - d                 : Go to definition
+SPACE - c - r                 : Go to reference
 SPACE - t                     : Toggle nerdtree
 SPACE - SPACE - p             : Format Prettier
 SPACE - SPACE - g             : Format GoFmt
