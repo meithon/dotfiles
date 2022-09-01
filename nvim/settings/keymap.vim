@@ -21,7 +21,7 @@ nmap <leader><leader>f :Files<cr>
 nmap <leader><leader><leader>g :GoMetaLinter<cr>
 nmap <leader>e :Fern . -reveal=% -drawer -toggle -width=40<cr>
 
-nnoremap <C-p> :Telescope git_files<CR>
+nnoremap <leader>p :Telescope git_files<CR>
 nnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 vnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 nnoremap <leader><Tab> :bnext<CR>
