@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Multi cursor
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
 " Log browser
 Plug 'junegunn/gv.vim'
 
