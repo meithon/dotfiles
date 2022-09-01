@@ -20,7 +20,7 @@ SPACE - SPACE - b             : Format Black
 SPACE - SPACE - u             : Toggle UndoTree
 SPACE - SPACE - f             : Find Files (FZF & RIPGREP)
 SPACE - SPACE - SPACE - g     : Toggle Go MetaLinter
-Control - p                   : Git files (git ls-files)
+SPACE - p                     : Git files (git ls-files)
 SPACE - SPACE - c             : Comment or Uncomment line
 SPACE - Tab                   : Go to next buffer in list 
 SPACE - Tab - Tab             : Go to prev buffer in list 
