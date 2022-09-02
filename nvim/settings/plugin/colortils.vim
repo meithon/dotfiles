@@ -24,13 +24,13 @@ require("colortils").setup({
         -- set values to the maximum
         max_value = "$",
         -- save the current color in the register specified above with the format specified above
-        set_register_default_format = "<cr>",
+        set_register_default_format = "<space><cr>",
         -- save the current color in the register specified above with a format you can choose
-        set_register_cjoose_format = "g<cr>",
+        set_register_cjoose_format = "g<space><cr>",
         -- replace the color under the cursor with the current color in the format specified above
-        replace_default_format = "<m-cr>",
+        replace_default_format = "<cr>",
         -- replace the color under the cursor with the current color in a format you can choose
-        replace_choose_format = "g<m-cr>",
+        replace_choose_format = "g<cr>",
         -- export the current color to a different tool
         export = "E",
         -- set the value to a certain number (done by just entering numbers)
