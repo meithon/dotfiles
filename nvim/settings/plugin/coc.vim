@@ -1,4 +1,33 @@
 let g:coc_config_home = '~/dotfiles/nvim'
+let g:coc_global_extensions = [
+    \ 'coc-tsserver',
+    \ 'coc-css',
+    \ 'coc-emmet',
+    \ 'coc-html',
+    \ 'coc-json',
+    \ 'coc-react-refactor',
+    \ 'coc-snippets',
+    \ 'coc-tabnine',
+    \ 'coc-sql',
+    \ 'coc-go'  
+    \ ]
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
+
+" Goでgoimportsが自動で走るようにする
+autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
+   
+" SQL保存時にフォーマットする
+autocmd BufWritePre *.sql :silent call CocAction('runCommand', 'sql.Format')
+   
+" Markdown保存時にLinterの指摘を修正する
+autocmd BufWritePre *.md :silent call CocAction('runCommand', 'markdownlint.fixAll')
 
 " Some servers have issues with backup files, see #649.
 set nobackup
