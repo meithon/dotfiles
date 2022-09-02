@@ -3,6 +3,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 "Plug 'BourgeoisBear/clrzr'
 
+Plug 'nvim-colortils/colortils.nvim'
+" CSS color picker
+Plug 'ziontee113/color-picker.nvim'
+
 " Multi cursor
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
@@ -19,9 +23,6 @@ Plug 'airblade/vim-gitgutter'
 
 " Make your Vim/Neovim as smart as VSCode
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" Formatter
-Plug 'prettier/vim-prettier', { 'do': 'npm install' }
 
 " Comment and uncomment lines
 Plug 'preservim/nerdcommenter'
