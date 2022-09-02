@@ -10,6 +10,11 @@ SPACE - g - a                 : add
 SPACE - g - c                 : commit
 ] - g                         : Jump to next hunk (change)
 [ - g                         : Jump to previous hunk (change)
+## Color picker
+SPACE - c - p                 : Picker
+SPACE - c - g                 : Gradient
+SPACE - c - l                 : Lighten
+SPACE - c - d                 : Darken
 
 SPACE - c - d                 : Go to definition
 SPACE - c - r                 : Go to reference
