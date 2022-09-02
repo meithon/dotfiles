@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+"Plug 'BourgeoisBear/clrzr'
+
 " Multi cursor
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
