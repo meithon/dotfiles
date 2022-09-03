@@ -1,3 +1,10 @@
+function fzf-history-search() {
+  BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
+  CURSOR=$#BUFFER
+}
+zle -N fzf-history-search
+bindkey '^r' fzf-history-search
+
 # zplugなどでzをインストールしとく
 # zplug "rupa/z", use:z.sh
 
