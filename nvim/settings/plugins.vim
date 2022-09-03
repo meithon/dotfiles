@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'nvim-lualine/lualine.nvim'
+
 Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 "Plug 'BourgeoisBear/clrzr'
 
