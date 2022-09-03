@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'mbbill/undotree'
+
 Plug 'nvim-lualine/lualine.nvim'
 
 Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }

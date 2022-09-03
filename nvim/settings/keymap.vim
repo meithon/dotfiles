@@ -23,7 +23,7 @@ nmap <leader>cr <Plug>(coc-references.md)
 nmap <leader><leader>p :Prettier<cr>
 nmap <leader><leader>g :GoFmt<cr>
 nmap <leader><leader>b :Black<cr>
-nmap <leader><leader>u :UndotreeToPlug 'junegunn/gv.vim'ggle<cr>
+nmap <leader><leader>u :UndotreeShow<cr>:UndotreeFocus<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
 nmap <leader><leader>f :Files<cr>
 nmap <leader><leader><leader>g :GoMetaLinter<cr>
