@@ -1,3 +1,7 @@
+autocmd InsertEnter * norm zz
+
+autocmd BufWritePre * %s/\s\+$//e
+
 if exists('+termguicolors')
   let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
@@ -13,6 +17,10 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-ignore-vcs'
 " Options viewable by using :options
 " Set options viewable by using :set all
 " Or help for individual configs can be accessed :help <name>
+set wildmode=longest,list,full
+set encoding=utf-8
+set fileencodings=utf-8
+set mouse=a
 set nocompatible
 set redrawtime=10000
 set background=dark
@@ -26,7 +34,7 @@ set nu
 set nowrap
 set nobackup
 set undodir=~/.vim/undordir
-set undofile 
+set undofile
 set incsearch
 set relativenumber
 set cursorline
