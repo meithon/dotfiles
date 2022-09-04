@@ -34,4 +34,18 @@ vnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 nnoremap <leader><Tab> :bnext<CR>
 nnoremap <leader><S-Tab> :bprevious<CR>
 
+nnoremap x "_x
+nnoremap s "_S
 
+nnoremap gl $
+nnoremap gh ^
+nnoremap gk H
+nnoremap gj L
+
+nnoremap <C-h> :%s//gI<Left><Left><Left>
+
+vmap gl $
+vmap gh ^
+vmap gk H
+vmap gj L
+vmap <leader>j <ESC>
