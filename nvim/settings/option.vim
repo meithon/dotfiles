@@ -1,3 +1,4 @@
+autocmd QuickFixCmdPost *grep* cwindow
 autocmd InsertEnter * norm zz
 
 autocmd BufWritePre * %s/\s\+$//e

@@ -43,6 +43,7 @@ nnoremap gk H
 nnoremap gj L
 
 nnoremap <C-h> :%s//gI<Left><Left><Left>
+nnoremap <leader>F :vimgrep // `git ls-files`<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 
 vmap gl $
 vmap gh ^
