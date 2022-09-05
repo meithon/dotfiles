@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'tpope/vim-surround'
+
 Plug 'tversteeg/registers.nvim', { 'branch': 'main' }
 
 Plug 'mbbill/undotree'
