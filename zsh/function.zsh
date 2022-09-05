@@ -1,3 +1,10 @@
+function curl-post() {
+    ENDPOINT="${1}"
+
+    JSON="${2}"
+    curl -X POST -H "Content-Type: application/json" -d "${JSON}" "${ENDPOINT}"
+}
+
 function fzf-history-search() {
   BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
   CURSOR=$#BUFFER
@@ -40,7 +47,7 @@ function fzf-git-add() {
     fi
 }
 
-# fzf-cdr 
+# fzf-cdr
 function fzf-cdr() {
     target_dir=$(unbuffer lsd -l | fzf --ansi | awk '{print $12}')
     if [ -n "$target_dir" ]; then
