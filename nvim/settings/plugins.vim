@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'thinca/vim-qfreplace'
+
 Plug 'tpope/vim-surround'
 
 Plug 'tversteeg/registers.nvim', { 'branch': 'main' }
