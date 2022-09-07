@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Buffer explorer
+Plug 'jlanzarotta/bufexplorer'
+
 Plug 'thinca/vim-qfreplace'
 
 Plug 'tpope/vim-surround'

@@ -31,8 +31,7 @@ nmap <leader><leader><leader>g :GoMetaLinter<cr>
 nnoremap <leader>p :Telescope git_files<CR>
 nnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 vnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
-nnoremap <leader><Tab> :bnext<CR>
-nnoremap <leader><S-Tab> :bprevious<CR>
+nnoremap <leader><Tab> :BufExplorer<CR>
 
 nnoremap x "_x
 nnoremap s "_S
