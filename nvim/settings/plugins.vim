@@ -69,9 +69,8 @@ Plug 'patstockwell/vim-monokai-tasty'
 Plug 'jiangmiao/auto-pairs'
 
 " Filer
-Plug 'lambdalisue/fern.vim'
-Plug 'yuki-yano/fern-preview.vim'
-Plug 'lambdalisue/fern-git-status.vim'
-Plug 'lambdalisue/fern-hijack.vim'
+Plug 'obaland/vfiler.vim'
+Plug 'obaland/vfiler-column-devicons'
+Plug 'obaland/vfiler-fzf'
 
 call plug#end()
