@@ -5,7 +5,7 @@ imap jj <Esc>
 let mapleader = " "
 " Maps
 nmap <leader>hk :vsplit ~/dotfiles/nvim/hotkeys.md<cr>
-nmap <leader>e :Fern . -reveal=% -drawer -toggle -width=40<cr>
+nmap <leader>e :VFiler<cr>
 " Git
 nmap <leader>gg :Git<cr>
 nmap <leader>gl :GV<cr>
