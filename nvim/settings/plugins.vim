@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Syntax highlight
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
 " Buffer explorer
 Plug 'jlanzarotta/bufexplorer'
 
