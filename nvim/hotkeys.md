@@ -26,5 +26,6 @@ SPACE - SPACE - u             : Toggle UndoTree
 SPACE - SPACE - f             : Find Files (FZF & RIPGREP)
 SPACE - SPACE - SPACE - g     : Toggle Go MetaLinter
 SPACE - p                     : Git files (git ls-files)
-SPACE - SPACE - c             : Comment or Uncomment line
 SPACE - Tab                   : Show buffer explorer
+
+g - c - c                     : Comment or Uncomment Line
