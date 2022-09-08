@@ -10,7 +10,7 @@ require'vfiler/config'.setup {
     git = {
       enabled = true,
       untracked = true,
-      ignored = false,
+      ignored = true,
     },
   },
 }
