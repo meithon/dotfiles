@@ -19,6 +19,7 @@ let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --no-ignore-vcs'
 " Set options viewable by using :set all
 " Or help for individual configs can be accessed :help <name>
 set wildmode=longest,list,full
+set pumblend=10
 set encoding=utf-8
 set fileencodings=utf-8
 set mouse=a
