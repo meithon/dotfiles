@@ -60,9 +60,6 @@ Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
-" This plugin adds Go language support for Vim, with many features
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
 " Python code formatter
 Plug 'ambv/black'
 
