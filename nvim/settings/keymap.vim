@@ -6,6 +6,8 @@ let mapleader = " "
 " Maps
 nmap <leader>hk :vsplit ~/dotfiles/nvim/hotkeys.md<cr>
 nmap <leader>e :VFiler<cr>
+nmap <leader>t :Translate<cr>
+vmap <leader>t :'<,'>Translate<cr>
 " Git
 nmap <leader>gg :Git<cr>
 nmap <leader>gl :GV<cr>

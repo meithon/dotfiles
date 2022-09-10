@@ -2,6 +2,7 @@
 
 SPACE - h - k                 : Show hotkeys
 SPACE - e                     : Show filer
+SPACE - t                     : Traslate
 ## Git
 SPACE - g - g                 : Git list
 SPACE - g - l                 : Git log

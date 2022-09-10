@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Translater
+Plug 'skanehira/translate.vim'
+
 " Syntax highlight
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
