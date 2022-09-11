@@ -9,9 +9,6 @@ Plug 'skanehira/translate.vim'
 " Syntax highlight
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-" Buffer explorer
-Plug 'jlanzarotta/bufexplorer'
-
 Plug 'thinca/vim-qfreplace'
 
 Plug 'tpope/vim-surround'
@@ -37,9 +34,6 @@ Plug 'junegunn/gv.vim'
 
 Plug 'tpope/vim-fugitive'
 
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
-
 " Git Diff
 Plug 'airblade/vim-gitgutter'
 
@@ -61,7 +55,8 @@ Plug 'sheerun/vim-polyglot'
 
 " Fzf is a general-purpose command-line fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+Plug 'ibhagwan/fzf-lua'
+Plug 'kyazdani42/nvim-web-devicons'
 
 " Python code formatter
 Plug 'ambv/black'
