@@ -66,11 +66,8 @@ Plug 'junegunn/fzf.vim'
 " Python code formatter
 Plug 'ambv/black'
 
-" Gruvbox color theme
-Plug 'morhetz/gruvbox'
-
-" Vim-monokai-tasty color theme
-Plug 'patstockwell/vim-monokai-tasty'
+" Color theme
+Plug 'lifepillar/vim-gruvbox8'
 
 " Automatically closes brackets
 Plug 'jiangmiao/auto-pairs'
