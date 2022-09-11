@@ -23,10 +23,10 @@ nmap <leader>cr <Plug>(coc-references.md)
 nmap <leader><leader>p :Prettier<cr>
 nmap <leader><leader>u :UndotreeShow<cr>:UndotreeFocus<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
-nmap <leader><leader>f :Files<cr>
+nmap <leader><leader>f :FzfLua files<cr>
 
-nnoremap <leader>p :Telescope git_files<CR>
-nnoremap <leader><Tab> :BufExplorer<CR>
+nnoremap <leader>p :FzfLua git_files<CR>
+nnoremap <leader><Tab> :FzfLua buffers<CR>
 
 nnoremap x "_x
 nnoremap s "_S
