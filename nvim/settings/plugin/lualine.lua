@@ -1,4 +1,3 @@
-lua << END
 local status, lualine = pcall(require, "lualine")
 if (not status) then return end
 
@@ -15,27 +14,12 @@ lualine.setup {
   },
   sections = {
     lualine_a = { 'mode' },
-    lualine_c = { 'branch' },
-    lualine_b = { {
-        'buffers',
-        buffers_color = {
-            -- Same values as the general color option can be used here.
-            active = {
-                bg=main_color,
-                fg="#f0f0f0"
-            },     -- Color for active buffer.
-            inactive = {
-                bg=sub_color,
-                fg=main_color
-            }
-        },
-        symbols = {
-          modified = ' ●',      -- Text to show when the buffer is modified
-          alternate_file = '', -- Text to show to identify the alternate file
-          directory =  '',     -- Text to show when the buffer is a directory
-        },
-    },
-    },
+    lualine_b = { 'branch' },
+    lualine_c = { {
+      'filename',
+      file_status = true, -- displays file status (readonly status, modified status)
+      path = 0 -- 0 = just filename, 1 = relative path, 2 = absolute path
+    } },
     lualine_x = {
       { 'diagnostics', sources = { "coc" }, symbols = { error = ' ', warn = ' ', info = ' ',
         hint = ' ' } },
@@ -60,4 +44,3 @@ lualine.setup {
   tabline = {},
   extensions = { 'fugitive' }
 }
-END
