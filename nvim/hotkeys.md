@@ -19,6 +19,7 @@ SPACE - t                     : Toggle nerdtree
 SPACE - SPACE - p             : Format Prettier
 SPACE - SPACE - u             : Toggle UndoTree
 SPACE - SPACE - f             : Find Files (FZF & RIPGREP)
+SPACE - SHIFT - f             : Finding in git files
 SPACE - p                     : Git files (git ls-files)
 SPACE - Tab                   : Show buffer explorer
 
