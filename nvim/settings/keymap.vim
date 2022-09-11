@@ -17,23 +17,15 @@ nmap <leader>ga :Gwrite<cr>
 nmap <leader>gc :Git commit<cr>
 " Color picker
 nnoremap <leader>cp :Colortils picker<cr>
-nnoremap <leader>cg :Colortils gradient<cr>
-nnoremap <leader>cl :Colortils lighten<cr>
-nnoremap <leader>cd :Colortils darken<cr>
 
 nmap <leader>cd <Plug>(coc-definition)
 nmap <leader>cr <Plug>(coc-references.md)
 nmap <leader><leader>p :Prettier<cr>
-nmap <leader><leader>g :GoFmt<cr>
-nmap <leader><leader>b :Black<cr>
 nmap <leader><leader>u :UndotreeShow<cr>:UndotreeFocus<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
 nmap <leader><leader>f :Files<cr>
-nmap <leader><leader><leader>g :GoMetaLinter<cr>
 
 nnoremap <leader>p :Telescope git_files<CR>
-nnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
-vnoremap <leader><leader>c :call NERDComment(0,"toggle")<CR>
 nnoremap <leader><Tab> :BufExplorer<CR>
 
 nnoremap x "_x
