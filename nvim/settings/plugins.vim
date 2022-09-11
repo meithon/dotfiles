@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Docker tool
+Plug 'kkvh/vim-docker-tools'
+
 " Translater
 Plug 'skanehira/translate.vim'
 

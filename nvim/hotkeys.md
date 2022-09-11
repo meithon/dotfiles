@@ -3,6 +3,7 @@
 SPACE - h - k                 : Show hotkeys
 SPACE - e                     : Show filer
 SPACE - t                     : Traslate
+SPACE - d - t                 : Open docker tools
 ## Git
 SPACE - g - g                 : Git list
 SPACE - g - l                 : Git log
