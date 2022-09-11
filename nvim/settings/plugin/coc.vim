@@ -56,6 +56,10 @@ set signcolumn=yes
 " <C-g>u breaks current undo, please make your own choice.
 inoremap <silent><expr> <TAB> coc#pum#visible() ? coc#pum#confirm()
                               \: "\<TAB>"
+inoremap <silent><expr> <c-n> coc#pum#visible() ? coc#pum#next(1)
+                              \: "\<DOWN>"
+inoremap <silent><expr> <c-p> coc#pum#visible() ? coc#pum#prev(1)
+                              \: "\<UP>"
 
 function! CheckBackspace() abort
   let col = col('.') - 1
