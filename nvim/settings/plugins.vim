@@ -37,9 +37,6 @@ Plug 'tpope/vim-fugitive'
 " Git Diff
 Plug 'airblade/vim-gitgutter'
 
-" Make your Vim/Neovim as smart as VSCode
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
 " Comment and uncomment lines
 Plug 'numToStr/Comment.nvim'
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
