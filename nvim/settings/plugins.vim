@@ -1,5 +1,20 @@
 call plug#begin('~/.vim/plugged')
 
+" lsp
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'ray-x/lsp_signature.nvim'
+
+" auto complete
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+Plug 'onsails/lspkind-nvim'
+Plug 'ray-x/cmp-treesitter'
+
 " Docker tool
 Plug 'kkvh/vim-docker-tools'
 
