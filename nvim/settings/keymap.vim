@@ -44,3 +44,8 @@ vmap gh ^
 vmap gk H
 vmap gj L
 vmap <leader>j <ESC>
+
+imap <c-f> <Right>
+imap <c-b> <Left>
+imap <c-n> <Down>
+imap <c-p> <Up>
