@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'lukas-reineke/lsp-format.nvim'
+
 " lsp
 Plug 'neovim/nvim-lspconfig'
 Plug 'williamboman/mason.nvim'
