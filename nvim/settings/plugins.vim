@@ -2,7 +2,8 @@ call plug#begin('~/.vim/plugged')
 
 " lsp
 Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'ray-x/lsp_signature.nvim'
 
 " auto complete

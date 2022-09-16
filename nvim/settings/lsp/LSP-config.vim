@@ -1,22 +1,3 @@
-lua << EOF
-
-local nvim_lsp = require('lspconfig')
--- local servers = {
---   'gopls'
--- }
--- for _, lsp in ipairs(servers) do
---   nvim_lsp[lsp].setup {
---     capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
---     flags = {
---       debounce_text_changes = 150,
---     }
---   }
--- end
-
--- require'lspconfig'.volar.setup{}
-
-EOF
-
 " nnoremap <silent>gD <cmd>lua vim.lsp.buf.declaration()<CR>
 " nnoremap <silent>gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent>gh <cmd>lua vim.lsp.buf.hover()<CR>
@@ -33,4 +14,4 @@ nnoremap <silent>gH <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent>[d <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent>]d <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 " nnoremap <silent><space>q <cmd>lua vim.lsp.diagnostic.set_loclist()<CR>
-" nnoremap <silent><space>f <cmd>lua vim.lsp.buf.formatting()<CR>
+nnoremap <silent><space>f <cmd>lua vim.lsp.buf.formatting()<CR>
