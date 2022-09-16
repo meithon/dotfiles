@@ -9,8 +9,11 @@ mason.setup({
         }
     }
 })
-require("mason-lspconfig").setup({
-  function (server_name) -- default handler (optional)
+
+local status, lspconfig = pcall(require, "mason-lspconfig")
+if (not status) then return end
+lspconfig.setup_handlers({
+  function (server) -- default handler (optional)
     local opt = {
     -- -- Function executed when the LSP server startup
     -- on_attach = function(client, bufnr)
@@ -23,5 +26,5 @@ require("mason-lspconfig").setup({
     )
   }
   require('lspconfig')[server].setup(opt)
-  end,
-  })
+  end
+})
