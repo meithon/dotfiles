@@ -17,6 +17,7 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Plug 'onsails/lspkind-nvim'
 Plug 'ray-x/cmp-treesitter'
+Plug 'f3fora/cmp-spell'
 
 " Docker tool
 Plug 'kkvh/vim-docker-tools'
