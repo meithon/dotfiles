@@ -51,6 +51,7 @@ lua << EOF
     },
     sources = {
       { name = 'nvim_lsp' },
+      { name = 'spell' },
 
       -- For vsnip user.
       -- { name = 'vsnip' },
@@ -74,6 +75,21 @@ lua << EOF
         -- The function below will be called before any actual modifications from lspkind
         -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
         before = function (entry, vim_item)
+          vim_item.menu = ({
+            nvim_lsp = '[LSP]',
+            vsnip = '[Snippet]',
+            nvim_lua = '[Nvim Lua]',
+            buffer = '[Buffer]',
+            cmp_tabnine = '[TN]',
+            spell = '[Spell]',
+          })[entry.source.name]
+
+          vim_item.dup = ({
+            vsnip = 0,
+            nvim_lsp = 0,
+            nvim_lua = 0,
+            buffer = 0,
+          })[entry.source.name] or 0
           return vim_item
         end
       })
