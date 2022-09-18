@@ -57,7 +57,7 @@ Plug 'junegunn/gv.vim'
 Plug 'tpope/vim-fugitive'
 
 " Git Diff
-Plug 'airblade/vim-gitgutter'
+Plug 'lewis6991/gitsigns.nvim'
 
 " Comment and uncomment lines
 Plug 'numToStr/Comment.nvim'

@@ -13,8 +13,16 @@ nmap <leader>dt :DockerToolsOpen<cr>
 nmap <leader>gg :Git<cr>
 nmap <leader>gl :GV<cr>
 nmap <leader>gd :Gvdiffsplit<cr>
-nmap <leader>ga :Gwrite<cr>
 nmap <leader>gc :Git commit<cr>
+nmap <leader>ga :Gitsigns stage_hunk<cr>
+vmap <leader>ga :Gitsigns stage_hunk<cr>
+nmap <leader>gu :Gitsigns undo_stage_hunk<cr>
+vmap <leader>gu :Gitsigns undo_stage_hunk<cr>
+vmap <leader>gr :Gitsigns reset_hunk<cr>
+nmap <leader>gtd :Gitsigns toggle_deleted<cr>:Gitsigns toggle_linehl<cr>
+nmap gk :Gitsigns prev_hunk<cr> zz k
+nmap gj :Gitsigns next_hunk<cr> zz
+
 " Color picker
 nnoremap <leader>cp :Colortils picker<cr>
 
@@ -30,11 +38,6 @@ nnoremap <leader><Tab> :FzfLua buffers<CR>
 
 nnoremap x "_x
 nnoremap s "_S
-
-nnoremap gl $
-nnoremap gh ^
-nnoremap gk H
-nnoremap gj L
 
 nnoremap <C-h> :%s//gI<Left><Left><Left>
 nnoremap <leader>F :vimgrep // `git ls-files`<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
