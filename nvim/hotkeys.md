@@ -8,10 +8,15 @@ SPACE - d - t                 : Open docker tools
 SPACE - g - g                 : Git list
 SPACE - g - l                 : Git log
 SPACE - g - d                 : Diff
-SPACE - g - a                 : add
 SPACE - g - c                 : commit
-] - g                         : Jump to next hunk (change)
-[ - g                         : Jump to previous hunk (change)
+SPACE - g - t - d             : Toggle diff highlight
+### hunk
+SPACE - g - a                 : Stage hunk
+SPACE - g - u                 : Undo stage hunk
+SPACE - g - r                 : Reset stage hunk
+g - k                         : Jump to previous hunk
+g - j                         : Jump to next hunk
+
 SPACE - c - p                 : Coler picker
 SPACE - c - d                 : Go to definition
 SPACE - c - r                 : Go to reference
