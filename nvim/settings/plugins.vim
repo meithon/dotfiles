@@ -18,6 +18,9 @@ Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Plug 'onsails/lspkind-nvim'
 Plug 'ray-x/cmp-treesitter'
 Plug 'f3fora/cmp-spell'
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'L3MON4D3/LuaSnip', {'tag': 'v<CurrentMajor>.*'}
+Plug 'rafamadriz/friendly-snippets' " 大量のスニペット郡
 
 " Docker tool
 Plug 'kkvh/vim-docker-tools'
@@ -70,7 +73,6 @@ Plug 'mbbill/undotree'
 Plug 'sheerun/vim-polyglot'
 
 " Fzf is a general-purpose command-line fuzzy finder
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'ibhagwan/fzf-lua'
 Plug 'kyazdani42/nvim-web-devicons'
 
