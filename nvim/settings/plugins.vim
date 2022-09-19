@@ -1,5 +1,11 @@
 call plug#begin('~/.vim/plugged')
 
+" Startup screen
+" Plug 'glepnir/dashboard-nvim'
+" Plug 'goolord/alpha-nvim'
+Plug 'mhinz/vim-startify', {'branch': 'center'}
+Plug 'ryanoasis/vim-devicons'
+
 Plug 'lukas-reineke/lsp-format.nvim'
 
 " lsp
