@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'p00f/nvim-ts-rainbow'
+
 " Startup screen
 " Plug 'glepnir/dashboard-nvim'
 " Plug 'goolord/alpha-nvim'
