@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'lukas-reineke/indent-blankline.nvim'
+
 Plug 'p00f/nvim-ts-rainbow'
 
 " Startup screen
