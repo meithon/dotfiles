@@ -1,6 +1,3 @@
-" Map escape to jj
-imap jj <Esc>
-
 " Set mapleader to space
 let mapleader = " "
 " Maps
