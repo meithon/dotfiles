@@ -1,105 +1,103 @@
-call plug#begin('~/.vim/plugged')
+packadd vim-jetpack
+call jetpack#begin('~/.vim/plugged')
+Jetpack 'max397574/better-escape.nvim'
 
-Plug 'max397574/better-escape.nvim'
+Jetpack 'lukas-reineke/indent-blankline.nvim'
 
-Plug 'lukas-reineke/indent-blankline.nvim'
-
-Plug 'p00f/nvim-ts-rainbow'
+Jetpack 'p00f/nvim-ts-rainbow'
 
 " Startup screen
-" Plug 'glepnir/dashboard-nvim'
-" Plug 'goolord/alpha-nvim'
-Plug 'mhinz/vim-startify', {'branch': 'center'}
-Plug 'ryanoasis/vim-devicons'
+Jetpack 'mhinz/vim-startify', {'branch': 'center'} " require vim-devicons
+Jetpack 'ryanoasis/vim-devicons'
 
-Plug 'lukas-reineke/lsp-format.nvim'
+Jetpack 'lukas-reineke/lsp-format.nvim'
 
 " lsp
-Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/mason.nvim'
-Plug 'williamboman/mason-lspconfig.nvim'
-Plug 'ray-x/lsp_signature.nvim'
+Jetpack 'neovim/nvim-lspconfig'
+Jetpack 'williamboman/mason.nvim'
+Jetpack 'williamboman/mason-lspconfig.nvim'
+Jetpack 'ray-x/lsp_signature.nvim'
 
 " auto complete
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
-Plug 'onsails/lspkind-nvim'
-Plug 'ray-x/cmp-treesitter'
-Plug 'f3fora/cmp-spell'
-Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'L3MON4D3/LuaSnip', {'tag': 'v<CurrentMajor>.*'}
-Plug 'rafamadriz/friendly-snippets' " 大量のスニペット郡
+Jetpack 'hrsh7th/nvim-cmp'
+Jetpack 'hrsh7th/cmp-nvim-lsp'
+Jetpack 'hrsh7th/cmp-buffer'
+Jetpack 'hrsh7th/cmp-path'
+Jetpack 'hrsh7th/cmp-cmdline'
+Jetpack 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+Jetpack 'onsails/lspkind-nvim'
+Jetpack 'ray-x/cmp-treesitter'
+Jetpack 'f3fora/cmp-spell'
+Jetpack 'saadparwaiz1/cmp_luasnip'
+Jetpack 'L3MON4D3/LuaSnip', {'tag': 'v1.0.0'}
+Jetpack 'rafamadriz/friendly-snippets' " 大量のスニペット郡
 
 " Docker tool
-Plug 'kkvh/vim-docker-tools'
+Jetpack 'kkvh/vim-docker-tools'
 
 " Translater
-Plug 'skanehira/translate.vim'
+Jetpack 'skanehira/translate.vim'
 
 " Syntax highlight
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Jetpack 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-Plug 'thinca/vim-qfreplace'
+Jetpack 'thinca/vim-qfreplace'
 
-Plug 'tpope/vim-surround'
+Jetpack 'tpope/vim-surround'
 
-Plug 'tversteeg/registers.nvim', { 'branch': 'main' }
+Jetpack 'tversteeg/registers.nvim', { 'branch': 'main' }
 
-Plug 'mbbill/undotree'
+Jetpack 'mbbill/undotree'
 
-Plug 'nvim-lualine/lualine.nvim'
+Jetpack 'nvim-lualine/lualine.nvim'
 
-Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
-"Plug 'BourgeoisBear/clrzr'
+Jetpack 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+"Jetpack 'BourgeoisBear/clrzr'
 
-Plug 'nvim-colortils/colortils.nvim'
+Jetpack 'nvim-colortils/colortils.nvim'
 " CSS color picker
-Plug 'ziontee113/color-picker.nvim'
+Jetpack 'ziontee113/color-picker.nvim'
 
 " Multi cursor
-Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Jetpack 'mg979/vim-visual-multi', {'branch': 'master'}
 
 " Log browser
-Plug 'junegunn/gv.vim'
+Jetpack 'junegunn/gv.vim'
 
-Plug 'tpope/vim-fugitive'
+Jetpack 'tpope/vim-fugitive'
 
 " Git Diff
-Plug 'lewis6991/gitsigns.nvim'
+Jetpack 'lewis6991/gitsigns.nvim'
 
 " Comment and uncomment lines
-Plug 'numToStr/Comment.nvim'
-Plug 'JoosepAlviste/nvim-ts-context-commentstring'
+Jetpack 'numToStr/Comment.nvim'
+Jetpack 'JoosepAlviste/nvim-ts-context-commentstring'
 
 " A light and configurable statusline/tabline plugin for Vim
-Plug 'itchyny/lightline.vim'
+Jetpack 'itchyny/lightline.vim'
 
 " Visualize undo history tree (in vim undo is not linear)
-Plug 'mbbill/undotree'
+Jetpack 'mbbill/undotree'
 
 " Syntax highlighting for languages
-Plug 'sheerun/vim-polyglot'
+Jetpack 'sheerun/vim-polyglot'
 
 " Fzf is a general-purpose command-line fuzzy finder
-Plug 'ibhagwan/fzf-lua'
-Plug 'kyazdani42/nvim-web-devicons'
+Jetpack 'ibhagwan/fzf-lua'
+Jetpack 'kyazdani42/nvim-web-devicons'
 
 " Python code formatter
-Plug 'ambv/black'
+Jetpack 'ambv/black'
 
 " Color theme
-Plug 'lifepillar/vim-gruvbox8'
+Jetpack 'lifepillar/vim-gruvbox8'
 
 " Automatically closes brackets
-Plug 'jiangmiao/auto-pairs'
+Jetpack 'jiangmiao/auto-pairs'
 
 " Filer
-Plug 'obaland/vfiler.vim'
-Plug 'obaland/vfiler-column-devicons'
-Plug 'obaland/vfiler-fzf'
+Jetpack 'obaland/vfiler.vim'
+Jetpack 'obaland/vfiler-column-devicons'
+Jetpack 'obaland/vfiler-fzf'
 
-call plug#end()
+call jetpack#end()
