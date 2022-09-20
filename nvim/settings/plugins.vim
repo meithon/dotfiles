@@ -1,5 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'max397574/better-escape.nvim'
+
 Plug 'lukas-reineke/indent-blankline.nvim'
 
 Plug 'p00f/nvim-ts-rainbow'
