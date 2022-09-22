@@ -1,5 +1,8 @@
 packadd vim-jetpack
 call jetpack#begin('~/.vim/plugged')
+
+Jetpack 'dstein64/vim-startuptime'
+
 " Check my keybind
 Jetpack 'folke/which-key.nvim'
 Jetpack 'max397574/better-escape.nvim'
