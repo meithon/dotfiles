@@ -1,5 +1,7 @@
 packadd vim-jetpack
 call jetpack#begin('~/.vim/plugged')
+" Check my keybind
+Jetpack 'folke/which-key.nvim'
 Jetpack 'max397574/better-escape.nvim'
 
 Jetpack 'lukas-reineke/indent-blankline.nvim'
