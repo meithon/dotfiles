@@ -4,6 +4,7 @@ SPACE - h - k                 : Show hotkeys
 SPACE - e                     : Show filer
 SPACE - t                     : Traslate
 SPACE - d - t                 : Open docker tools
+SPACE - t - s - c             : Toggle spell check
 ## Git
 SPACE - g - g                 : Git list
 SPACE - g - l                 : Git log
