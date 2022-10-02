@@ -1,6 +1,10 @@
 packadd vim-jetpack
 call jetpack#begin('~/.vim/plugged')
 
+" More useful wildmenu
+Jetpack 'gelguy/wilder.nvim'
+  Jetpack 'romgrk/fzy-lua-native', {'do': 'make'}
+
 Jetpack 'dstein64/vim-startuptime'
 
 " Check my keybind
@@ -28,7 +32,6 @@ Jetpack 'hrsh7th/nvim-cmp'
 Jetpack 'hrsh7th/cmp-nvim-lsp'
 Jetpack 'hrsh7th/cmp-buffer'
 Jetpack 'hrsh7th/cmp-path'
-Jetpack 'hrsh7th/cmp-cmdline'
 Jetpack 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Jetpack 'onsails/lspkind-nvim'
 Jetpack 'ray-x/cmp-treesitter'
