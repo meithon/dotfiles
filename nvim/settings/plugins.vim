@@ -1,6 +1,9 @@
 packadd vim-jetpack
 call jetpack#begin('~/.vim/plugged')
 
+" lua easymotion
+Jetpack 'phaazon/hop.nvim'
+
 " More useful wildmenu
 Jetpack 'gelguy/wilder.nvim'
   Jetpack 'romgrk/fzy-lua-native', {'do': 'make'}

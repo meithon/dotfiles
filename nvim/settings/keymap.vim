@@ -34,7 +34,6 @@ nnoremap <leader>p :FzfLua git_files<CR>
 nnoremap <leader><Tab> :FzfLua buffers<CR>
 
 nnoremap x "_x
-nnoremap s "_S
 
 nnoremap <C-h> :%s//gI<Left><Left><Left>
 nnoremap <leader>F :vimgrep // `git ls-files`<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
