@@ -39,6 +39,8 @@ nnoremap x "_x
 nnoremap <C-h> :%s//gI<Left><Left><Left>
 nnoremap <leader>F :vimgrep // `git ls-files`<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
 
+nnoremap <CR> i<Return><Esc>^k
+
 vmap gl $
 vmap gh ^
 vmap gk H
@@ -49,3 +51,8 @@ imap <c-f> <Right>
 imap <c-b> <Left>
 imap <c-n> <Down>
 imap <c-p> <Up>
+
+tnoremap <buffer> <A-h> <C-\><C-n><C-w>h
+tnoremap <buffer> <A-j> <C-\><C-n><C-w>j
+tnoremap <buffer> <A-k> <C-\><C-n><C-w>k
+tnoremap <buffer> <A-l> <C-\><C-n><C-w>l
