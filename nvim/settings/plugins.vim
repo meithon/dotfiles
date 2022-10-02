@@ -4,6 +4,9 @@ call jetpack#begin('~/.vim/plugged')
 " lua easymotion
 Jetpack 'phaazon/hop.nvim'
 
+" Like a easymotion in search
+Jetpack 'hrsh7th/vim-searchx'
+
 " More useful wildmenu
 Jetpack 'gelguy/wilder.nvim'
   Jetpack 'romgrk/fzy-lua-native', {'do': 'make'}
