@@ -4,6 +4,8 @@ call jetpack#begin('~/.vim/plugged')
 " Improve startup time
 Jetpack 'lewis6991/impatient.nvim'
 
+Jetpack 'matze/vim-move'
+
 " lua easymotion
 Jetpack 'phaazon/hop.nvim'
 
