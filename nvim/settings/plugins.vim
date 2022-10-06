@@ -105,9 +105,6 @@ Jetpack 'sheerun/vim-polyglot'
 Jetpack 'ibhagwan/fzf-lua'
 Jetpack 'kyazdani42/nvim-web-devicons'
 
-" Python code formatter
-Jetpack 'ambv/black'
-
 " Color theme
 Jetpack 'lifepillar/vim-gruvbox8'
 
