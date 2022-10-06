@@ -43,7 +43,7 @@ Jetpack 'onsails/lspkind-nvim'
 Jetpack 'ray-x/cmp-treesitter'
 Jetpack 'f3fora/cmp-spell'
 Jetpack 'saadparwaiz1/cmp_luasnip'
-Jetpack 'L3MON4D3/LuaSnip', {'tag': 'v1.0.0'}
+Jetpack 'L3MON4D3/LuaSnip'
 Jetpack 'rafamadriz/friendly-snippets' " 大量のスニペット郡
 
 " Docker tool
