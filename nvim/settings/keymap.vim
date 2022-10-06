@@ -56,3 +56,5 @@ tnoremap <buffer> <A-h> <C-\><C-n><C-w>h
 tnoremap <buffer> <A-j> <C-\><C-n><C-w>j
 tnoremap <buffer> <A-k> <C-\><C-n><C-w>k
 tnoremap <buffer> <A-l> <C-\><C-n><C-w>l
+tnoremap <ESC> <C-\><C-n>
+tnoremap jk <C-\><C-n>
