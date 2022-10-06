@@ -37,6 +37,7 @@ Jetpack 'neovim/nvim-lspconfig'
 Jetpack 'williamboman/mason.nvim'
 Jetpack 'williamboman/mason-lspconfig.nvim'
 Jetpack 'ray-x/lsp_signature.nvim'
+Jetpack 'glepnir/lspsaga.nvim'
 
 " auto complete
 Jetpack 'hrsh7th/nvim-cmp'
