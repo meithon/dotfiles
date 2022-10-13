@@ -30,7 +30,10 @@ Jetpack 'p00f/nvim-ts-rainbow'
 Jetpack 'mhinz/vim-startify', {'branch': 'center'} " require vim-devicons
 Jetpack 'ryanoasis/vim-devicons'
 
-Jetpack 'lukas-reineke/lsp-format.nvim'
+" Formatter and linter
+Jetpack 'jose-elias-alvarez/null-ls.nvim'
+  Jetpack 'nvim-lua/plenary.nvim'
+Jetpack 'jayp0521/mason-null-ls.nvim'
 
 " lsp
 Jetpack 'neovim/nvim-lspconfig'
