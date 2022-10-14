@@ -3,6 +3,8 @@ autocmd InsertEnter * norm zz
 
 autocmd BufWritePre * %s/\s\+$//e
 
+autocmd BufRead,BufEnter *.astro set filetype=astro
+
 if exists('+termguicolors')
   let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
   let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
