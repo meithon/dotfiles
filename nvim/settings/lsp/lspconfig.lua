@@ -92,6 +92,7 @@ null_ls.setup({
 local status, lspconfig = pcall(require, "mason-lspconfig")
 if not status then
 	return
+end
 
 lspconfig.setup_handlers({
 	function(server) -- default handler (optional)
