@@ -63,6 +63,10 @@ Jetpack 'skanehira/translate.vim'
 
 " Syntax highlight
 Jetpack 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Jetpack 'nvim-treesitter/nvim-treesitter-textobjects'
+Jetpack 'theHamsta/tree-sitter-html'
+" auto close html tag
+Jetpack 'windwp/nvim-ts-autotag'
 
 Jetpack 'thinca/vim-qfreplace'
 
