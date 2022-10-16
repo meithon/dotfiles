@@ -74,12 +74,8 @@ Jetpack 'mbbill/undotree'
 
 Jetpack 'nvim-lualine/lualine.nvim'
 
-Jetpack 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
-"Jetpack 'BourgeoisBear/clrzr'
-
-Jetpack 'nvim-colortils/colortils.nvim'
-" CSS color picker
-Jetpack 'ziontee113/color-picker.nvim'
+" CSS color picke and display color. require nvim 8.0
+Jetpack 'uga-rosa/ccc.nvim'
 
 " Multi cursor
 Jetpack 'mg979/vim-visual-multi', {'branch': 'master'}
