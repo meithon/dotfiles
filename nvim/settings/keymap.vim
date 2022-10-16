@@ -22,7 +22,7 @@ nmap gk :Gitsigns prev_hunk<cr> zz k
 nmap gj :Gitsigns next_hunk<cr> zz
 
 " Color picker
-nnoremap <leader>cp :Colortils picker<cr>
+nnoremap <leader><cr> :CccPick<cr>
 
 nmap <leader>cd <Plug>(coc-definition)
 nmap <leader>cr <Plug>(coc-references.md)
