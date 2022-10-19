@@ -1,6 +1,8 @@
 packadd vim-jetpack
 call jetpack#begin('~/.vim/plugged')
 
+Jetpack 'mattn/emmet-vim'
+
 " Improve startup time
 Jetpack 'lewis6991/impatient.nvim'
 
