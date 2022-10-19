@@ -1,5 +1,7 @@
 local status, lualine = pcall(require, "lualine")
-if (not status) then return end
+if (not status) then
+  return
+end
 
 local main_color = "#417894"
 local sub_color = "#302B2D"
@@ -21,8 +23,16 @@ lualine.setup {
       path = 0 -- 0 = just filename, 1 = relative path, 2 = absolute path
     } },
     lualine_x = {
-      { 'diagnostics', sources = { "coc" }, symbols = { error = ' ', warn = ' ', info = ' ',
-        hint = ' ' } },
+      {
+        sources = { "nvim_diagnostic" },
+        'diagnostics',
+        symbols = {
+          error = ' ',
+          warn = ' ',
+          info = ' ',
+          hint = ' '
+        }
+      },
       'encoding',
       'filetype'
     },
@@ -37,10 +47,20 @@ lualine.setup {
       file_status = true, -- displays file status (readonly status, modified status)
       path = 1 -- 0 = just filename, 1 = relative path, 2 = absolute path
     } },
-    lualine_x = { 'location' },
-    lualine_y = {},
-    lualine_z = {}
+    lualine_x = {},
+    lualine_y = {
+      {
+        sources = { "nvim_diagnostic" },
+        'diagnostics',
+        symbols = {
+          error = ' ',
+          warn = ' ',
+          info = ' ',
+          hint = ' '
+        }
+      },
+    },
+    lualine_z = { 'location' }
   },
-  tabline = {},
   extensions = { 'fugitive' }
 }

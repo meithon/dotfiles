@@ -77,6 +77,8 @@ Jetpack 'tversteeg/registers.nvim', { 'branch': 'main' }
 Jetpack 'mbbill/undotree'
 
 Jetpack 'nvim-lualine/lualine.nvim'
+Jetpack 'akinsho/nvim-bufferline.lua'
+" Jetpack'romgrk/barbar.nvim'
 
 " CSS color picke and display color. require nvim 8.0
 Jetpack 'uga-rosa/ccc.nvim'
@@ -95,9 +97,6 @@ Jetpack 'lewis6991/gitsigns.nvim'
 " Comment and uncomment lines
 Jetpack 'numToStr/Comment.nvim'
 Jetpack 'JoosepAlviste/nvim-ts-context-commentstring'
-
-" A light and configurable statusline/tabline plugin for Vim
-Jetpack 'itchyny/lightline.vim'
 
 " Visualize undo history tree (in vim undo is not linear)
 Jetpack 'mbbill/undotree'
