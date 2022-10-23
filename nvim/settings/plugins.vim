@@ -12,7 +12,7 @@ Jetpack 'matze/vim-move'
 Jetpack 'junegunn/vim-easy-align'
 
 " lua easymotion
-Jetpack 'phaazon/hop.nvim'
+Jetpack 'ggandor/lightspeed.nvim'
 
 " Like a easymotion in search
 Jetpack 'hrsh7th/vim-searchx'
