@@ -14,6 +14,9 @@ Jetpack 'junegunn/vim-easy-align'
 " lua easymotion
 Jetpack 'ggandor/lightspeed.nvim'
 
+" more powerful wordmotion
+Jetpack 'chaoren/vim-wordmotion'
+
 " Like a easymotion in search
 Jetpack 'hrsh7th/vim-searchx'
 
