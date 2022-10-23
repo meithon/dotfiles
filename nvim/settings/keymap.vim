@@ -32,6 +32,8 @@ nmap <leader><leader>f :FzfLua files<cr>
 
 nnoremap <leader>p :FzfLua git_files<CR>
 nnoremap <leader><Tab> :FzfLua buffers<CR>
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 
 nnoremap x "_x
 

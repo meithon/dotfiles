@@ -8,6 +8,9 @@ Jetpack 'lewis6991/impatient.nvim'
 
 Jetpack 'matze/vim-move'
 
+" Text alignmenter
+Jetpack 'junegunn/vim-easy-align'
+
 " lua easymotion
 Jetpack 'phaazon/hop.nvim'
 

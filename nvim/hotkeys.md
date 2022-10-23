@@ -37,3 +37,4 @@ SPACE - Tab                   : Show buffer explorer
 SPACE - t - p                 : Pick buffers
 
 g - c - c                     : Comment or Uncomment Line
+g - a                         : Align format
