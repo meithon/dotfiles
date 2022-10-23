@@ -7,6 +7,10 @@ end
 vim.cmd [[packadd packer.nvim]]
 
 return packer.startup(function(use)
+
+  -- useful number searcher
+  use 'nacro90/numb.nvim'
+
   use 'mattn/emmet-vim'
 
   -- Improve startup time
