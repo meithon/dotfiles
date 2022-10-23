@@ -29,7 +29,6 @@ let g:searchx.auto_accept = v:true
 let g:searchx.scrolloff = &scrolloff
 
 " To enable scrolling animation.
-let g:searchx.scrolltime = 500
 
 " To enable auto nohlsearch after cursor is moved
 let g:searchx.nohlsearch = {}
