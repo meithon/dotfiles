@@ -28,7 +28,7 @@ return packer.startup(function(use)
 
   -- More useful wildmenu
   use { 'gelguy/wilder.nvim',
-  requires = {'romgrk/fzy-lua-native', cmd = 'make' }
+    requires = {'romgrk/fzy-lua-native', run = 'make' }
   }
 
   use 'dstein64/vim-startuptime'
@@ -46,9 +46,10 @@ return packer.startup(function(use)
   use 'ryanoasis/vim-devicons'
 
   -- Formatter and linter
-  use 'jose-elias-alvarez/null-ls.nvim'
-    use 'nvim-lua/plenary.nvim'
-  use 'jayp0521/mason-null-ls.nvim'
+  use {
+    'jose-elias-alvarez/null-ls.nvim',
+    requires = {{ 'nvim-lua/plenary.nvim' }, { 'jayp0521/mason-null-ls.nvim' }}
+  }
 
   -- lsp
   use 'neovim/nvim-lspconfig'
