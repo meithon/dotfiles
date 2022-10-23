@@ -104,6 +104,11 @@ lspconfig.setup_handlers({
 			--   vim.cmd 'autocmd BufWritePre * lua vim.lsp.buf.formatting_sync(nil, 1000)'
 			-- end,
 			capabilities = require("cmp_nvim_lsp").default_capabilities(),
+			settings = {
+				Lua = {
+					diagnostics = { globals = {'vim'} }
+				}
+			}
 		}
 		require("lspconfig")[server].setup(opt)
 	end,
