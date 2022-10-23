@@ -96,8 +96,12 @@ return packer.startup(function(use)
   use 'akinsho/nvim-bufferline.lua'
   -- use'romgrk/barbar.nvim'
 
-  -- CSS color picke and display color. require nvim 8.0
+  -- color picke . require nvim 8.0
   use 'uga-rosa/ccc.nvim'
+
+  -- color display
+  use 'NvChad/nvim-colorizer.lua'
+
 
   -- Multi cursor
   use { 'mg979/vim-visual-multi', branch = 'master'}
