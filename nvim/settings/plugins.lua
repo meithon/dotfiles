@@ -90,7 +90,10 @@ return packer.startup(function(use)
   -- auto close html tag
   use 'windwp/nvim-ts-autotag'
 
+  -- for vimgrep and quickfix
   use 'thinca/vim-qfreplace'
+  -- foratwindow for quickfix
+  use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
   use 'tpope/vim-surround'
 
