@@ -67,6 +67,8 @@ Jetpack 'skanehira/translate.vim'
 Jetpack 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Jetpack 'nvim-treesitter/nvim-treesitter-textobjects'
 Jetpack 'theHamsta/tree-sitter-html'
+Jetpack 'David-Kunz/markid'
+
 " auto close html tag
 Jetpack 'windwp/nvim-ts-autotag'
 
