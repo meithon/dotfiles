@@ -3,13 +3,10 @@ if (not status) then
   return
 end
 
-local main_color = "#417894"
-local sub_color = "#302B2D"
-
 lualine.setup {
   options = {
     icons_enabled = true,
-    theme = 'gruvbox_dark',
+    theme = 'auto',
     section_separators = { left = '', right = '' },
     component_separators = { left = '', right = '' },
     disabled_filetypes = {}
