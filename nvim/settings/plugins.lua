@@ -149,7 +149,7 @@ return packer.startup(function(use)
 
 
   -- Automatically closes brackets
-  use 'jiangmiao/auto-pairs'
+  use "windwp/nvim-autopairs"
 
   -- Filer
   use 'obaland/vfiler.vim'
