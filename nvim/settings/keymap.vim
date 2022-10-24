@@ -53,5 +53,9 @@ imap <c-b> <Left>
 imap <c-n> <Down>
 imap <c-p> <Up>
 
+" Terminal
 tnoremap <ESC> <C-\><C-n>
+
+nmap <leader>tt :FTermToggle<cr>
+tnoremap <C-q> <C-\><C-n>:q<cr>
 tnoremap jk <C-\><C-n>

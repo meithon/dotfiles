@@ -38,3 +38,8 @@ SPACE - t - p                 : Pick buffers
 
 g - c - c                     : Comment or Uncomment Line
 g - a                         : Align format
+
+# Terminal
+j - k                         : Normal mode
+CNTRL - q                     : Quit terminal
+SPACE - t - t                 : Toggle Floating terminal
