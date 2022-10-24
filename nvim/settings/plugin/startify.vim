@@ -26,4 +26,4 @@ let g:startify_lists = [
     \ { 'type': 'bookmarks', 'header': startify#center(['Bookmarks']) },
     \ { 'type': 'commands',  'header': startify#center(['Commands']) },
     \ ]
-let g:startify_padding_left = 69 " Hard coded padding for lists
+let g:startify_padding_left = (winwidth(0) - 70) / 2" Hard coded padding for lists:
