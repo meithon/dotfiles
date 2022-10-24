@@ -134,6 +134,11 @@ return packer.startup(function(use)
   -- Fzf is a general-purpose command-line fuzzy finder
   use 'ibhagwan/fzf-lua'
   use 'kyazdani42/nvim-web-devicons'
+  -- telescope
+  use {
+    'nvim-telescope/telescope.nvim', tag = '0.1.0',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
 
   -- Color theme
   use 'lifepillar/vim-gruvbox8'
