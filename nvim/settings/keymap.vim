@@ -28,10 +28,10 @@ nmap <leader>cd <Plug>(coc-definition)
 nmap <leader>cr <Plug>(coc-references.md)
 nmap <leader><leader>u :UndotreeShow<cr>:UndotreeFocus<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
-nmap <leader><leader>f :FzfLua files<cr>
+nmap <leader><leader>f :Telescope find_files<cr>
 
-nnoremap <leader>p :FzfLua git_files<CR>
-nnoremap <leader><Tab> :FzfLua buffers<CR>
+nnoremap <leader>p :Telescope git_files<CR>
+nnoremap <leader><Tab> :Telescope buffers<CR>
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
 
