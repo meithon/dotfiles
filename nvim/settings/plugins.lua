@@ -142,6 +142,11 @@ return packer.startup(function(use)
 
   -- Color theme
   use 'lifepillar/vim-gruvbox8'
+  use {
+    'folke/tokyonight.nvim',
+    config = {vim.cmd[[colorscheme tokyonight-moon]]}
+  }
+
 
   -- Automatically closes brackets
   use 'jiangmiao/auto-pairs'
