@@ -7,6 +7,13 @@ end
 vim.cmd [[packadd packer.nvim]]
 
 return packer.startup(function(use)
+  use {
+    "folke/zen-mode.nvim",
+    config = function()
+      require("zen-mode").setup {
+      }
+    end
+  }
 
   -- floating terminal
   use "numToStr/FTerm.nvim"
