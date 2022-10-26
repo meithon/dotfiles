@@ -24,11 +24,9 @@ nmap gj :Gitsigns next_hunk<cr> zz
 " Color picker
 nnoremap <leader><cr> :CccPick<cr>
 
-nmap <leader>cd <Plug>(coc-definition)
-nmap <leader>cr <Plug>(coc-references.md)
 nmap <leader><leader>u :UndotreeShow<cr>:UndotreeFocus<cr>
+nmap <leader>ff :Telescope find_files<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
-nmap <leader><leader>f :Telescope find_files<cr>
 
 nnoremap <leader>p :Telescope git_files<CR>
 nnoremap <leader><Tab> :Telescope buffers<CR>
