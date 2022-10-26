@@ -15,6 +15,14 @@ return packer.startup(function(use)
     end
   }
 
+  use {
+    'folke/noice.nvim',
+    requires = {
+      {'MunifTanjim/nui.nvim'},
+      {'rcarriga/nvim-notify'}
+    }
+  }
+
   -- floating terminal
   use "numToStr/FTerm.nvim"
 
