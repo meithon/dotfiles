@@ -158,6 +158,16 @@ return packer.startup(function(use)
     requires = { {'nvim-lua/plenary.nvim'} }
   }
 
+  use {
+   "AckslD/nvim-neoclip.lua",
+    requires = {
+      {'kkharji/sqlite.lua', module = 'sqlite'},
+      -- you'll need at least one of these
+      {'nvim-telescope/telescope.nvim'},
+      -- {'ibhagwan/fzf-lua'},
+    },
+  }
+
   -- Color theme
   use 'lifepillar/vim-gruvbox8'
   use {
