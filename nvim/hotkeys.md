@@ -30,12 +30,14 @@ SPACE - g - r                 : Rename
 SPACE - ENTER                 : Color picker
 SPACE - t                     : Toggle nerdtree
 SPACE - SPACE - u             : Toggle UndoTree
-SPACE - SPACE - f             : Find Files (FZF & RIPGREP)
-SPACE - SHIFT - f             : Finding in git files
+# Telescope
+SPACE - f - f                 : Find Files (FZF & RIPGREP)
+SPACE - f - g                 : Git files (git ls-files)
 SPACE - p                     : Git files (git ls-files)
 SPACE - Tab                   : Show buffer explorer
-SPACE - t - p                 : Pick buffers
 
+SPACE - t - p                 : Pick buffers
+SPACE - SHIFT - f             : Finding in git files
 g - c - c                     : Comment or Uncomment Line
 g - a                         : Align format
 

@@ -28,7 +28,8 @@ nmap <leader><leader>u :UndotreeShow<cr>:UndotreeFocus<cr>
 nmap <leader>ff :Telescope find_files<cr>
 " Files (runs $FZF_DEFAULT_COMMAND if defined)
 
-nnoremap <leader>p :Telescope git_files<CR>
+nnoremap <leader>fg :Telescope git_files<CR>
+nnoremap <leader>p :Telescope neoclip<CR>
 nnoremap <leader><Tab> :Telescope buffers<CR>
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
