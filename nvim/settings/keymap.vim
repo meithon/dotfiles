@@ -7,6 +7,25 @@ nmap <leader>tp :BufferLinePick<cr>
 vmap <leader>tl :'<,'>Translate<cr>
 nmap <leader>dt :DockerToolsOpen<cr>
 nnoremap <leader>tsc :set spell!<CR>
+
+" Lspsaga
+nmap gh <cmd>Lspsaga lsp_finder<CR>
+nmap <leader>ca <cmd>Lspsaga code_action<CR>
+nmap gr <cmd>Lspsaga rename<CR>
+nmap gd <cmd>Lspsaga peek_definition<CR>
+nmap K <cmd>Lspsaga hover_doc<CR>
+nmap <C-j> <Cmd>Lspsaga diagnostic_jump_next<CR>
+nmap <C-k> <Cmd>Lspsaga diagnostic_jump_prev<CR>
+lua << EOF
+-- Only jump to error
+keymap("n", "<c-E>", function()
+	require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { silent = true })
+keymap("n", "<c-E>", function()
+	require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { silent = true })
+EOF
+
 " Git
 nmap <leader>gs :Git<cr>
 nmap <leader>gl :GV<cr>
