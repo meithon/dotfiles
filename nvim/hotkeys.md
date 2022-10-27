@@ -22,10 +22,13 @@ g - k                         : Jump to previous hunk
 g - j                         : Jump to next hunk
 
 ## LSP
-CNTRL - j                     : Jump to diagnostic
-SHIFT - k                     : Jump to diagnostic
-SPACE - g - d                 : Go to definition
-SPACE - g - r                 : Rename
+g - h                         : lsp finder
+c - a                         : code action
+g - d                         : Go to definition
+g - r                         : Rename
+SHIFT - k                     : hover doc
+CNTRL - k                     : Jump to prev diagnostic
+CNTRL - j                     : Jump to next diagnostic
 
 SPACE - ENTER                 : Color picker
 SPACE - t                     : Toggle nerdtree
