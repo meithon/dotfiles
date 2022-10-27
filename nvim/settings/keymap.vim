@@ -16,12 +16,13 @@ nmap gd <cmd>Lspsaga peek_definition<CR>
 nmap K <cmd>Lspsaga hover_doc<CR>
 nmap <C-j> <Cmd>Lspsaga diagnostic_jump_next<CR>
 nmap <C-k> <Cmd>Lspsaga diagnostic_jump_prev<CR>
+
 lua << EOF
 -- Only jump to error
-keymap("n", "<c-E>", function()
+vim.keymap.set("n", "<c-E>", function()
 	require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end, { silent = true })
-keymap("n", "<c-E>", function()
+vim.keymap.set("n", "<c-E>", function()
 	require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { silent = true })
 EOF
