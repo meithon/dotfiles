@@ -1,5 +1,12 @@
-require("which-key").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
+require("which-key").setup({
+	key_labels = {
+		["<space>"] = "<SPACE>",
+		["<CR>"] = "<ENTER>",
+		["<Tab>"] = "<TAB>",
+	},
+	triggers = { "<leader>" }, -- If not written, conflict with vfiler to cause error occurs
+	disable = {
+		buftypes = { "vfiler", "nofile" },
+		filetypes = { "vfiler", "nofile" },
+	},
+})
