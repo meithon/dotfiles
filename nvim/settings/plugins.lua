@@ -9,6 +9,8 @@ vim.cmd([[packadd packer.nvim]])
 return packer.startup(function(use)
 	use("wbthomason/packer.nvim")
 
+	use("bayne/vim-dot-http")
+
 	use({
 		"folke/zen-mode.nvim",
 		config = function()
