@@ -10,12 +10,14 @@ local formatter = {
 	"prettier",
 	"stylua",
 	"goimports",
+	"black",
 }
 
 local linter = {
 	"eslint_d",
 	"luacheck",
 	"revive",
+	"pylint",
 }
 
 -- Merge formatter and linter into one table
