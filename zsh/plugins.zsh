@@ -17,15 +17,9 @@ zplug "chrissicool/zsh-256color"
 # 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
 zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
-zplug "BurntSushi/ripgrep", \
-  from:gh-r, \
-  as:command, \
-  rename-to:rg
+zplug "BurntSushi/ripgrep"
 
-zplug "junegunn/fzf", \
-  as:command, \
-  from:gh-r, \
-  rename-to:fzf
+zplug "junegunn/fzf"
 
 
 
