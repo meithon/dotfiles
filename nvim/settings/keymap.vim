@@ -7,6 +7,7 @@ nmap <leader>tp :BufferLinePick<cr>
 vmap <leader>tl :'<,'>Translate<cr>
 nmap <leader>dt :DockerToolsOpen<cr>
 nnoremap <leader>tsc :set spell!<CR>
+nmap <C-w>t :tabnew<CR>
 
 " Lspsaga
 nmap gh <cmd>Lspsaga lsp_finder<CR>
