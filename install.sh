@@ -30,7 +30,7 @@ fi
 
 ### functions
 # info: output terminal green
-info() { 
+info() {
   printf "%s" "$GREEN"
   echo -n "[+] "
   printf "%s" "$NORMAL"
@@ -51,8 +51,8 @@ warn() {
   echo "$1"
 }
 # log: out put termial normal
-log() { 
-  echo "  $1" 
+log() {
+  echo "  $1"
 }
 
 # check package & return flag
@@ -82,7 +82,7 @@ dotfiles_logo='
 
 *** HOW TO INSTALL? ***
 See the README for documentation.
-Licensed under the MIT license.  
+Licensed under the MIT license.
 '
 
 printf "%s" "$BOLD"
@@ -116,7 +116,7 @@ _download() {
       elif is_exists "wget"; then
         wget -O - "$zip_url"
       fi | tar xvz
-      
+
       if [ ! -d dotfiles-master ]; then
         error "dotfiles-master: not found"
         exit 1
@@ -144,6 +144,7 @@ _deploy() {
   ln -si $DOTPATH/nvim/init.vim ~/.config/nvim/init.vim
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
+  ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
 
   info "Deployed!"
 }
