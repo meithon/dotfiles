@@ -206,7 +206,14 @@ return packer.startup(function(use)
 	use("lifepillar/vim-gruvbox8")
 	use({
 		"folke/tokyonight.nvim",
-		config = { vim.cmd([[colorscheme tokyonight-moon]]) },
+		config = {vim.cmd [[
+			try
+				colorscheme tokyonight
+			catch /^Vim\%((\a\+)\)\=:E185/
+				colorscheme default
+				set background=dark
+			endtry
+		]]}
 	})
 
 	-- Automatically closes brackets
