@@ -1,6 +1,22 @@
+local ensure_packer = function()
+  local fn = vim.fn
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  if fn.empty(fn.glob(install_path)) == 1 then
+    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    vim.cmd [[packadd packer.nvim]]
+    return true
+  end
+  return false
+end
+
+
 local status, packer = pcall(require, "packer")
 if not status then
 	vim.notify("Packer is not installed", "error")
+	local packer_bootstrap = ensure_packer()
+	if not packer_bootstrap then
+		vim.notify("Packer Could't installed", "error")
+	end
 	return
 end
 
