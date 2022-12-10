@@ -6,8 +6,8 @@ vim.g.mapleader = " "
 local map = {
   -- Normal
   ["n|hk"] = map_cmd(":vsplit ~/dotfiles/nvim/hotkeys.md<CR>"):with_noremap(),
-  ["n|x"] = map_cmd("\"_x"):with_noremap(),
-  ["n|n"] = map_cmd("nzz"):with_noremap(),
+  ["n|x"] = map_cmd('"_x'):with_noremap(),
+  ["n|N"] = map_cmd("Nzz"):with_noremap(),
   ["n|n"] = map_cmd("nzz"):with_noremap(),
   ["n|<C-h>"] = map_cmd(":%s//gI<Left><Left><Left>"),
   ["n|<Leader>F"] = map_cmd(":vimgrep // `git ls-files`<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>"),
@@ -35,8 +35,6 @@ local map = {
   ["t|<ESC>"] = map_cmd("<C-\\><C-n>"):with_noremap(),
   ["t|<C-q>"] = map_cmd("<C-\\><C-n>:q<cr>"):with_noremap(),
   ["t|jk"] = map_cmd("<C-\\><C-n>"):with_noremap(),
-
-
 }
 
 bind.nvim_load_mapping(map)
