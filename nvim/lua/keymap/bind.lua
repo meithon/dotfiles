@@ -80,9 +80,6 @@ function pbind.nvim_load_mapping(mapping)
 			else
 				vim.api.nvim_set_keymap(mode, keymap, rhs, options)
 			end
-			print(mode)
-			print(keymap)
-			print(rhs)
 		end
 	end
 end
