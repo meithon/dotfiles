@@ -142,6 +142,7 @@ _deploy() {
 
   mkdir -p ~/.config/nvim
   ln -si $DOTPATH/nvim/init.vim ~/.config/nvim/init.vim
+  ln -si $DOTPATH/nvim/lua ~/.config/nvim/lua
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
   ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
