@@ -27,6 +27,8 @@ local load_core = function()
 	require("core.mapping")
 	require("keymap")
 	pack.load_compile()
+
+	vim.api.nvim_command([[colorscheme tokyonight]])
 end
 
 load_core()
