@@ -13,7 +13,7 @@ local map = {
   ["n|<Leader>F"] = map_cmd(":vimgrep // `git ls-files`<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>"),
   ["n|<CR>"] = map_cmd("i<CR><ESC>"):with_noremap(),
   ["n|<Leader>tsc"] = map_cmd(":set spell!"):with_noremap(),
-  ["n|<C-w>"] = map_cmd(":tabnew<CR>"),
+  ["n|<C-w>t"] = map_cmd(":tabnew<CR>"),
 
 
   -- Insert
