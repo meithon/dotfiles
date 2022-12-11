@@ -25,7 +25,7 @@ local map = {
 	-- Git
 	["n|<Leader>gs"] = map_cmd(":Git<CR>"):with_noremap(),
 	["n|<Leader>gl"] = map_cmd(":GV<CR>"):with_noremap(),
-	["n|<Leader>gd"] = map_cmd("Gvdiffsplit"):with_noremap(),
+	["n|<Leader>gd"] = map_cmd(":Gvdiffsplit<CR>"):with_noremap(),
 	["n|<Leader>gc"] = map_cmd(":Git commit<CR>"):with_noremap(),
 	-- -- Gitsigns
 	["n|<Leader>ga"] = map_cmd(":Gitsigns stage_hunk<CR>"):with_noremap(),
