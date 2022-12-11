@@ -2,11 +2,12 @@ local function load_options()
   local global_local = {
     termguicolors = true,
     relativenumber = true,
+    number = true,
     mouse = "a",
 
     expandtab = true,
     tabstop = 2,
-    shiftwidht = 2,
+    shiftwidth = 2,
     softtabstop = 2,
 
     smartindent = true,
