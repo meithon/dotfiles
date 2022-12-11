@@ -122,17 +122,20 @@ all["kevinhwang91/nvim-bqf"] = {
 all["uga-rosa/ccc.nvim"] = {
 	opt = true,
 }
-all["junegunn/gv.vim"] = {
-	opt = true,
-}
 all["tpope/vim-fugitive"] = {
 	opt = true,
+  cmd = {"Git", "Gdiffsplit", "Gvdiffsplit"},
+  require = {{"junegunn/gv.vim", opt = true, cmd = "GV"}}
 }
 all["lewis6991/gitsigns.nvim"] = {
 	opt = true,
+  event = {"FocusLost", "CursorHold", "BufRead"},
+  cmd = "Gitsigns",
+  config = conf.gitsigns
 }
 all["mbbill/undotree"] = {
 	opt = true,
+  cmd = {"UndotreeShow", "UndotreeFocus"}
 }
 all["nvim-telescope/telescope.nvim"] = {
 	opt = true,
