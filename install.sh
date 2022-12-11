@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
+
 set -euo pipefail
 
 # set dotfiles path as default variable
@@ -142,7 +143,8 @@ _deploy() {
 
   mkdir -p ~/.config/nvim
   ln -si $DOTPATH/nvim/init.vim ~/.config/nvim/init.vim
-  ln -si $DOTPATH/nvim/lua ~/.config/nvim/lua
+  ln -si $DOTPATH/nvim/init.lua ~/.config/nvim/init.lua
+  ln -sni $DOTPATH/nvim/lua ~/.config/nvim/lua
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
   ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
