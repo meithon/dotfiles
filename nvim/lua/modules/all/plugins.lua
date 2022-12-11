@@ -157,6 +157,7 @@ all["nvim-lua/popup.nvim"] = {
 }
 all["obaland/vfiler.vim"] = {
 	opt = true,
+  cmd = "VFiler"
 }
 all["obaland/vfiler-column-devicons"] = {
 	opt = true,
