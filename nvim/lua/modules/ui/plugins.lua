@@ -21,9 +21,6 @@ ui["gelguy/wilder.nvim"] = {
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	opt = true,
 }
-ui["p00f/nvim-ts-rainbow"] = {
-	opt = true,
-}
 ui["mhinz/vim-startify"] = {
 	opt = true,
 	branch = "center",
@@ -35,14 +32,15 @@ ui["ray-x/lsp_signature.nvim"] = {
 	opt = true,
 }
 ui["nvim-treesitter/nvim-treesitter"] = {
-	opt = true,
 	run = "TSUpdate",
-	want = {
+  config = conf.treesister,
+	requires = {
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		"theHamsta/tree-sitter-html",
 		"David-Kunz/markid",
 		"windwp/nvim-ts-autotag",
 		"JoosepAlviste/nvim-ts-context-commentstring",
+    "p00f/nvim-ts-rainbow"
 	},
 }
 ui["nvim-lualine/lualine.nvim"] = {
