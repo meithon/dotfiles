@@ -1,5 +1,5 @@
 local ui = {}
-local conf = require("module.ui.config")
+local conf = require("modules.ui.config")
 
 ui["folke/tokyonight.nvim"] = {
 	opt = false,

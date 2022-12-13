@@ -1,5 +1,5 @@
 local editor = {}
-local conf = require("module.editor.config")
+local conf = require("modules.editor.config")
 
 editor["nacro90/numb.nvim"] = {
 	opt = true,
