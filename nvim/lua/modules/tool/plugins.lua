@@ -1,5 +1,5 @@
 local tool = {}
-local conf = require("module.tool.config")
+local conf = require("modules.tool.config")
 
 tool["bayne/vim-dot-http"] = {
 	opt = true,
@@ -44,9 +44,6 @@ tool["tpope/vim-fugitive"] = {
   require = {{"junegunn/gv.vim", opt = true, cmd = "GV"}}
 }
 tool["lewis6991/gitsigns.nvim"] = {
-	opt = true,
-  event = {"FocusLost", "CursorHold", "BufRead"},
-  cmd = "Gitsigns",
   config = conf.gitsigns
 }
 tool["mbbill/undotree"] = {
@@ -75,7 +72,7 @@ tool["obaland/vfiler.vim"] = {
 	opt = true,
   cmd = "VFiler"
 }
-all["obaland/vfiler-column-devicons"] = {
+tool["obaland/vfiler-column-devicons"] = {
 	opt = true,
 }
 return tool
