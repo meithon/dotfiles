@@ -1,4 +1,5 @@
 local function load_options()
+  local HOME_PATH = os.getenv("HOME")
   local global_local = {
     termguicolors = true,
     relativenumber = true,
@@ -12,7 +13,7 @@ local function load_options()
 
     smartindent = true,
     undofile = true,
-    undodir = "~/.vim/undodir",
+    undodir = HOME_PATH .. "/.vim/undodir",
     cursorline = true,
   }
   for name, value in pairs(global_local) do
