@@ -5,7 +5,7 @@ vim.g.mapleader = " "
 
 local map = {
   -- Normal
-  ["n|hk"] = map_cmd(":vsplit ~/dotfiles/nvim/hotkeys.md<CR>"):with_noremap(),
+  ["n|<Leader>hk"] = map_cmd(":vsplit ~/dotfiles/nvim/hotkeys.md<CR>"):with_noremap(),
   ["n|x"] = map_cmd('"_x'):with_noremap(),
   ["n|N"] = map_cmd("Nzz"):with_noremap(),
   ["n|n"] = map_cmd("nzz"):with_noremap(),
