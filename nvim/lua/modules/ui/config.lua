@@ -1,5 +1,185 @@
 local config = {}
 
+function config.noice()
+  require("noice").setup({
+    messages = {
+      enabled = false,
+    },
+    cmdline = {
+      enabled = false,
+    },
+  })
+
+  vim.notify = require("notify")
+end
+
+function config.wilder()
+  local wilder = require('wilder')
+  wilder.setup({ modes = { ':', '/', '?' } })
+  -- Disable Python remote plugin
+  wilder.set_option('use_python_remote_plugin', 0)
+
+  wilder.set_option('pipeline', {
+    wilder.branch(
+      wilder.cmdline_pipeline({
+        fuzzy = 1,
+        fuzzy_filter = wilder.lua_fzy_filter(),
+      }),
+      wilder.search_pipeline()
+    ),
+  })
+
+  wilder.set_option('renderer', wilder.popupmenu_renderer({
+    highlighter = {
+      wilder.lua_fzy_highlighter(), -- requires fzy-lua-native vim plugin found
+      -- at https://github.com/romgrk/fzy-lua-native
+    },
+    highlights = {
+      accent = wilder.make_hl('WilderAccent', 'Pmenu', { { a = 1 }, { a = 1 }, { foreground = '#f4468f' } }),
+    },
+    left = { ' ', wilder.popupmenu_devicons() },
+    right = { ' ', wilder.popupmenu_scrollbar() },
+  }))
+end
+
+function config.indent_blankline()
+  vim.opt.list = true
+  --vim.opt.listchars:append "space:⋅"
+  vim.opt.listchars:append "eol:↴"
+
+  vim.g.indent_blankline_filetype_exclude = {'startify'}
+  require("indent_blankline").setup {
+      space_char_blankline = " ",
+      show_current_context = true,
+      show_current_context_start = true,
+  }
+end
+
+function config.startify()
+  local ascii = {
+    '███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
+    '████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║',
+    '██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║',
+    '██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║',
+    '██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
+    '╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝'
+  }
+
+  local center = vim.fn['startify#center']
+  vim.g.startify_custom_header = center(ascii)
+
+  vim.g.startify_padding_left = math.floor((vim.fn.winwidth(0) - 70) / 2)
+end
+
+function config.signature()
+   require "lsp_signature".setup({
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+    handler_opts = {
+      border = "rounded"
+    }
+  })
+end
+
+function config.lualine()
+  require("lualine").setup({
+    options = {
+      icons_enabled = true,
+      theme = "auto",
+      section_separators = { left = "", right = "" },
+      component_separators = { left = "", right = "" },
+      disabled_filetypes = {},
+    },
+    sections = {
+      lualine_a = { "mode" },
+      lualine_b = { "branch" },
+      lualine_c = {
+        {
+          "filename",
+          file_status = true, -- displays file status (readonly status, modified status)
+          path = 0, -- 0 = just filename, 1 = relative path, 2 = absolute path
+        },
+      },
+      lualine_x = {
+        {
+          sources = { "nvim_diagnostic" },
+          "diagnostics",
+          symbols = {
+            error = " ",
+            warn = " ",
+            info = " ",
+            hint = " ",
+          },
+        },
+        "encoding",
+        "filetype",
+      },
+      lualine_y = { "progress" },
+      lualine_z = { "location" },
+    },
+    inactive_sections = {
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {
+        {
+          "filename",
+          file_status = true, -- displays file status (readonly status, modified status)
+          path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
+        },
+      },
+      lualine_x = {},
+      lualine_y = {
+        {
+          sources = { "nvim_diagnostic" },
+          "diagnostics",
+          symbols = {
+            error = " ",
+            warn = " ",
+            info = " ",
+            hint = " ",
+          },
+        },
+      },
+      lualine_z = { "location" },
+    },
+    extensions = { "fugitive" },
+  })
+end
+
+function config.bufferline()
+  require("bufferline").setup({
+    options = {
+      mode = "tabs",
+      number = "none",
+      indicator = {
+          icon = '▎', -- this should be omitted if indicator style is not 'icon'
+          style = 'icon', -- | 'underline' | 'none',
+      },
+      modified_icon = "●",
+      buffer_close_icon = "",
+      left_trunc_marker = "",
+      right_trunc_marker = "",
+      max_name_length = 18,
+      max_prefix_length = 13,
+      tab_size = 18,
+      show_buffer_close_icons = false,
+      show_buffer_icons = true,
+      diagnostics = "nvim_lsp",
+      diagnostics_indicator = function(count, level, diagnostics_dict, context)
+          local icon = level:match("error") and " " or " "
+          return " " .. icon .. count
+      end,
+      always_show_bufferline = true,
+      separator_style = "thick",
+      offsets = { {
+          filetype = "vfiler",
+          text_align = "center",
+          text = "File Explorer",
+          padding = 1,
+      }, },
+    },
+  })
+end
+
 function config.treesister()
   require("nvim-treesitter.configs").setup({
     -- A list of parser names, or "all"
@@ -90,5 +270,6 @@ function config.treesister()
     markid = { enable = true }
   })
 end
+
 
 return config

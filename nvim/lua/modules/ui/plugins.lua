@@ -8,28 +8,29 @@ ui["folke/zen-mode.nvim"] = {
 	opt = false,
 }
 ui["folke/noice.nvim"] = {
-	opt = true,
 	requires = {
 		"MunifTanjim/nui.nvim",
 		"rcarriga/nvim-notify",
 	},
+  config = conf.noice
 }
 ui["gelguy/wilder.nvim"] = {
-	opt = true,
 	requires = { "romgrk/fzy-lua-native", run = "make" },
+  config = conf.wilder
 }
 ui["lukas-reineke/indent-blankline.nvim"] = {
-	opt = true,
+	opt = false,
+  config = conf.indent_blankline
 }
 ui["mhinz/vim-startify"] = {
-	opt = true,
+	opt = false,
+  config = conf.startify,
 	branch = "center",
 }
 ui["ryanoasis/vim-devicons"] = {
-	opt = true,
 }
 ui["ray-x/lsp_signature.nvim"] = {
-	opt = true,
+  config = conf.signature
 }
 ui["nvim-treesitter/nvim-treesitter"] = {
 	run = "TSUpdate",
@@ -44,10 +45,10 @@ ui["nvim-treesitter/nvim-treesitter"] = {
 	},
 }
 ui["nvim-lualine/lualine.nvim"] = {
-	opt = true,
+  config = lualihne,
 }
 ui["akinsho/nvim-bufferline.lua"] = {
-	opt = true,
+  config = conf.bufferline
 }
 
 return ui
