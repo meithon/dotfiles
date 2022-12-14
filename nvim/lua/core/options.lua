@@ -11,7 +11,8 @@ local function load_options()
     softtabstop = 2,
 
     smartindent = true,
-    undodir = "$HOME/.vim/undodir",
+    undofile = true,
+    undodir = "~/.vim/undodir",
     cursorline = true,
   }
   for name, value in pairs(global_local) do
