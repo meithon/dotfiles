@@ -29,9 +29,6 @@ ui["mhinz/vim-startify"] = {
 }
 ui["ryanoasis/vim-devicons"] = {
 }
-ui["ray-x/lsp_signature.nvim"] = {
-  config = conf.signature
-}
 ui["nvim-treesitter/nvim-treesitter"] = {
 	run = "TSUpdate",
   config = conf.treesitter,
