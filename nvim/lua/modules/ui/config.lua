@@ -71,15 +71,6 @@ function config.startify()
   vim.g.startify_padding_left = math.floor((vim.fn.winwidth(0) - 70) / 2)
 end
 
-function config.signature()
-   require "lsp_signature".setup({
-    bind = true, -- This is mandatory, otherwise border config won't get registered.
-    handler_opts = {
-      border = "rounded"
-    }
-  })
-end
-
 function config.lualine()
   require("lualine").setup({
     options = {
