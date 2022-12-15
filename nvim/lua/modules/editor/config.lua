@@ -1,5 +1,9 @@
 local config = {}
 
+function config.autopairs()
+  require('nvim-autopairs').setup()
+end
+
 function config.numb()
   require('numb').setup()
 end

@@ -1,6 +1,11 @@
 local editor = {}
 local conf = require("modules.editor.config")
 
+editor["windwp/nvim-autopairs"] = {
+  opt = true,
+  event = "InsertEnter",
+  config = conf.autopairs
+}
 editor["nacro90/numb.nvim"] = {
 	opt = false,
   config = conf.numb,
