@@ -34,15 +34,15 @@ ui["ray-x/lsp_signature.nvim"] = {
 }
 ui["nvim-treesitter/nvim-treesitter"] = {
 	run = "TSUpdate",
-  config = conf.treesister,
+  config = conf.treesitter,
   module = {"nvim-treesitter"},
 	requires = {
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		"theHamsta/tree-sitter-html",
-		"David-Kunz/markid",
-		"windwp/nvim-ts-autotag",
-		"JoosepAlviste/nvim-ts-context-commentstring",
-    "p00f/nvim-ts-rainbow"
+    {"nvim-treesitter/nvim-treesitter-textobjects"},
+    {"theHamsta/tree-sitter-html"},
+    {"David-Kunz/markid"},
+    {"windwp/nvim-ts-autotag"},
+    {"JoosepAlviste/nvim-ts-context-commentstring"},
+    {"p00f/nvim-ts-rainbow"}
 	},
 }
 ui["nvim-lualine/lualine.nvim"] = {

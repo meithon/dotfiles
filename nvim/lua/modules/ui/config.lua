@@ -180,7 +180,7 @@ function config.bufferline()
   })
 end
 
-function config.treesister()
+function config.treesitter()
   require("nvim-treesitter.configs").setup({
     -- A list of parser names, or "all"
     ensure_installed = { "json","html", "javascript", "typescript", "lua", "astro", "go", "vim", "css", "scss" },
