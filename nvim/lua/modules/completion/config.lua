@@ -1,9 +1,96 @@
 local config = {}
 
+function config.null_ls()
+  local null_ls_status, null_ls = pcall(require, "null-ls")
+  if not null_ls_status then
+    print("null-ls is not found")
+  end
+  local null_sources = function()
+    local source_return = {}
+    local formatter = {
+      "prettier",
+      "stylua",
+      "goimports",
+      "black",
+    }
+
+    local linter = {
+      "eslint_d",
+      "luacheck",
+      "revive",
+      "pylint",
+    }
+
+    -- set the formatters to null-ls
+    for _, package in ipairs(formatter) do
+      table.insert(source_return, null_ls.builtins.formatting[package])
+    end
+
+    -- set the diagnostics to null-ls
+    for _, package in ipairs(linter) do
+      table.insert(source_return, null_ls.builtins.diagnostics[package])
+    end
+    return source_return
+  end
+
+  -- auto format setting
+  local async_formatting = function(bufnr)
+    bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+    vim.lsp.buf_request(
+      bufnr,
+      "textdocument/formatting",
+      vim.lsp.util.make_formatting_params({}),
+      function(err, res, ctx)
+        if err then
+          local err_msg = type(err) == "string" and err or err.message
+          -- you can modify the log message / level (or ignore it completely)
+          vim.notify("formatting: " .. err_msg, vim.log.levels.warn)
+          return
+        end
+
+        -- don't apply results if buffer is unloaded or has been modified
+        if not vim.api.nvim_buf_is_loaded(bufnr) or vim.api.nvim_buf_get_option(bufnr, "modified") then
+          return
+        end
+
+        if res then
+          local client = vim.lsp.get_client_by_id(ctx.client_id)
+          vim.lsp.util.apply_text_edits(res, bufnr, client and client.offset_encoding or "utf-16")
+          vim.api.nvim_buf_call(bufnr, function()
+            vim.cmd("silent noautocmd update")
+          end)
+        end
+      end
+    )
+  end
+
+  -- if you want to set up formatting on save, you can use this as a callback
+  local augroup = vim.api.nvim_create_augroup("lspformatting", {})
+
+  null_ls.setup({
+    on_attach = function(client, bufnr)
+      -- if client.supports_method("textdocument/formatting") then
+      if client.server_capabilities.documentformattingprovider then
+        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+        vim.api.nvim_create_autocmd("bufwritepre", {
+          group = augroup,
+          buffer = bufnr,
+          callback = function()
+            async_formatting(bufnr)
+          end,
+        })
+      end
+    end,
+    sources = null_sources(),
+  })
+end
+
 function config.mason_null_ls()
   local formatter = {
     "prettier",
     "stylua",
+    "luaformatter",
     "goimports",
     "black",
   }
@@ -44,12 +131,77 @@ function config.mason()
   })
 end
 
+function config.mason_tool_installer()
+  require("mason-tool-installer").setup({
+
+    ensure_installed = {
+
+
+      { "bash-language-server", auto_update = true },
+
+      "lua-language-server",
+      "vim-language-server",
+      "gopls",
+      "stylua",
+      "shellcheck",
+      "editorconfig-checker",
+      "gofumpt",
+      "golines",
+      "gomodifytags",
+      "gotests",
+      "impl",
+      "json-to-struct",
+      "luacheck",
+      "misspell",
+      "revive",
+      "shellcheck",
+      "shfmt",
+      "staticcheck",
+    },
+
+    auto_update = false,
+
+    run_on_start = false,
+
+    start_delay = 3000, -- 3 second delay
+  })
+end
+
+function config.mason_lspconfig()
+  require("mason-lspconfig").setup_handlers({
+    function(server) -- default handler (optional)
+      local opt = {
+        -- -- Function executed when the LSP server startup
+        -- on_attach = function(client, bufnr)
+        --   local opts = { noremap=true, silent=true }
+        --   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        --   vim.cmd 'autocmd BufWritePre * lua vim.lsp.buf.formatting_sync(nil, 1000)'
+        -- end,
+        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+        settings = {
+          Lua = {
+            diagnostics = { globals = { "vim" } },
+          },
+        },
+      }
+      require("lspconfig")[server].setup(opt)
+      require "lsp_signature".setup({
+        bind = true, -- This is mandatory, otherwise border config won't get registered.
+        handler_opts = {
+          border = "rounded"
+        }
+      })
+    end,
+  })
+end
+
 function config.cmp()
   local cmp = require'cmp'
   local lspkind = require('lspkind')
 
   local luasnip = require('luasnip')
 
+  require('luasnip.loaders.from_vscode').lazy_load()
   local feedkey = function(key, mode)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
   end
@@ -66,7 +218,7 @@ function config.cmp()
         -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` user.
 
         -- For `luasnip` user.
-        require('luasnip').lsp_expand(args.body)
+        luasnip.lsp_expand(args.body)
 
         -- For `ultisnips` user.
         -- vim.fn["UltiSnips#Anon"](args.body)
