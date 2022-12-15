@@ -57,8 +57,13 @@ tool["uga-rosa/ccc.nvim"] = {
 }
 tool["tpope/vim-fugitive"] = {
 	opt = true,
-  cmd = {"Git", "Gdiffsplit", "Gvdiffsplit"},
-  require = {{"junegunn/gv.vim", opt = true, cmd = "GV"}}
+  cmd = {"GV", "Git", "Gdiffsplit", "Gvdiffsplit"},
+}
+tool["junegunn/gv.vim"] = {
+  opt = true,
+  require = {{"tpope/vim-fugitive"}},
+  cmd = {"GV"},
+  
 }
 tool["lewis6991/gitsigns.nvim"] = {
   config = conf.gitsigns
