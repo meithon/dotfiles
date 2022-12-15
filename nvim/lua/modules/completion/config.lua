@@ -1,24 +1,28 @@
 local config = {}
 
-function config.mason_lapconfig()
-  require("mason-lspconfig").setup_handlers({
-    function(server) -- default handler (optional)
-      local opt = {
-        -- -- Function executed when the LSP server startup
-        -- on_attach = function(client, bufnr)
-        --   local opts = { noremap=true, silent=true }
-        --   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        --   vim.cmd 'autocmd BufWritePre * lua vim.lsp.buf.formatting_sync(nil, 1000)'
-        -- end,
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
-        settings = {
-          Lua = {
-            diagnostics = { globals = { "vim" } },
-          },
-        },
-      }
-      require("lspconfig")[server].setup(opt)
-    end,
+function config.mason_null_ls()
+  local formatter = {
+    "prettier",
+    "stylua",
+    "goimports",
+    "black",
+  }
+
+  local linter = {
+    "eslint_d",
+    "luacheck",
+    "revive",
+    "pylint",
+  }
+
+  -- Merge formatter and linter into one table
+  local formatter_linter = formatter
+  for i = 1, #linter do
+    table.insert(formatter_linter, linter[i])
+  end
+
+  require("mason-null-ls").setup({ 
+    ensure_installed = formatter_linter
   })
 end
 
@@ -156,10 +160,13 @@ function config.cmp()
     }
   })
 end
-function config.tabnine()
-  local tabnine = require('cmp_tabnine.config')
 
-  tabnine.setup({
+function config.luasnip()
+  require("luasnip.loaders.from_vscode").lazy_load()
+end
+
+function config.tabnine()
+  require('cmp_tabnine.config').setup({
     max_lines = 1000,
     max_num_results = 20,
     sort = true,
@@ -173,5 +180,6 @@ function config.tabnine()
     show_prediction_strength = false
   })
 end
+
 
 return config

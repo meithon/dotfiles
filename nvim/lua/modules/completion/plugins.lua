@@ -7,30 +7,31 @@ local function i(p)
 end
 
 completion["jose-elias-alvarez/null-ls.nvim"] = {
-	opt = true,
-	requires = { { "nvim-lua/plenary.nvim" }, { "jayp0521/mason-null-ls.nvim" } },
+  config = conf.null_ls,
+	requires = { 
+    { "nvim-lua/plenary.nvim" },
+  },
 }
-competion["neovim/nvim-lspconfig"] = {
-	opt = true,
-}
-competion["williamboman/mason.nvim"] = {
-	opt = true,
-}
-competion["williamboman/mason-lspconfig.nvim"] = {
-	opt = true,
+
+completion["williamboman/mason-lspconfig.nvim"] = {
+  event = {"BufReadPre"},
+  config = conf.mason_lspconfig,
+  requires = {
+    {"neovim/nvim-lspconfig"}
+  }
 }
 completion["hrsh7th/nvim-cmp"] = {
   config = conf.cmp,
-	event = "InsertEnter",
+  event = "InsertEnter",
   module = {"cmp"},
 	requires = {
 		i { "onsails/lspkind.nvim" , module= {"lspkind"}},
 	 	i { "lukas-reineke/cmp-under-comparator" },
-		i	{ "saadparwaiz1/cmp_luasnip",  
-      requires = {
-        {"L3MON4D3/LuaSnip"}
-      }
-    },
+		i	{ "saadparwaiz1/cmp_luasnip"},
+    i {"L3MON4D3/LuaSnip", 
+      config = conf.luasnip,
+      module = {"luasnip"},
+      requires = {{"rafamadriz/friendly-snippets"}}},
 		i	{ "hrsh7th/cmp-nvim-lsp" },
 		i	{ "hrsh7th/cmp-nvim-lua" },
 		i	{ "andersevenrud/cmp-tmux" },
@@ -43,11 +44,6 @@ completion["hrsh7th/nvim-cmp"] = {
 			run = "./install.sh",
 		  config = conf.tabnine,
 		},
-	},
+  }
 }
-completion["rafamadriz/friendly-snippets"] = {
-	opt = true,
-}
-
-
 return completion
