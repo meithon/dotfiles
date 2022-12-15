@@ -75,11 +75,11 @@ tool["mbbill/undotree"] = {
 tool["nvim-telescope/telescope.nvim"] = {
 	opt = true,
   config = conf.telescope,
-	module = "telescope",
-	cmd = "Telescope",
+	module = {"telescope"},
+	cmd = {"Telescope"},
 	requires = {
-		{ "nvim-lua/plenary.nvim", opt = false },
-		{ "nvim-lua/popup.nvim", opt = true },
+		{ "nvim-lua/plenary.nvim", module = {"plenary"}},
+		{ "nvim-lua/popup.nvim", module = {"popup"}},
 	},
 }
 tool["obaland/vfiler.vim"] = {
