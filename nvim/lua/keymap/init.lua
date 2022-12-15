@@ -10,10 +10,16 @@ vim.keymap.set("n", "<c-E>", function()
 end, { silent = true })
 
 local map = {
+  -- SearchX
+  ["n|?"] = map_cmd("<Cmd>call searchx#start({ 'dir': 0 })<CR>"),
+  ["n|/"] = map_cmd("<Cmd>call searchx#start({ 'dir': 1 })<CR>"),
+  ["x|?"] = map_cmd("<Cmd>call searchx#start({ 'dir': 0 })<CR>"),
+  ["x|/"] = map_cmd("<Cmd>call searchx#start({ 'dir': 1 })<CR>"),
+   
 	-- VFiler
 	["n|<Leader>e"] = map_cmd(":VFiler -layout=floating<CR>"),
 	-- Docker Tool
-	["n|dt"] = map_cmd(":DockerToolsOpen<CR>"),
+	["n|<Leader>dt"] = map_cmd(":DockerToolsOpen<CR>"),
 	-- Lspsaga
 	["n|gh"] = map_cmd(":Lspsaga lsp_finder<CR>"):with_noremap():with_silent(),
 	["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
