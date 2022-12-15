@@ -35,6 +35,7 @@ ui["ray-x/lsp_signature.nvim"] = {
 ui["nvim-treesitter/nvim-treesitter"] = {
 	run = "TSUpdate",
   config = conf.treesister,
+  module = {"nvim-treesitter"},
 	requires = {
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		"theHamsta/tree-sitter-html",
