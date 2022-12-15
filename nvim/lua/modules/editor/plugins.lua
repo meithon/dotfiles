@@ -1,6 +1,11 @@
 local editor = {}
 local conf = require("modules.editor.config")
 
+editor["numToStr/Comment.nvim"] = {
+  opt = true,
+  keys = {"gc"},
+  config = conf.comment
+}
 editor["windwp/nvim-autopairs"] = {
   opt = true,
   event = "InsertEnter",
