@@ -1,6 +1,7 @@
 local fn, uv, api = vim.fn, vim.loop, vim.api
 local global = require("core.global")
 local is_mac = global.is_mac
+local is_windows = global.is_windows
 local vim_path = global.vim_path
 local data_dir = global.data_dir
 local modules_dir = vim_path .. "/lua/modules"
@@ -120,6 +121,18 @@ function plugins.auto_compile()
 	end
 end
 
+function plugins.delete()
+	local pack_dir = data_dir .. "pack/packer"
+  os.remove(packer_compiled)
+  os.remove(bak_compiled)
+  if is_windows then
+    os.execute('rd /s /q "' .. pack_dir.. '"')
+  else 
+    os.execute('rm -rf ' .. pack_dir)
+  end
+	print("Package Delete Success!")
+end
+
 function plugins.load_compile()
 	if vim.fn.filereadable(packer_compiled) == 1 then
 		require("_compiled")
@@ -127,7 +140,7 @@ function plugins.load_compile()
 		plugins.back_compile()
 	end
 
-	local cmds = { "Compile", "Install", "Update", "Sync", "Clean", "Status" }
+	local cmds = { "Compile", "Install", "Update", "Sync", "Clean", "Status" , "Delete"}
 	for _, cmd in ipairs(cmds) do
 		api.nvim_create_user_command("Packer" .. cmd, function()
 			require("core.pack")[cmd == "Compile" and "back_compile" or string.lower(cmd)]()
