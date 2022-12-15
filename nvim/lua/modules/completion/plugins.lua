@@ -13,11 +13,19 @@ completion["jose-elias-alvarez/null-ls.nvim"] = {
   },
 }
 
+completion["williamboman/mason.nvim"] = {
+  config = conf.mason
+}
+completion["WhoIsSethDaniel/mason-tool-installer.nvim"] = {
+  config = conf.mason_tool_installer
+}
+
 completion["williamboman/mason-lspconfig.nvim"] = {
   event = {"BufReadPre"},
   config = conf.mason_lspconfig,
   requires = {
-    {"neovim/nvim-lspconfig"}
+    {"neovim/nvim-lspconfig", module = {"lspconfig"}},
+    {"ray-x/lsp_signature.nvim", module = {'lsp_signature'}}
   }
 }
 completion["hrsh7th/nvim-cmp"] = {
@@ -26,13 +34,10 @@ completion["hrsh7th/nvim-cmp"] = {
   module = {"cmp"},
 	requires = {
 		i { "onsails/lspkind.nvim" , module= {"lspkind"}},
-	 	i { "lukas-reineke/cmp-under-comparator" },
-		i	{ "saadparwaiz1/cmp_luasnip"},
-    i {"L3MON4D3/LuaSnip", 
-      config = conf.luasnip,
-      module = {"luasnip"},
-      requires = {{"rafamadriz/friendly-snippets"}}},
-		i	{ "hrsh7th/cmp-nvim-lsp" },
+	  i { "lukas-reineke/cmp-under-comparator" },
+		i { "saadparwaiz1/cmp_luasnip"},
+    { "L3MON4D3/LuaSnip" },
+		i	{ "hrsh7th/cmp-nvim-lsp", module = {"cmp_nvim_lsp"} },
 		i	{ "hrsh7th/cmp-nvim-lua" },
 		i	{ "andersevenrud/cmp-tmux" },
 		i	{ "hrsh7th/cmp-path" },
