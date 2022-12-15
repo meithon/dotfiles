@@ -46,7 +46,7 @@ ui["nvim-treesitter/nvim-treesitter"] = {
 	},
 }
 ui["nvim-lualine/lualine.nvim"] = {
-  config = lualihne,
+  config = conf.lualine,
 }
 ui["akinsho/nvim-bufferline.lua"] = {
   config = conf.bufferline
