@@ -2,41 +2,58 @@ local tool = {}
 local conf = require("modules.tool.config")
 
 tool["bayne/vim-dot-http"] = {
-	opt = true,
+  opt = true,
+  config = conf.dot_http,
+  ft = "http",
+  cmd = "DotHttp"
 }
 tool["chipsenkbeil/distant.nvim"] = {
 	opt = false,
+  config = conf.distant,
 }
 tool["numToStr/FTerm.nvim"] = {
 	opt = true,
+  config = conf.fterm,
+  cmd = {"FTermOpen", "FTermClose", "FTermClose"},
 }
 tool["lewis6991/impatient.nvim"] = {
 	opt = true,
 }
 tool["dstein64/vim-startuptime"] = {
 	opt = true,
+  cmd = "StartupTime"
 }
 tool["folke/which-key.nvim"] = {
 	opt = true,
+  config = conf.which_key,
+  event = "InsertLeave",
 }
 tool["glepnir/lspsaga.nvim"] = {
 	opt = true,
+  config = conf.lspsaga,
+  cmd = "Lspsaga",
 }
 tool["kkvh/vim-docker-tools"] = {
 	opt = true,
+  cmd = "DockerToolsOpen",
 }
 tool["skanehira/translate.vim"] = {
 	opt = true,
+  cmd = "Translate",
 }
 tool["thinca/vim-qfreplace"] = {
 	opt = true,
+  event = "QuickFixCmdPost"
 }
 tool["kevinhwang91/nvim-bqf"] = {
 	opt = true,
 	ft = "qf",
+  config = conf.bqf
 }
 tool["uga-rosa/ccc.nvim"] = {
 	opt = true,
+  cmd = "CocPicker",
+  config = conf.ccc,
 }
 tool["tpope/vim-fugitive"] = {
 	opt = true,
@@ -52,6 +69,7 @@ tool["mbbill/undotree"] = {
 }
 tool["nvim-telescope/telescope.nvim"] = {
 	opt = true,
+  config = conf.telescope,
 	module = "telescope",
 	cmd = "Telescope",
 	requires = {
@@ -59,20 +77,12 @@ tool["nvim-telescope/telescope.nvim"] = {
 		{ "nvim-lua/popup.nvim", opt = true },
 	},
 }
-tool["nvim-lua/plenary.nvim"] = {
-	opt = false,
-}
-tool["nvim-lua/popup.nvim"] = {
-	opt = true,
-}
-tool["nvim-lua/popup.nvim"] = {
-	opt = true,
-}
 tool["obaland/vfiler.vim"] = {
 	opt = true,
-  cmd = "VFiler"
+  cmd = "VFiler",
+  requires = {
+    {"obaland/vfiler-column-devicons"}
+  }
 }
-tool["obaland/vfiler-column-devicons"] = {
-	opt = true,
-}
+
 return tool
