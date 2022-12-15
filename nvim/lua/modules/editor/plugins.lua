@@ -2,42 +2,53 @@ local editor = {}
 local conf = require("modules.editor.config")
 
 editor["nacro90/numb.nvim"] = {
-	opt = true,
-}
-editor["mattn/emmet-vim"] = {
-	opt = true,
+	opt = false,
+  config = conf.numb,
 }
 editor["matze/vim-move"] = {
-	opt = true,
+  opt = true,
+  keys = {"<ALT>"}
 }
 editor["junegunn/vim-easy-align"] = {
 	opt = true,
+  keys = {"<Plug>(EasyAlign)"},
 }
 editor["ggandor/lightspeed.nvim"] = {
 	opt = true,
+  config = conf.lightspeed,
+  keys = {"s", "f", "S", "F"}
 }
 editor["chaoren/vim-wordmotion"] = {
 	opt = true,
+  keys = {"w","e","b","W","E","B"}
 }
 editor["hrsh7th/vim-searchx"] = {
 	opt = true,
+  keys = {"/", "?"},
+  config = conf.searchx()
 }
 editor["max397574/better-escape.nvim"] = {
 	opt = true,
+  event = "InsertEnter",
+  config = conf.better_escape
 }
-editor["tpope/vim-surround"] = {
+editor["machakann/vim-sandwich"] = {
 	opt = true,
+  event = "InsertEnter",
 }
 editor["tversteeg/registers.nvim"] = {
 	opt = true,
 	branch = "main",
+  keys = {"\""},
+  config = conf.registers,
 }
 editor["NvChad/nvim-colorizer.lua"] = {
 	opt = true,
 }
 editor["mg979/vim-visual-multi"] = {
-	opt = true,
+  opt = true,
 	branch = "master",
+  keys = {"<C-n>"}
 }
 
 return editor
