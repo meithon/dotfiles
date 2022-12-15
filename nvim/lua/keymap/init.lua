@@ -52,7 +52,7 @@ local map = {
 	-- EasyAlign
 	["v|af"] = map_cmd("<Plug>(EasyAlign)"):with_noremap(),
 	-- FTerm
-	["n|<Leader>tt"] = map_cmd(":FTermToggle<CR>"):with_noremap():with_silent(),
+	["n|<Leader>tt"] = map_cmd(":FTermOpen<CR>"):with_noremap():with_silent(),
 }
 
 bind.nvim_load_mapping(map)
