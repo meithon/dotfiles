@@ -40,12 +40,12 @@ end
 local null_sources = function()
 	local source_return = {}
 
-	-- Set the formatters to null-ls
+	-- set the formatters to null-ls
 	for _, package in ipairs(formatter) do
 		table.insert(source_return, null_ls.builtins.formatting[package])
 	end
 
-	-- Set the diagnostics to null-ls
+	-- set the diagnostics to null-ls
 	for _, package in ipairs(linter) do
 		table.insert(source_return, null_ls.builtins.diagnostics[package])
 	end
@@ -58,13 +58,13 @@ local async_formatting = function(bufnr)
 
 	vim.lsp.buf_request(
 		bufnr,
-		"textDocument/formatting",
+		"textdocument/formatting",
 		vim.lsp.util.make_formatting_params({}),
 		function(err, res, ctx)
 			if err then
 				local err_msg = type(err) == "string" and err or err.message
 				-- you can modify the log message / level (or ignore it completely)
-				vim.notify("formatting: " .. err_msg, vim.log.levels.WARN)
+				vim.notify("formatting: " .. err_msg, vim.log.levels.warn)
 				return
 			end
 
@@ -85,14 +85,14 @@ local async_formatting = function(bufnr)
 end
 
 -- if you want to set up formatting on save, you can use this as a callback
-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+local augroup = vim.api.nvim_create_augroup("lspformatting", {})
 
 null_ls.setup({
 	on_attach = function(client, bufnr)
-		-- if client.supports_method("textDocument/formatting") then
-		if client.server_capabilities.documentFormattingProvider then
+		-- if client.supports_method("textdocument/formatting") then
+		if client.server_capabilities.documentformattingprovider then
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-			vim.api.nvim_create_autocmd("BufWritePre", {
+			vim.api.nvim_create_autocmd("bufwritepre", {
 				group = augroup,
 				buffer = bufnr,
 				callback = function()
