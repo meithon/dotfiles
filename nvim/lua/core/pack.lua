@@ -122,7 +122,7 @@ function plugins.auto_compile()
 end
 
 function plugins.delete()
-	local pack_dir = data_dir .. "pack/packer"
+	local pack_dir = data_dir
   os.remove(packer_compiled)
   os.remove(bak_compiled)
   if is_windows then
@@ -133,6 +133,12 @@ function plugins.delete()
 	print("Package Delete Success!")
 end
 
+function plugins.reinstall()
+  plugins.delete()
+  plugins.ensure_plugins()
+	print("Package Reinstall Success!")
+end
+
 function plugins.load_compile()
 	if vim.fn.filereadable(packer_compiled) == 1 then
 		require("_compiled")
@@ -140,7 +146,7 @@ function plugins.load_compile()
 		plugins.back_compile()
 	end
 
-	local cmds = { "Compile", "Install", "Update", "Sync", "Clean", "Status" , "Delete"}
+	local cmds = { "Compile", "Install", "Update", "Sync", "Clean", "Status" , "Delete", "Reinstall"}
 	for _, cmd in ipairs(cmds) do
 		api.nvim_create_user_command("Packer" .. cmd, function()
 			require("core.pack")[cmd == "Compile" and "back_compile" or string.lower(cmd)]()
