@@ -258,7 +258,10 @@ function config.treesitter()
       -- colors = {}, -- table of hex strings
       -- termcolors = {} -- table of colour name strings
     },
-    markid = { enable = true }
+    markid = { enable = true },
+    matchup = {
+      enable = true
+    }
   })
 end
 

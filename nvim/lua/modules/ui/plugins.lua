@@ -39,7 +39,8 @@ ui["nvim-treesitter/nvim-treesitter"] = {
     {"David-Kunz/markid"},
     {"windwp/nvim-ts-autotag"},
     {"JoosepAlviste/nvim-ts-context-commentstring"},
-    {"p00f/nvim-ts-rainbow"}
+    {"p00f/nvim-ts-rainbow"},
+    {'andymass/vim-matchup'}
 	},
 }
 ui["nvim-lualine/lualine.nvim"] = {
