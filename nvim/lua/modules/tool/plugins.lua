@@ -32,7 +32,7 @@ tool["glepnir/lspsaga.nvim"] = {
 	opt = true,
 	config = conf.lspsaga,
 	cmd = { "Lspsaga" },
-	odule = { "lspsaga" },
+	module = { "lspsaga.diagnostic" },
 }
 tool["kkvh/vim-docker-tools"] = {
 	opt = true,
