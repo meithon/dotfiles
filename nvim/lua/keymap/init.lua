@@ -2,7 +2,7 @@ local bind = require("keymap.bind")
 local map_cmd = bind.map_cmd
 
 -- Only jump to error
-vim.keymap.set("n", "<c-E>", function()
+vim.keymap.set("n", "<c-e>", function()
 	require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
 end, { silent = true })
 vim.keymap.set("n", "<c-E>", function()
@@ -25,9 +25,9 @@ local map = {
 	["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
 	["n|gr"] = map_cmd(":Lspsaga rename<CR>"):with_noremap():with_silent(),
 	["n|gd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
-	["n|K"] = map_cmd(":Lspsaga hover_doc"):with_noremap():with_silent(),
-	["n|<C-j>"] = map_cmd("Lspsaga diagnostic_jump_next"):with_noremap():with_silent(),
-	["n|<C-k>"] = map_cmd("Lspsaga diagnostic_jump_prev"):with_noremap():with_silent(),
+	["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
+	["n|<C-k>"] = map_cmd(":Lspsaga diagnostic_jump_prev<CR>"):with_noremap():with_silent(),
+	["n|<C-j>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
 	-- Git
 	["n|<Leader>gs"] = map_cmd(":Git<CR>"):with_noremap(),
 	["n|<Leader>gl"] = map_cmd(":GV<CR>"):with_noremap(),
@@ -38,7 +38,7 @@ local map = {
 	["v|<Leader>ga"] = map_cmd(":Gitsigns stage_hunk<CR>"):with_noremap(),
 	["n|<Leader>gu"] = map_cmd(":Gitsigns undo_stage_hunk<CR>"):with_noremap(),
 	["v|<Leader>gu"] = map_cmd(":Gitsigns undo_stage_hunk<CR>"):with_noremap(),
-	["n|<Leader>gR"] = map_cmd(":Gitsigns reset_hunk<CR>"):with_noremap(),
+	["v|<Leader>gr"] = map_cmd(":Gitsigns reset_hunk<CR>"):with_noremap(),
 	["n|<Leader>gh"] = map_cmd(":Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>"):with_noremap():with_silent(),
 	["n|gk"] = map_cmd(":Gitsigns prev_hunk<CR>zz"):with_noremap(),
 	["n|gj"] = map_cmd(":Gitsigns next_hunk<CR>zz"):with_noremap(),
