@@ -30,8 +30,9 @@ tool["folke/which-key.nvim"] = {
 }
 tool["glepnir/lspsaga.nvim"] = {
 	opt = true,
-  config = conf.lspsaga,
-  cmd = "Lspsaga",
+	config = conf.lspsaga,
+	cmd = { "Lspsaga" },
+	module = { "lspsaga" },
 }
 tool["kkvh/vim-docker-tools"] = {
 	opt = true,
