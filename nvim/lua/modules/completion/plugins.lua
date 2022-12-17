@@ -23,10 +23,7 @@ completion["WhoIsSethDaniel/mason-tool-installer.nvim"] = {
 completion["williamboman/mason-lspconfig.nvim"] = {
   event = {"BufReadPre"},
   config = conf.mason_lspconfig,
-  requires = {
-    {"neovim/nvim-lspconfig", module = {"lspconfig"}},
-    {"ray-x/lsp_signature.nvim", module = {'lsp_signature'}}
-  }
+    -- {"ray-x/lsp_signature.nvim", module = {'lsp_signature'}}
 }
 completion["hrsh7th/nvim-cmp"] = {
   config = conf.cmp,

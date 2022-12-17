@@ -1,10 +1,7 @@
 local config = {}
 
 function config.null_ls()
-  local null_ls_status, null_ls = pcall(require, "null-ls")
-  if not null_ls_status then
-    print("null-ls is not found")
-  end
+  local null_ls = require("null-ls")
   local null_sources = function()
     local source_return = {}
     local formatter = {
@@ -39,7 +36,7 @@ function config.null_ls()
 
     vim.lsp.buf_request(
       bufnr,
-      "textdocument/formatting",
+      "textDocument/formatting",
       vim.lsp.util.make_formatting_params({}),
       function(err, res, ctx)
         if err then
@@ -66,18 +63,18 @@ function config.null_ls()
   end
 
   -- if you want to set up formatting on save, you can use this as a callback
-  local augroup = vim.api.nvim_create_augroup("lspformatting", {})
+  local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
   null_ls.setup({
     on_attach = function(client, bufnr)
-      -- if client.supports_method("textdocument/formatting") then
-      if client.server_capabilities.documentformattingprovider then
+      if client.server_capabilities.documentFormattingProvider then
         vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-        vim.api.nvim_create_autocmd("bufwritepre", {
+        vim.api.nvim_create_autocmd("BufWritePre", {
           group = augroup,
           buffer = bufnr,
           callback = function()
             async_formatting(bufnr)
+            vim.notify("formatted")
           end,
         })
       end
