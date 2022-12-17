@@ -86,6 +86,7 @@ tool["nvim-telescope/telescope.nvim"] = {
 tool["obaland/vfiler.vim"] = {
 	opt = true,
   cmd = "VFiler",
+  config = conf.vfiler,
   requires = {
     {"obaland/vfiler-column-devicons"}
   }
