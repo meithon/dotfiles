@@ -42,6 +42,7 @@ end
 
 function config.lspsaga()
 	require("lspsaga").init_lsp_saga({
+		rename_in_select = false,
 		symbol_in_winbar = {
 			in_custom = true,
 		},
