@@ -1,6 +1,9 @@
 local ui = {}
 local conf = require("modules.ui.config")
 
+ui["lilydjwg/colorizer"] = {
+	config = conf.colorizer,
+}
 ui["folke/tokyonight.nvim"] = {
 	opt = false,
 }
