@@ -12,42 +12,41 @@ ui["folke/noice.nvim"] = {
 		"MunifTanjim/nui.nvim",
 		"rcarriga/nvim-notify",
 	},
-  config = conf.noice
+	config = conf.noice,
 }
 ui["gelguy/wilder.nvim"] = {
 	requires = { "romgrk/fzy-lua-native", run = "make" },
-  config = conf.wilder
+	config = conf.wilder,
 }
 ui["lukas-reineke/indent-blankline.nvim"] = {
 	opt = false,
-  config = conf.indent_blankline
+	config = conf.indent_blankline,
 }
 ui["mhinz/vim-startify"] = {
 	opt = false,
-  config = conf.startify,
+	config = conf.startify,
 	branch = "center",
 }
-ui["ryanoasis/vim-devicons"] = {
-}
+ui["ryanoasis/vim-devicons"] = {}
 ui["nvim-treesitter/nvim-treesitter"] = {
 	run = "TSUpdate",
-  config = conf.treesitter,
-  module = {"nvim-treesitter"},
+	config = conf.treesitter,
+	module = { "nvim-treesitter" },
 	requires = {
-    {"nvim-treesitter/nvim-treesitter-textobjects"},
-    {"theHamsta/tree-sitter-html"},
-    {"David-Kunz/markid"},
-    {"windwp/nvim-ts-autotag"},
-    {"JoosepAlviste/nvim-ts-context-commentstring"},
-    {"p00f/nvim-ts-rainbow"},
-    {'andymass/vim-matchup'}
+		{ "nvim-treesitter/nvim-treesitter-textobjects" },
+		{ "theHamsta/tree-sitter-html" },
+		{ "David-Kunz/markid" },
+		{ "windwp/nvim-ts-autotag" },
+		{ "JoosepAlviste/nvim-ts-context-commentstring" },
+		{ "p00f/nvim-ts-rainbow" },
+		{ "andymass/vim-matchup" },
 	},
 }
 ui["nvim-lualine/lualine.nvim"] = {
-  config = conf.lualine,
+	config = conf.lualine,
 }
 ui["akinsho/nvim-bufferline.lua"] = {
-  config = conf.bufferline
+	config = conf.bufferline,
 }
 
 return ui
