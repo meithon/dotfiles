@@ -85,6 +85,9 @@ function config.mason_null_ls()
 	})
 end
 
+function config.trouble()
+	require("trouble").setup({ })
+end
 function config.mason()
 	require("mason").setup({
 		ui = {

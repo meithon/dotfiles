@@ -13,7 +13,12 @@ completion["jose-elias-alvarez/null-ls.nvim"] = {
 		{ "nvim-lua/plenary.nvim" },
 	},
 }
-
+completion["folke/trouble.nvim"] = {
+	opt = true,
+	cmd = { "Trouble", "TroubleToggle" },
+	requires = "nvim-tree/nvim-web-devicons",
+	config = conf.trouble,
+}
 completion["williamboman/mason.nvim"] = {
 	config = conf.mason,
 }
