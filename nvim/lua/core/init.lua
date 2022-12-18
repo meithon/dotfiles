@@ -19,6 +19,19 @@ local createdir = function()
 	end
 end
 
+local changeDiagnosticSign = function()
+	local signs = {
+		Error = " ",
+		Warn = " ",
+		Hint = " ",
+		Info = " ",
+	}
+	for type, icon in pairs(signs) do
+		local hl = "DiagnosticSign" .. type
+		vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+	end
+end
+
 local load_core = function()
 	local pack = require("core.pack")
 	createdir()
@@ -29,6 +42,7 @@ local load_core = function()
 	pack.load_compile()
 
 	vim.api.nvim_command([[colorscheme tokyonight]])
+	changeDiagnosticSign()
 end
 
 load_core()
