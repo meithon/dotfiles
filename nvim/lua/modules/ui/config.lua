@@ -8,6 +8,11 @@ function config.noice()
 		cmdline = {
 			enabled = false,
 		},
+		lsp = {
+			signature = {
+				enabled = false,
+			},
+		},
 	})
 
 	vim.notify = require("notify")
