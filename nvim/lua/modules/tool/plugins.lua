@@ -53,7 +53,7 @@ tool["kevinhwang91/nvim-bqf"] = {
 }
 tool["uga-rosa/ccc.nvim"] = {
 	opt = true,
-	cmd = "CocPicker",
+	cmd = { "CccPick" },
 	config = conf.ccc,
 }
 tool["tpope/vim-fugitive"] = {

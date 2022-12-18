@@ -43,7 +43,7 @@ local map = {
 	["n|gk"] = map_cmd(":Gitsigns prev_hunk<CR>zz"):with_noremap(),
 	["n|gj"] = map_cmd(":Gitsigns next_hunk<CR>zz"):with_noremap(),
 	-- CCC
-	["n|<Leader><CR>"] = map_cmd(":CccPicker<CR>"):with_noremap():with_silent(),
+	["n|<Leader><CR>"] = map_cmd(":CccPick<CR>"):with_noremap():with_silent(),
 	-- Undotree
 	["n|<Leader><Leader>u"] = map_cmd(":UndotreeShow<CR>:UndotreeFocus<CR>"):with_noremap():with_silent(),
 	-- Telescope
