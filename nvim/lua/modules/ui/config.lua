@@ -1,8 +1,5 @@
 local config = {}
 
-function config.colorizer()
-	require("colorizer").setup()
-end
 function config.noice()
 	require("noice").setup({
 		messages = {
