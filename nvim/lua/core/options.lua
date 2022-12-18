@@ -1,6 +1,7 @@
 local function load_options()
 	local HOME_PATH = os.getenv("HOME")
 	local global_local = {
+		clipboard = "unnamedplus",
 		termguicolors = true,
 		relativenumber = true,
 		number = true,
