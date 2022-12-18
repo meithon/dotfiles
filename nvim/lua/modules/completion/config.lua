@@ -34,6 +34,7 @@ function config.null_ls()
 	local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 	null_ls.setup({
+		diagnostics_format = "#{m} (#{s}: #{c})",
 		on_attach = function(client, bufnr)
 			if client.server_capabilities.documentFormattingProvider then
 				vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
