@@ -153,12 +153,9 @@ function config.mason_lspconfig()
 				},
 			}
 			require("lspconfig")[server].setup(opt)
-			-- require "lsp_signature".setup({
-			--   bind = true, -- This is mandatory, otherwise border config won't get registered.
-			--   handler_opts = {
-			--     border = "rounded"
-			--   }
-			-- })
+			require("lsp_signature").setup({
+				hint_enable = false,
+			})
 		end,
 	})
 end
