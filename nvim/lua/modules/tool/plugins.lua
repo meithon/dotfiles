@@ -62,7 +62,6 @@ tool["tpope/vim-fugitive"] = {
 }
 tool["junegunn/gv.vim"] = {
 	opt = true,
-	require = { { "tpope/vim-fugitive" } },
 	cmd = { "GV" },
 }
 tool["lewis6991/gitsigns.nvim"] = {
