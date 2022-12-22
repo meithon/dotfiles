@@ -32,7 +32,6 @@ ui["mhinz/vim-startify"] = {
 }
 ui["ryanoasis/vim-devicons"] = {}
 ui["nvim-treesitter/nvim-treesitter"] = {
-	run = "TSUpdate",
 	config = conf.treesitter,
 	module = { "nvim-treesitter" },
 	requires = {
