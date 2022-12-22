@@ -17,7 +17,7 @@ local map = {
 	["x|/"] = map_cmd("<Cmd>call searchx#start({ 'dir': 1 })<CR>"),
 
 	-- VFiler
-	["n|<Leader>e"] = map_cmd(":VFiler -layout=floating<CR>"),
+	["n|<Leader>e"] = map_cmd(":VFiler<CR>"),
 	-- Docker Tool
 	["n|<Leader>dt"] = map_cmd(":DockerToolsOpen<CR>"),
 	-- Lspsaga
