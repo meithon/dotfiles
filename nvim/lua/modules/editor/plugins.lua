@@ -26,7 +26,7 @@ editor["junegunn/vim-easy-align"] = {
 editor["ggandor/lightspeed.nvim"] = {
 	opt = true,
 	config = conf.lightspeed,
-	keys = { "s", "f", "S", "F" },
+	keys = { "<Plug>Lightspeed_s", "<Plug>Lightspeed_S", "f", "F" },
 }
 editor["chaoren/vim-wordmotion"] = {
 	opt = true,
