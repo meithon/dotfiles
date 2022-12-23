@@ -10,6 +10,20 @@ vim.keymap.set("n", "<c-E>", function()
 end, { silent = true })
 
 local map = {
+	-- sandwich
+	-- -- add
+	["n|sa"] = map_cmd("<Plug>(sandwich-add)"):with_noremap():with_silent(),
+	["x|sa"] = map_cmd("<Plug>(sandwich-add)"):with_noremap():with_silent(),
+	["o|sa"] = map_cmd("<Plug>(sandwich-add)"):with_noremap():with_silent(),
+	-- -- delete
+	["n|sd"] = map_cmd("<Plug>(sandwich-delete)"):with_noremap():with_silent(),
+	["x|sd"] = map_cmd("<Plug>(sandwich-delete)"):with_noremap():with_silent(),
+	["o|sd"] = map_cmd("<Plug>(sandwich-delete)"):with_noremap():with_silent(),
+	-- -- replace
+	["n|sr"] = map_cmd("<Plug>(sandwich-replace)"):with_noremap():with_silent(),
+	["x|sr"] = map_cmd("<Plug>(sandwich-replace)"):with_noremap():with_silent(),
+	["o|sr"] = map_cmd("<Plug>(sandwich-replace)"):with_noremap():with_silent(),
+
 	-- Lightspeed
 	["n|<Leader>j"] = map_cmd("<Plug>Lightspeed_s"):with_noremap():with_silent(),
 	["n|<Leader>k"] = map_cmd("<Plug>Lightspeed_S"):with_noremap():with_silent(),
