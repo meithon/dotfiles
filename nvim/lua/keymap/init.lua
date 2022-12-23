@@ -10,6 +10,12 @@ vim.keymap.set("n", "<c-E>", function()
 end, { silent = true })
 
 local map = {
+	-- Lightspeed
+	["n|<Leader>j"] = map_cmd("<Plug>Lightspeed_s"):with_noremap():with_silent(),
+	["n|<Leader>k"] = map_cmd("<Plug>Lightspeed_S"):with_noremap():with_silent(),
+	["v|<Leader>j"] = map_cmd("<Plug>Lightspeed_s"):with_noremap():with_silent(),
+	["v|<Leader>k"] = map_cmd("<Plug>Lightspeed_S"):with_noremap():with_silent(),
+
 	-- SearchX
 	["n|?"] = map_cmd("<Cmd>call searchx#start({ 'dir': 0 })<CR>"),
 	["n|/"] = map_cmd("<Cmd>call searchx#start({ 'dir': 1 })<CR>"),
