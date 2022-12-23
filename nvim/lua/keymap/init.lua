@@ -29,7 +29,7 @@ local map = {
 	["n|<C-k>"] = map_cmd(":Lspsaga diagnostic_jump_prev<CR>"):with_noremap():with_silent(),
 	["n|<C-j>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
 	-- Trouble
-	["n|lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
+	["n|<Leader>lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
 	-- Git
 	["n|<Leader>gs"] = map_cmd(":Git<CR>"):with_noremap(),
 	["n|<Leader>gl"] = map_cmd(":GV<CR>"):with_noremap(),
