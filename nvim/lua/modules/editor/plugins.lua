@@ -44,7 +44,8 @@ editor["max397574/better-escape.nvim"] = {
 }
 editor["machakann/vim-sandwich"] = {
 	opt = true,
-	event = "InsertEnter",
+	wants = { "vim-wordmotion" },
+	keys = { "sa", "sd", "sr" },
 }
 editor["tversteeg/registers.nvim"] = {
 	opt = true,
