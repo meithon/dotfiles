@@ -1,22 +1,12 @@
 local config = {}
 
 function config.null_ls()
+  local globals = require("core.global")
+  local formatter = globals.fotmatter
+  local linter = globals.linter
 	local null_ls = require("null-ls")
 	local null_sources = function()
 		local source_return = {}
-		local formatter = {
-			"prettier",
-			"stylua",
-			"goimports",
-			"black",
-		}
-
-		local linter = {
-			"eslint_d",
-			"luacheck",
-			"revive",
-			"pylint",
-		}
 
 		-- set the formatters to null-ls
 		for _, package in ipairs(formatter) do
@@ -59,21 +49,9 @@ function config.null_ls()
 end
 
 function config.mason_null_ls()
-	local formatter = {
-		"prettier",
-		"stylua",
-		"luaformatter",
-		"goimports",
-		"black",
-	}
-
-	local linter = {
-		"eslint_d",
-		"luacheck",
-		"revive",
-		"pylint",
-	}
-
+  local globals = require("core.global")
+  local formatter = globals.fotmatter
+  local linter = globals.linter
 	-- Merge formatter and linter into one table
 	local formatter_linter = formatter
 	for i = 1, #linter do
@@ -97,12 +75,6 @@ function config.mason()
 				package_uninstalled = "✗",
 			},
 		},
-		ensure_installed = {
-			"astro-language-server",
-			"gopls",
-			"lua-language-server",
-			"typescript-language-server",
-		},
 	})
 end
 
@@ -110,27 +82,14 @@ function config.mason_tool_installer()
 	require("mason-tool-installer").setup({
 
 		ensure_installed = {
-
-			{ "bash-language-server", auto_update = true },
-
-			"lua-language-server",
-			"vim-language-server",
-			"gopls",
-			"stylua",
-			"shellcheck",
-			"editorconfig-checker",
-			"gofumpt",
-			"golines",
-			"gomodifytags",
-			"gotests",
-			"impl",
-			"json-to-struct",
-			"luacheck",
-			"misspell",
-			"revive",
-			"shellcheck",
-			"shfmt",
-			"staticcheck",
+      "css-lsp",
+      "eslint_d",
+      "html-lsp",
+      "lua-language-server",
+      "luacheck",
+      "prettier",
+      "stylua",
+      "typescript-language-server",
 		},
 
 		auto_update = false,
