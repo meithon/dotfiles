@@ -1,6 +1,19 @@
 local global = {}
 local os_name = vim.loop.os_uname().sysname
 
+local FORMATTER = {
+	"prettier",
+	"stylua",
+	"goimports",
+	"black",
+}
+local LINTER = {
+	"eslint_d",
+	"luacheck",
+	"revive",
+	"pylint",
+}
+
 function global:load_variables()
 	self.is_mac = os_name == "Darwin"
 	self.is_linux = os_name == "Linux"
@@ -13,6 +26,8 @@ function global:load_variables()
 	self.modules_dir = self.vim_path .. path_sep .. "modules"
 	self.home = home
 	self.data_dir = string.format("%s/site/", vim.fn.stdpath("data"))
+	self.fotmatter = FORMATTER
+	self.linter = LINTER
 end
 
 global:load_variables()
