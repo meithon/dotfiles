@@ -7,7 +7,7 @@ alias ...="cd ../../"
 # Add a subcommand named tree to git
 git() {
     if [[ $@ == "tree" ]]; then
-        command git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+        command git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
     else
         command git "$@"
     fi
