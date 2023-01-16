@@ -3,6 +3,7 @@ local os_name = vim.loop.os_uname().sysname
 
 local FORMATTER = {
 	"prettier",
+	"eslint_d",
 	"stylua",
 	"goimports",
 	"black",
