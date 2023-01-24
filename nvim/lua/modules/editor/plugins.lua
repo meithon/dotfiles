@@ -1,6 +1,9 @@
 local editor = {}
 local conf = require("modules.editor.config")
 
+editor["itchyny/vim-cursorword"] = {
+	opt = false,
+}
 editor["numToStr/Comment.nvim"] = {
 	opt = true,
 	keys = { "gc" },
