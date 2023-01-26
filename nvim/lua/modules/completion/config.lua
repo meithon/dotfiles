@@ -1,21 +1,39 @@
 local config = {}
 
 function config.null_ls()
-  local globals = require("core.global")
-  local formatter = globals.fotmatter
-  local linter = globals.linter
+	local globals = require("core.global")
+	local formatter = globals.fotmatter
+	local linter = globals.linter
 	local null_ls = require("null-ls")
 	local null_sources = function()
 		local source_return = {}
 
 		-- set the formatters to null-ls
 		for _, package in ipairs(formatter) do
-			table.insert(source_return, null_ls.builtins.formatting[package])
+			if package == "prettier" then
+				table.insert(
+					source_return,
+					null_ls.builtins.formatting.prettier.with({
+						filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "astro" },
+					})
+				)
+			else
+				table.insert(source_return, null_ls.builtins.formatting[package])
+			end
 		end
 
 		-- set the diagnostics to null-ls
 		for _, package in ipairs(linter) do
-			table.insert(source_return, null_ls.builtins.diagnostics[package])
+			if package == "eslint_d" then
+				table.insert(
+					source_return,
+					null_ls.builtins.diagnostics.eslint_d.with({
+						filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "astro" },
+					})
+				)
+			else
+				table.insert(source_return, null_ls.builtins.diagnostics[package])
+			end
 		end
 		return source_return
 	end
@@ -49,9 +67,9 @@ function config.null_ls()
 end
 
 function config.mason_null_ls()
-  local globals = require("core.global")
-  local formatter = globals.fotmatter
-  local linter = globals.linter
+	local globals = require("core.global")
+	local formatter = globals.fotmatter
+	local linter = globals.linter
 	-- Merge formatter and linter into one table
 	local formatter_linter = formatter
 	for i = 1, #linter do
@@ -82,14 +100,14 @@ function config.mason_tool_installer()
 	require("mason-tool-installer").setup({
 
 		ensure_installed = {
-      "css-lsp",
-      "eslint_d",
-      "html-lsp",
-      "lua-language-server",
-      "luacheck",
-      "prettier",
-      "stylua",
-      "typescript-language-server",
+			"css-lsp",
+			"eslint_d",
+			"html-lsp",
+			"lua-language-server",
+			"luacheck",
+			"prettier",
+			"stylua",
+			"typescript-language-server",
 		},
 
 		auto_update = false,
