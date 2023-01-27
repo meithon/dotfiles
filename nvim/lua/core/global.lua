@@ -13,6 +13,7 @@ local LINTER = {
 	"luacheck",
 	"revive",
 	"pylint",
+  "jsonlint",
 }
 
 function global:load_variables()
