@@ -10,6 +10,8 @@ vim.keymap.set("n", "<c-E>", function()
 end, { silent = true })
 
 local map = {
+	--Tabline
+	["n|<C-w>r"] = map_cmd(":TablineTabRename "):with_noremap():with_silent(),
 	-- Close-buffers
 	["n|<C-w>q"] = map_cmd(":BDelete! hidden<CR>"):with_noremap():with_silent(),
 	-- sandwich
