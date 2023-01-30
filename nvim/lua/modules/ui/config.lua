@@ -1,5 +1,19 @@
 local config = {}
 
+function config.tabline()
+	require("tabline").setup({
+		options = {
+			show_tabs_always = true,
+			show_filename_only = true,
+			modified_icon = "+ ",
+		},
+	})
+	vim.cmd([[
+      set guioptions-=e " Use showtabline in gui vim
+      set sessionoptions+=tabpages,globals " store tabpages and globals in session
+    ]])
+end
+
 function config.noice()
 	require("noice").setup({
 		messages = {
