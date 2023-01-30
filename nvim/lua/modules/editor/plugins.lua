@@ -1,6 +1,12 @@
 local editor = {}
 local conf = require("modules.editor.config")
 
+editor["kazhala/close-buffers.nvim"] = {
+	opt = false,
+	config = function()
+		require("close_buffers").setup()
+	end,
+}
 editor["tiagovla/scope.nvim"] = {
 	opt = false,
 	config = function()

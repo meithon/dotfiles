@@ -10,6 +10,8 @@ vim.keymap.set("n", "<c-E>", function()
 end, { silent = true })
 
 local map = {
+	-- Close-buffers
+	["n|<C-w>q"] = map_cmd(":BDelete! hidden<CR>"):with_noremap():with_silent(),
 	-- sandwich
 	-- -- add
 	["n|sa"] = map_cmd("<Plug>(sandwich-add)"):with_noremap():with_silent(),
