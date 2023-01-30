@@ -1,6 +1,12 @@
 local editor = {}
 local conf = require("modules.editor.config")
 
+editor["tiagovla/scope.nvim"] = {
+	opt = false,
+	config = function()
+		require("scope").setup()
+	end,
+}
 editor["itchyny/vim-cursorword"] = {
 	opt = false,
 }
