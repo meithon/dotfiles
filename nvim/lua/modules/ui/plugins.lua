@@ -47,8 +47,12 @@ ui["nvim-treesitter/nvim-treesitter"] = {
 ui["nvim-lualine/lualine.nvim"] = {
 	config = conf.lualine,
 }
-ui["akinsho/nvim-bufferline.lua"] = {
-	config = conf.bufferline,
+-- ui["akinsho/nvim-bufferline.lua"] = {
+-- 	config = conf.bufferline,
+-- }
+ui["kdheepak/tabline.nvim"] = {
+	config = conf.tabline,
+	want = { "nvim-lualine/lualine.nvim" },
 }
 
 return ui
