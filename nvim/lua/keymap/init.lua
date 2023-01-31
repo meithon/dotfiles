@@ -1,10 +1,6 @@
 local bind = require("keymap.bind")
 local map_cmd = bind.map_cmd
-
--- Only jump to error
-vim.keymap.set("n", "<C-e>", function()
-	require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
-end, { silent = true })
+local globals = require("core.global")
 
 local map = {
 	--Tabline
@@ -41,16 +37,6 @@ local map = {
 	["n|<Leader>e"] = map_cmd(":VFiler<CR>"),
 	-- Docker Tool
 	["n|<Leader>dt"] = map_cmd(":DockerToolsOpen<CR>"),
-	-- Lspsaga
-	["n|gh"] = map_cmd(":Lspsaga lsp_finder<CR>"):with_noremap():with_silent(),
-	["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
-	["n|gr"] = map_cmd(":Lspsaga rename<CR>"):with_noremap():with_silent(),
-	["n|gd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
-	["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
-	["n|<C-k>"] = map_cmd(":Lspsaga diagnostic_jump_prev<CR>"):with_noremap():with_silent(),
-	["n|<C-j>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
-	-- Trouble
-	["n|<Leader>lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
 	-- Git
 	["n|<Leader>gs"] = map_cmd(":Git<CR>"):with_noremap(),
 	["n|<Leader>gl"] = map_cmd(":GV<CR>"):with_noremap(),
@@ -79,3 +65,46 @@ local map = {
 }
 
 bind.nvim_load_mapping(map)
+
+-- LSP only
+if globals.enable_coc then
+  local keyset = vim.keymap.set
+	local opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
+
+	-- GoTo code navigation
+	keyset("n", "gy", "<Plug>(coc-type-definition)", { silent = true })
+	keyset("n", "gi", "<Plug>(coc-implementation)", { silent = true })
+
+
+
+	keyset("n", "gh", "<Plug>(coc-references)", { silent = true })
+	keyset("n", "<leader>ca", "<Plug>(coc-codeaction)", opts)
+	keyset("n", "<leader>gr", "<Plug>(coc-rename)", { silent = true })
+	keyset("n", "gd", "<Plug>(coc-definition)", { silent = true })
+	keyset("n", "K", "<CMD>lua _G.show_docs()<CR>", { silent = true })
+	keyset("n", "<C-k>", "<Plug>(coc-diagnostic-prev)", { silent = true })
+	keyset("n", "<C-j>", "<Plug>(coc-diagnostic-next)", { silent = true })
+	-- Trouble
+	keyset("n", "<Leader>lt", ":<C-u>CocList diagnostics<cr>", opts)
+else -- nvim-lspconfig
+	-- Lspsaga
+  -- Only jump to error
+  vim.keymap.set("n", "<c-e>", function()
+    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+  end, { silent = true })
+  vim.keymap.set("n", "<c-E>", function()
+    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+  end, { silent = true })
+  local lspmap = {
+    ["n|gh"] = map_cmd(":Lspsaga lsp_finder<CR>"):with_noremap():with_silent(),
+    ["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
+    ["n|gr"] = map_cmd(":Lspsaga rename<CR>"):with_noremap():with_silent(),
+    ["n|gd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
+    ["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
+    ["n|<C-k>"] = map_cmd(":Lspsaga diagnostic_jump_prev<CR>"):with_noremap():with_silent(),
+    ["n|<C-j>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
+    -- Trouble
+    ["n|<Leader>lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
+  }
+  bind.nvim_load_mapping(lspmap)
+end
