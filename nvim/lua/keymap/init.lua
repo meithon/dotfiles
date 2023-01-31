@@ -2,11 +2,8 @@ local bind = require("keymap.bind")
 local map_cmd = bind.map_cmd
 
 -- Only jump to error
-vim.keymap.set("n", "<c-e>", function()
-	require("lspsaga.diagnostic").goto_prev({ severity = vim.diagnostic.severity.ERROR })
-end, { silent = true })
-vim.keymap.set("n", "<c-E>", function()
-	require("lspsaga.diagnostic").goto_next({ severity = vim.diagnostic.severity.ERROR })
+vim.keymap.set("n", "<C-e>", function()
+	require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { silent = true })
 
 local map = {
