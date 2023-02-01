@@ -15,7 +15,7 @@ local LINTER = {
 	"pylint",
 	"jsonlint",
 }
-local ENABLE_COC = false
+local ENABLE_COC = true
 
 function global:load_variables()
 	self.is_mac = os_name == "Darwin"

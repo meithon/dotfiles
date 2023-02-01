@@ -18,7 +18,11 @@ return {
 	{
 		"windwp/nvim-autopairs",
 		event = "InsertEnter",
-		config = true,
+		config = function ()
+      require("nvim-autopairs").setup{
+        map_cr = false -- Avoid conflicts with CR keymap for completion
+      }
+    end,
 	},
 	{ "nacro90/numb.nvim", config = true, event = "CmdwinEnter" },
 
