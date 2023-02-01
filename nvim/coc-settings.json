@@ -1,0 +1,9 @@
+{
+  "coc.preferences.formatOnSave": true,
+  "[*]": {
+    "coc.preferences.formatOnSave": true
+  },
+  "eslint.enable": true,
+ 	"eslint.autoFixOnSave": true,
+ 	"eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact", "typescript.tsx", "astro"]
+}
