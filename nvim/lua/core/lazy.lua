@@ -1,3 +1,7 @@
+local global = require("core.global")
+local vim_path = global.vim_path
+local modules_dir = vim_path .. "/lua/modules"
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -11,4 +15,19 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup(require("plugins"))
+local plugins_file = {}
+local tmp = vim.split(vim.fn.globpath(modules_dir, "*.lua"), "\n")
+
+for _, f in ipairs(tmp) do
+  plugins_file[#plugins_file + 1] = f:sub(#modules_dir - 6, -1)
+end
+
+local plugin_list= {}
+for _, m in ipairs(plugins_file) do
+	local repos = require(m:sub(0, #m - 4))
+  for _, plugin in ipairs(repos) do
+    table.insert(plugin_list, plugin)
+  end
+end
+
+require("lazy").setup(plugin_list)
