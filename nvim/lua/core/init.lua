@@ -33,13 +33,14 @@ local changeDiagnosticSign = function()
 end
 
 local load_core = function()
-	local pack = require("core.pack")
+	-- local pack = require("core.pack")
 	createdir()
-	pack.ensure_plugins()
+	-- pack.ensure_plugins()
 	require("core.options")
 	require("core.mapping")
 	require("keymap")
-	pack.load_compile()
+	-- pack.load_compile()
+	require("core.lazy")
 
 	vim.api.nvim_command([[colorscheme tokyonight]])
 	changeDiagnosticSign()
