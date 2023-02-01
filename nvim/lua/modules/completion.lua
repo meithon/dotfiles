@@ -1,12 +1,14 @@
 local global = require("core.global")
 
-if(global.enable_coc) then
+if (global.enable_coc) then
   return {
     {
       "neoclide/coc.nvim",
       branch = "release",
       config = function()
+        vim.g.coc_config_home = "$HOME/dotfiles/nvim"
         vim.g.coc_global_extension = {
+          "coc-tabnine",
           "coc-tsserver",
           "coc-prettier",
           "coc-eslint",
@@ -23,13 +25,15 @@ if(global.enable_coc) then
 
           "coc-go",
           "coc-restclient",
+          "coc-lua",
+          "coc-sumneko-lua"
         }
         -- Some servers have issues with backup files, see #649
         vim.opt.backup = false
         vim.opt.writebackup = false
 
         -- Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-        -- delays and poor user experience
+        -- delays and poor user experience:
         vim.opt.updatetime = 300
 
         -- Always show the signcolumn, otherwise it would shift the text each time
@@ -41,6 +45,7 @@ if(global.enable_coc) then
           local col = vim.fn.col(".") - 1
           return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
         end
+
         local keyset = vim.keymap.set
         local opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
         keyset(
@@ -59,7 +64,7 @@ if(global.enable_coc) then
           [[coc#pum#visible()?coc#pum#confirm():"\<CR>"]],
           opts
         )
-    
+
         -- Use <c-j> to trigger snippets
         -- Use <c-space> to trigger completion
         keyset("i", "<C-space>", "coc#refresh()", { silent = true, expr = true })
@@ -162,30 +167,30 @@ if(global.enable_coc) then
 end
 
 return {
-  {"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		module = { "cmp" },
-    dependencies={
-			{ "onsails/lspkind.nvim", module = { "lspkind" } },
-			{ "lukas-reineke/cmp-under-comparator" },
-			{ "saadparwaiz1/cmp_luasnip" },
-			{ 
-        "L3MON4D3/LuaSnip", 
-        config = function ()
-        	require("luasnip.loaders.from_vscode").lazy_load()
+  { "hrsh7th/nvim-cmp",
+    event = "InsertEnter",
+    module = { "cmp" },
+    dependencies = {
+      { "onsails/lspkind.nvim", module = { "lspkind" } },
+      { "lukas-reineke/cmp-under-comparator" },
+      { "saadparwaiz1/cmp_luasnip" },
+      {
+        "L3MON4D3/LuaSnip",
+        config = function()
+          require("luasnip.loaders.from_vscode").lazy_load()
         end
       },
-			{ "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
-			{ "hrsh7th/cmp-nvim-lua" },
-			{ "andersevenrud/cmp-tmux" },
-			{ "hrsh7th/cmp-path" },
-			{ "f3fora/cmp-spell" },
-			{ "hrsh7th/cmp-buffer" },
-			{ "kdheepak/cmp-latex-symbols" },
-			{
-				"tzachar/cmp-tabnine",
-				run = "./install.sh",
-        config = function ()
+      { "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
+      { "hrsh7th/cmp-nvim-lua" },
+      { "andersevenrud/cmp-tmux" },
+      { "hrsh7th/cmp-path" },
+      { "f3fora/cmp-spell" },
+      { "hrsh7th/cmp-buffer" },
+      { "kdheepak/cmp-latex-symbols" },
+      {
+        "tzachar/cmp-tabnine",
+        run = "./install.sh",
+        config = function()
           require("cmp_tabnine.config").setup({
             max_lines = 1000,
             max_num_results = 20,
@@ -200,9 +205,9 @@ return {
             show_prediction_strength = false,
           })
         end
-			},
+      },
     },
-    config = function ()
+    config = function()
       local cmp = require("cmp")
       local lspkind = require("lspkind")
 
