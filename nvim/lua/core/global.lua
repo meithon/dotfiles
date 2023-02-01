@@ -13,9 +13,9 @@ local LINTER = {
 	"luacheck",
 	"revive",
 	"pylint",
-  "jsonlint",
+	"jsonlint",
 }
-local ENABLE_COC = true
+local ENABLE_COC = false
 
 function global:load_variables()
 	self.is_mac = os_name == "Darwin"
