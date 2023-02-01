@@ -95,6 +95,7 @@ return {
 	{
 		"mhinz/vim-startify",
 		config = function()
+			vim.g.startify_padding_left = math.floor((vim.fn.winwidth(0) - 70) / 2)
 			local ascii = {
 				"███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
 				"████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
@@ -106,8 +107,6 @@ return {
 
 			local center = vim.fn["startify#center"]
 			vim.g.startify_custom_header = center(ascii)
-
-			vim.g.startify_padding_left = math.floor((vim.fn.winwidth(0) - 70) / 2)
 		end,
 	},
 	{

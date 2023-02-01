@@ -37,6 +37,7 @@ local load_core = function()
 	require("core.options")
 	require("core.mapping")
 	require("keymap")
+	-- for startify
 	require("core.lazy")
 
 	changeDiagnosticSign()
