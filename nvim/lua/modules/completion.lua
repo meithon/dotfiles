@@ -207,11 +207,16 @@ return {
 			local cmp = require("cmp")
 			local lspkind = require("lspkind")
 			local luasnip = require("luasnip")
+			luasnip.config.setup({
+				region_check_events = "CursorHold,InsertLeave",
+				delete_check_events = "TextChanged,InsertEnter",
+			})
 
 			local feedkey = function(key, mode)
 				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 			end
 			local has_words_before = function()
+				unpack = unpack or table.unpack
 				local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 				return col ~= 0
 					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
@@ -252,7 +257,7 @@ return {
 								behavior = cmp.ConfirmBehavior.Insert,
 								select = true,
 							})
-						elseif luasnip.expand_or_jumpable() then
+						elseif luasnip.expand_or_locally_jumpable() then
 							luasnip.expand_or_jump()
 						else
 							fallback()
