@@ -235,6 +235,13 @@ return {
 			{ "nvim-lua/plenary.nvim", module = { "plenary" } },
 			{ "nvim-lua/popup.nvim", module = { "popup" } },
 		},
+		config = function()
+			require("telescope").setup({
+				defaults = {
+					file_ignore_patterns = { "^./.git/", "^node_modules/" },
+				},
+			})
+		end,
 	},
 	{
 		"obaland/vfiler.vim",

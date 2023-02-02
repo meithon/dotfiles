@@ -57,6 +57,7 @@ local map = {
 	["n|<Leader><Leader>u"] = map_cmd(":UndotreeShow<CR>:UndotreeFocus<CR>"):with_noremap():with_silent(),
 	-- Telescope
 	["n|<Leader>fg"] = map_cmd(":Telescope git_files<CR>"):with_noremap(),
+	["n|<Leader>fp"] = map_cmd(":Telescope find_files<CR>"):with_noremap(),
 	["n|<Leader><Tab>"] = map_cmd(":Telescope buffers<CR>"):with_noremap(),
 	-- EasyAlign
 	["v|af"] = map_cmd("<Plug>(EasyAlign)"):with_noremap(),
