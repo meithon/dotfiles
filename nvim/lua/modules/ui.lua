@@ -107,6 +107,13 @@ return {
 
 			local center = vim.fn["startify#center"]
 			vim.g.startify_custom_header = center(ascii)
+
+			vim.g.startify_commands = {
+				{ v = "VFiler" },
+				{ g = "Git" },
+				{ d = "DockerToolsOpen" },
+				{ t = "Telescope find_files" },
+			}
 		end,
 	},
 	{
