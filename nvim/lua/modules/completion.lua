@@ -185,7 +185,7 @@ return {
 			{ "kdheepak/cmp-latex-symbols" },
 			{
 				"tzachar/cmp-tabnine",
-				run = "./install.sh",
+				build = "./install.sh",
 				config = function()
 					require("cmp_tabnine.config").setup({
 						max_lines = 1000,
@@ -206,6 +206,7 @@ return {
 		config = function()
 			local cmp = require("cmp")
 			local lspkind = require("lspkind")
+			local luasnip = require("luasnip")
 
 			local feedkey = function(key, mode)
 				vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
@@ -220,18 +221,10 @@ return {
 				preselect = cmp.PreselectMode.None,
 				snippet = {
 					expand = function(args)
-						-- For `vsnip` user.
-						-- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` user.
-
-						-- For `luasnip` user.
 						luasnip.lsp_expand(args.body)
-
-						-- For `ultisnips` user.
-						-- vim.fn["UltiSnips#Anon"](args.body)
 					end,
 				},
 				mapping = {
-					-- ['<C-i>'] = cmp.mapping.complete(),
 					["<C-e>"] = cmp.mapping(function()
 						if cmp.visible() then
 							cmp.abort()
@@ -239,22 +232,18 @@ return {
 							cmp.complete()
 						end
 					end),
-					["<Down>"] = cmp.mapping(function(fallback)
+					["<C-n>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item()
-						elseif has_words_before() then
-							fallback()
 						else
-							cmp.complete()
+							fallback()
 						end
 					end),
-					["<UP>"] = cmp.mapping(function(fallback)
+					["<C-p>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_prev_item()
-						elseif has_words_before() then
-							fallback()
 						else
-							cmp.complete()
+							fallback()
 						end
 					end),
 					["<Tab>"] = cmp.mapping(function(fallback)
@@ -273,16 +262,7 @@ return {
 				sources = {
 					{ name = "nvim_lsp" },
 					{ name = "spell" },
-
-					-- For vsnip user.
-					-- { name = 'vsnip' },
-
-					-- For luasnip user.
-					{ name = "luasnip" },
-
-					-- For ultisnips user.
-					-- { name = 'ultisnips' },
-
+					{ name = "luasnip", option = { use_show_condition = false } },
 					{ name = "cmp_tabnine" },
 					{ name = "buffer" },
 					{ name = "path" },
