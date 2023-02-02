@@ -6,14 +6,16 @@ local FORMATTER = {
 	"eslint_d",
 	"stylua",
 	"goimports",
-	"black",
 }
 local LINTER = {
 	"eslint_d",
 	"luacheck",
 	"revive",
-	"pylint",
 	"jsonlint",
+}
+local LSP = {
+	"lua-language-server",
+	"typescript-language-server",
 }
 local ENABLE_COC = false
 
@@ -31,6 +33,7 @@ function global:load_variables()
 	self.data_dir = string.format("%s/site/", vim.fn.stdpath("data"))
 	self.fotmatter = FORMATTER
 	self.linter = LINTER
+	self.lsp = LSP
 	self.enable_coc = ENABLE_COC
 end
 

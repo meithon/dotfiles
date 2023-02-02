@@ -404,18 +404,21 @@ return {
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		cmd = "MasonToolsInstall",
 		config = function()
-			require("mason-tool-installer").setup({
+			local globals = require("core.global")
+			local formatter = globals.fotmatter
+			local linters = globals.linter
+			local lsps = globals.lsp
 
-				ensure_installed = {
-					"css-lsp",
-					"eslint_d",
-					"html-lsp",
-					"lua-language-server",
-					"luacheck",
-					"prettier",
-					"stylua",
-					"typescript-language-server",
-				},
+			local source = formatter
+			for _, linter in ipairs(linters) do
+				table.insert(source, linter)
+			end
+			for _, lsp in ipairs(lsps) do
+				table.insert(source, lsp)
+			end
+
+			require("mason-tool-installer").setup({
+				ensure_installed = source,
 
 				auto_update = false,
 
