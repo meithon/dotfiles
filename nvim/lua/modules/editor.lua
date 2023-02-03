@@ -25,8 +25,7 @@ return {
 		end,
 	},
 	{ "nacro90/numb.nvim", config = true, event = "CmdwinEnter" },
-
-	{ "junegunn/vim-easy-align", keys = { "<Plug>(EasyAlign)" } },
+	{ "godlygeek/tabular", cmd = "Tabularize" },
 	{
 		"ggandor/lightspeed.nvim",
 		keys = { "<Plug>Lightspeed_s", "<Plug>Lightspeed_S", "f", "F" },
