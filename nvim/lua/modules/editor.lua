@@ -31,7 +31,7 @@ return {
 	},
 	{
 		"numToStr/Comment.nvim",
-		keys = { "gc" },
+		keys = { "gc", { "gc", mode = "v" } },
 		config = true,
 	},
 	{
@@ -44,7 +44,11 @@ return {
 		end,
 	},
 	{ "nacro90/numb.nvim", config = true, event = "CmdwinEnter" },
-	{ "godlygeek/tabular", cmd = "Tabularize" },
+	{
+		"godlygeek/tabular",
+		cmd = "Tabularize",
+		keys = { { "a ", mode = "v" }, { "a=", mode = "v" }, { "a:", mode = "v" } },
+	},
 	{
 		"ggandor/lightspeed.nvim",
 		keys = { "<Plug>Lightspeed_s", "<Plug>Lightspeed_S", "f", "F" },
@@ -111,7 +115,15 @@ return {
 	{
 		"machakann/vim-sandwich",
 		dependencies = { "vim-wordmotion" },
-		keys = { "sa", "sd", "sr" },
+		keys = {
+			{ "sa" },
+			{ "sd" },
+			{ "sr" },
+
+			{ "sa", mode = "v" },
+			{ "sd", mode = "v" },
+			{ "sr", mode = "v" },
+		},
 	},
 	{
 		"tversteeg/registers.nvim",
