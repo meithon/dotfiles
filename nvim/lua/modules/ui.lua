@@ -109,10 +109,10 @@ return {
 			vim.g.startify_custom_header = center(ascii)
 
 			vim.g.startify_commands = {
-				{ v = "VFiler" },
+				{ t = "Neotree" },
 				{ g = "Git" },
 				{ d = "DockerToolsOpen" },
-				{ t = "Telescope find_files" },
+				{ f = "Telescope find_files" },
 			}
 		end,
 	},
