@@ -245,6 +245,7 @@ return {
 	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
+		cmd = { "Neotree" },
 		tag = "v2.42",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
