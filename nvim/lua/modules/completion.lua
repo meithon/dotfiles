@@ -354,6 +354,7 @@ return {
 									"typescriptreact",
 									"vue",
 									"astro",
+									"svelte",
 								},
 							})
 						)
@@ -375,6 +376,7 @@ return {
 									"typescriptreact",
 									"vue",
 									"astro",
+									"svelte",
 								},
 							})
 						)
@@ -469,6 +471,10 @@ return {
 					local opt = {
 						capabilities = require("cmp_nvim_lsp").default_capabilities(),
 						settings = {
+							stylelintplus = {
+								autoFixOnSave = true,
+								autoFixOnFormat = true,
+							},
 							Lua = {
 								diagnostics = { globals = { "vim" } },
 							},
