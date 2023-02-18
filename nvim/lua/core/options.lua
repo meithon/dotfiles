@@ -11,6 +11,7 @@ local function load_options()
 		tabstop = 2,
 		shiftwidth = 2,
 		softtabstop = 2,
+		scrolloff = 16,
 
 		smartindent = true,
 		undofile = true,
