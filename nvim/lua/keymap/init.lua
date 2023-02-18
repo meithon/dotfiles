@@ -88,23 +88,24 @@ if globals.enable_coc then
 	keyset("n", "<C-j>", "<Plug>(coc-diagnostic-next)", { silent = true })
 	-- Trouble
 	keyset("n", "<Leader>lt", ":<C-u>CocList diagnostics<cr>", opts)
-else -- nvim-lspconfig
+else
+	--------------------
+	-- nvim-lspconfig --
+	--------------------
+
 	-- Lspsaga
 	-- Only jump to error
-	vim.keymap.set("n", "<c-e>", function()
+	vim.keymap.set("n", "<C-S-e>", function()
 		require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
 	end, { silent = true })
-	vim.keymap.set("n", "<c-E>", function()
-		require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
-	end, { silent = true })
+
 	local lspmap = {
 		["n|gh"] = map_cmd(":Lspsaga lsp_finder<CR>"):with_noremap():with_silent(),
 		["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
 		["n|gr"] = map_cmd(":Lspsaga rename<CR>"):with_noremap():with_silent(),
 		["n|gd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
 		["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
-		["n|<C-k>"] = map_cmd(":Lspsaga diagnostic_jump_prev<CR>"):with_noremap():with_silent(),
-		["n|<C-j>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
+		["n|<C-e>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
 		-- Trouble
 		["n|<Leader>lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
 	}

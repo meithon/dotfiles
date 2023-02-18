@@ -88,10 +88,10 @@ return {
 				json = json,
 			}
 			local opts = { noremap = true, silent = true }
-			vim.keymap.set({ "n", "s", "i" }, "<C-i>", function()
+			vim.keymap.set({ "n", "s" }, "<C-i>", function()
 				select_ease.select_node({ queries = queries, direction = "previous" })
 			end, opts)
-			vim.keymap.set({ "n", "s", "i" }, "<C-o>", function()
+			vim.keymap.set({ "n", "s" }, "<C-o>", function()
 				select_ease.select_node({ queries = queries, direction = "next" })
 			end, opts)
 		end,
