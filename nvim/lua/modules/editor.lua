@@ -99,6 +99,18 @@ return {
 	{
 		"ziontee113/syntax-tree-surfer",
 		dependencies = "nvim-treesitter/nvim-treesitter",
+		keys = {
+			"<C-h>",
+			"<C-j>",
+			"<C-k>",
+			"<C-l>",
+			"vp",
+			"vc",
+			{ "H", mode = "x" },
+			{ "J", mode = "x" },
+			{ "K", mode = "x" },
+			{ "L", mode = "x" },
+		},
 		config = function()
 			-- Syntax Tree Surfer
 
