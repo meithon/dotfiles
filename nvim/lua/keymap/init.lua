@@ -48,7 +48,9 @@ local map = {
 	["n|<Leader>gu"] = map_cmd(":Gitsigns undo_stage_hunk<CR>"):with_noremap(),
 	["v|<Leader>gu"] = map_cmd(":Gitsigns undo_stage_hunk<CR>"):with_noremap(),
 	["v|<Leader>gr"] = map_cmd(":Gitsigns reset_hunk<CR>"):with_noremap(),
-	["n|<Leader>gh"] = map_cmd(":Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>"):with_noremap():with_silent(),
+	["n|<Leader>gh"] = map_cmd(":Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>:Gitsigns toggle_linehl<CR>")
+		:with_noremap()
+		:with_silent(),
 	["n|gk"] = map_cmd(":Gitsigns prev_hunk<CR>zz"):with_noremap(),
 	["n|gj"] = map_cmd(":Gitsigns next_hunk<CR>zz"):with_noremap(),
 	-- CCC
