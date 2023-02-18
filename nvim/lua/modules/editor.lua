@@ -28,6 +28,7 @@ return {
 	},
 	{
 		"MeiWagatsuma/SelectEase",
+		keys = { { "<C-i>", mode = { "n", "s" } }, { "<C-o>", mode = { "n", "s" } } },
 		config = function()
 			local select_ease = require("SelectEase")
 
