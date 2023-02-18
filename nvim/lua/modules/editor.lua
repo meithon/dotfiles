@@ -96,6 +96,83 @@ return {
 			end, opts)
 		end,
 	},
+	{
+		"ziontee113/syntax-tree-surfer",
+		dependencies = "nvim-treesitter/nvim-treesitter",
+		config = function()
+			-- Syntax Tree Surfer
+
+			-- Normal Mode Swapping:
+			-- Swap The Master Node relative to the cursor with it's siblings, Dot Repeatable
+			vim.keymap.set("n", "<C-k>", function()
+				vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
+				return "g@l"
+			end, { silent = true, expr = true })
+			vim.keymap.set("n", "<C-j>", function()
+				vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
+				return "g@l"
+			end, { silent = true, expr = true })
+
+			-- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
+			vim.keymap.set("n", "<C-l>", function()
+				vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
+				return "g@l"
+			end, { silent = true, expr = true })
+			vim.keymap.set("n", "<C-h>", function()
+				vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
+				return "g@l"
+			end, { silent = true, expr = true })
+
+			local opts = { noremap = true, silent = true }
+			-- Visual Selection from Normal Mode
+			vim.keymap.set("n", "vp", "<cmd>STSSelectMasterNode<cr>", opts)
+			vim.keymap.set("n", "vc", "<cmd>STSSelectCurrentNode<cr>", opts)
+
+			-- Select Nodes in Visual Mode
+			vim.keymap.set("x", "L", "<cmd>STSSelectNextSiblingNode<cr>", opts)
+			vim.keymap.set("x", "H", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
+			vim.keymap.set("x", "K", "<cmd>STSSelectParentNode<cr>", opts)
+			vim.keymap.set("x", "J", "<cmd>STSSelectChildNode<cr>", opts)
+
+			-------------------------------
+			-- jump with limited targets --
+			-- jump to sibling nodes only
+			vim.keymap.set("n", "-", function()
+				sts.filtered_jump({
+					"if_statement",
+					"else_clause",
+					"else_statement",
+				}, false, { destination = "siblings" })
+			end, opts)
+			vim.keymap.set("n", "=", function()
+				sts.filtered_jump(
+					{ "if_statement", "else_clause", "else_statement" },
+					true,
+					{ destination = "siblings" }
+				)
+			end, opts)
+
+			-- jump to parent or child nodes only
+			vim.keymap.set("n", "_", function()
+				sts.filtered_jump({
+					"if_statement",
+
+					"else_clause",
+					"else_statement",
+				}, false, { destination = "parent" })
+			end, opts)
+			vim.keymap.set("n", "+", function()
+				sts.filtered_jump({
+					"if_statement",
+					"else_clause",
+					"else_statement",
+				}, true, { destination = "children" })
+			end, opts)
+
+			require("syntax-tree-surfer").setup()
+		end,
+	},
+	{
 		"anuvyklack/windows.nvim",
 		dependencies = {
 			"anuvyklack/middleclass",
