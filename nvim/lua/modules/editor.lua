@@ -1,5 +1,129 @@
 return {
 	{
+		"kevinhwang91/nvim-ufo",
+		dependencies = "kevinhwang91/promise-async",
+		config = function()
+			local handler = function(virtText, lnum, endLnum, width, truncate)
+				local newVirtText = {}
+				local suffix = ("  %d "):format(endLnum - lnum)
+				local sufWidth = vim.fn.strdisplaywidth(suffix)
+				local targetWidth = width - sufWidth
+				local curWidth = 0
+				for _, chunk in ipairs(virtText) do
+					local chunkText = chunk[1]
+					local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+					if targetWidth > curWidth + chunkWidth then
+						table.insert(newVirtText, chunk)
+					else
+						chunkText = truncate(chunkText, targetWidth - curWidth)
+						local hlGroup = chunk[2]
+						table.insert(newVirtText, { chunkText, hlGroup })
+						chunkWidth = vim.fn.strdisplaywidth(chunkText)
+						-- str width returned from truncate() may less than 2nd argument, need padding
+						if curWidth + chunkWidth < targetWidth then
+							suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+						end
+						break
+					end
+					curWidth = curWidth + chunkWidth
+				end
+				table.insert(newVirtText, { suffix, "MoreMsg" })
+				return newVirtText
+			end
+
+			local ufo = require("ufo")
+			ufo.setup({
+				provider_selector = function(bufnr, filetype, buftype)
+					return { "treesitter", "indent" }
+				end,
+				fold_virt_text_handler = handler,
+			})
+			vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+			vim.o.foldlevelstart = 99
+			vim.o.foldenable = true
+
+			vim.keymap.set("n", "zR", ufo.openAllFolds)
+			vim.keymap.set("n", "zM", ufo.closeAllFolds)
+			vim.keymap.set("n", "zr", require("ufo").openFoldsExceptKinds)
+			vim.keymap.set("n", "zm", require("ufo").closeFoldsWith) -- closeAllFolds == closeFoldsWith(0)
+			vim.keymap.set("n", "zk", function()
+				local winid = require("ufo").peekFoldedLinesUnderCursor()
+				if not winid then
+					vim.lsp.buf.hover()
+				end
+			end)
+		end,
+	},
+	{
+		"lewis6991/gitsigns.nvim",
+		dependencies = "petertriho/nvim-scrollbar",
+		config = function()
+			require("gitsigns").setup()
+			require("scrollbar.handlers.gitsigns").setup()
+		end,
+	},
+	{
+		"petertriho/nvim-scrollbar",
+		dependencies = "kevinhwang91/nvim-hlslens",
+		config = function()
+			local colors = require("tokyonight.colors").setup()
+
+			require("scrollbar").setup({
+				handle = {
+
+					color = colors.bg_highlight,
+				},
+				marks = {
+					Search = { color = colors.orange },
+					Error = { color = colors.error },
+					Warn = { color = colors.warning },
+					Info = { color = colors.info },
+					Hint = { color = colors.hint },
+					Misc = { color = colors.purple },
+				},
+			})
+			require("scrollbar.handlers.search").setup()
+			vim.cmd([[
+        augroup scrollbar_search_hide
+          autocmd!
+          autocmd CmdlineLeave : lua require('scrollbar.handlers.search').handler.hide()
+        augroup END
+      ]])
+		end,
+	},
+	{
+		"kevinhwang91/nvim-hlslens",
+		module = true,
+		config = function()
+			require("hlslens").setup({
+				build_position_cb = function(plist, _, _, _)
+					require("scrollbar.handlers.search").handler.show(plist.start_pos)
+				end,
+			})
+
+			local kopts = { noremap = true, silent = true }
+
+			vim.api.nvim_set_keymap(
+				"n",
+				"n",
+				[[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
+				kopts
+			)
+			vim.api.nvim_set_keymap(
+				"n",
+				"N",
+				[[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
+				kopts
+			)
+			vim.api.nvim_set_keymap("n", "*", [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+			vim.api.nvim_set_keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+			vim.api.nvim_set_keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+			vim.api.nvim_set_keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+
+			vim.api.nvim_set_keymap("n", "<Leader>l", "<Cmd>noh<CR>", kopts)
+		end,
+	},
+	{
 		"folke/todo-comments.nvim",
 		event = "BufReadPost",
 		dependencies = "nvim-lua/plenary.nvim",
@@ -263,48 +387,6 @@ return {
 		keys = { "w", "e", "b", "W", "E", "B" },
 	},
 	{
-		"hrsh7th/vim-searchx",
-		keys = { "/", "?" },
-		config = function()
-			local g = {}
-
-			g.auto_accept = true
-			g.scrolloff = vim.g.scrolloff
-			g.scrolltime = 500
-			g.nohlsearch = { jump = true }
-			g.markers = {
-				"A",
-				"B",
-				"C",
-				"D",
-				"E",
-				"F",
-				"G",
-				"H",
-				"I",
-				"J",
-				"K",
-				"L",
-				"M",
-				"N",
-				"O",
-				"P",
-				"Q",
-				"R",
-				"S",
-				"T",
-				"U",
-				"V",
-				"W",
-				"X",
-				"Y",
-				"Z",
-			}
-
-			vim.g.serachx = g
-		end,
-	},
-	{
 		"max397574/better-escape.nvim",
 		event = "InsertEnter",
 		config = function()
@@ -338,6 +420,16 @@ return {
 	{
 		"mg979/vim-visual-multi",
 		branch = "master",
+		dependencies = "kevinhwang91/nvim-hlslens",
 		keys = { "<C-n>" },
+		config = function()
+			vim.cmd([[
+        aug VMlens
+          au!
+          au User visual_multi_start lua require('vmlens').start()
+          au User visual_multi_exit lua require('vmlens').exit()
+        aug END
+      ]])
+		end,
 	},
 }

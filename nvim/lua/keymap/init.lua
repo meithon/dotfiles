@@ -27,12 +27,6 @@ local map = {
 	["v|<Leader>j"] = map_cmd("<Plug>Lightspeed_s"):with_noremap():with_silent(),
 	["v|<Leader>k"] = map_cmd("<Plug>Lightspeed_S"):with_noremap():with_silent(),
 
-	-- SearchX
-	["n|?"] = map_cmd("<Cmd>call searchx#start({ 'dir': 0 })<CR>"),
-	["n|/"] = map_cmd("<Cmd>call searchx#start({ 'dir': 1 })<CR>"),
-	["x|?"] = map_cmd("<Cmd>call searchx#start({ 'dir': 0 })<CR>"),
-	["x|/"] = map_cmd("<Cmd>call searchx#start({ 'dir': 1 })<CR>"),
-
 	-- Filer
 	["n|<Leader>e"] = map_cmd(":Neotree<CR>"),
 	-- Docker Tool

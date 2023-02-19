@@ -220,10 +220,6 @@ return {
 		cmd = { "GV" },
 	},
 	{
-		"lewis6991/gitsigns.nvim",
-		config = true,
-	},
-	{
 		"mbbill/undotree",
 		cmd = { "UndotreeShow", "UndotreeFocus" },
 	},
