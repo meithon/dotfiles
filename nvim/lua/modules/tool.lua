@@ -250,7 +250,7 @@ return {
 			{
 				-- only needed if you want to use the commands with "_with_window_picker" suffix
 				"s1n7ax/nvim-window-picker",
-				tag = "v1.*",
+				tag = "v1.5",
 				config = function()
 					require("window-picker").setup({
 						autoselect_one = true,
