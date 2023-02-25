@@ -381,7 +381,17 @@ return {
 							})
 						)
 					else
-						table.insert(source_return, null_ls.builtins.diagnostics[package])
+						if package == "luacheck" then
+							table.insert(
+								source_return,
+								null_ls.builtins.diagnostics.luacheck.with({
+									std = "luajit",
+									globals = { "vim" },
+								})
+							)
+						else
+							table.insert(source_return, null_ls.builtins.diagnostics[package])
+						end
 					end
 				end
 				return source_return
