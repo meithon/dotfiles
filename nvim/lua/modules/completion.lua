@@ -226,6 +226,12 @@ return {
 
 			vim.api.nvim_create_autocmd({ "TextChangedI", "TextChangedP" }, {
 				callback = function()
+					-- Disable in telescope
+					local buftype = vim.api.nvim_buf_get_option(0, "buftype")
+					if buftype == "prompt" then
+						return
+					end
+
 					local line = vim.api.nvim_get_current_line()
 					local cursor = vim.api.nvim_win_get_cursor(0)[2]
 
