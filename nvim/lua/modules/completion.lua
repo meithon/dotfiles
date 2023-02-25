@@ -217,7 +217,6 @@ return {
 			local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 			local lspkind = require("lspkind")
 			local luasnip = require("luasnip")
-			local compare = require("cmp.config.compare")
 			luasnip.config.setup({
 				region_check_events = "CursorHold,InsertLeave",
 				delete_check_events = "TextChanged,InsertEnter",
@@ -245,6 +244,17 @@ return {
 				end,
 				pattern = "*",
 			})
+
+			local compare = require("cmp.config.compare")
+			compare.lsp_scores = function(entry1, entry2)
+				local diff
+				if entry1.completion_item.score and entry2.completion_item.score then
+					diff = (entry2.completion_item.score * entry2.score) - (entry1.completion_item.score * entry1.score)
+				else
+					diff = entry2.score - entry1.score
+				end
+				return (diff < 0)
+			end
 
 			cmp.setup({
 				preselect = cmp.PreselectMode.None,
@@ -330,9 +340,9 @@ return {
 				sorting = {
 					priority_weight = 2,
 					comparators = {
-						require("cmp_tabnine.compare"),
 						compare.offset,
 						compare.exact,
+						require("cmp_tabnine.compare"),
 						compare.score,
 						compare.recently_used,
 						compare.kind,
