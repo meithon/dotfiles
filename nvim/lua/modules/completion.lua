@@ -491,10 +491,10 @@ return {
 						},
 					}
 					require("lspconfig")[server].setup(opt)
-					require("lsp_signature").setup({
-						hint_enable = false,
-					})
 				end,
+				require("lsp_signature").setup({
+					hint_enable = false,
+				}),
 			})
 		end,
 	},
