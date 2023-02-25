@@ -258,6 +258,9 @@ return {
 
 			cmp.setup({
 				preselect = cmp.PreselectMode.None,
+				experimental = {
+					ghost_text = true,
+				},
 				snippet = {
 					expand = function(args)
 						luasnip.lsp_expand(args.body)
