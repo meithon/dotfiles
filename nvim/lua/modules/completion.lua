@@ -175,6 +175,7 @@ return {
 				config = function()
 					require("luasnip.loaders.from_vscode").lazy_load()
 				end,
+				dependencies = { "rafamadriz/friendly-snippets" },
 			},
 			{ "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
 			{ "hrsh7th/cmp-nvim-lua" },
