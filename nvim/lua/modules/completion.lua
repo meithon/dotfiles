@@ -315,32 +315,50 @@ return {
 				},
 
 				formatting = {
-					format = lspkind.cmp_format({
-						with_text = true, -- do not show text alongside icons
-						maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+					format = function(entry, vim_item)
+						local kind_icons = {
+							Text = "",
+							Method = "",
+							Function = "",
+							Constructor = "",
 
-						-- The function below will be called before any actual modifications from lspkind
-						-- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-						before = function(entry, vim_item)
-							vim_item.menu = ({
-								nvim_lsp = "[LSP]",
-								vsnip = "[Snippet]",
-								nvim_lua = "[Nvim Lua]",
-								buffer = "[Buffer]",
-								cmp_tabnine = "[TN]",
-								spell = "[Spell]",
-								luasnip = "[LuaSnip]",
-							})[entry.source.name]
+							Field = "",
+							Variable = "",
+							Class = "ﴯ",
+							Interface = "",
+							Module = "",
+							Property = "ﰠ",
+							Unit = "",
+							Value = "",
+							Enum = "",
+							Keyword = "",
+							Snippet = "",
+							Color = "",
+							File = "",
+							Reference = "",
+							Folder = "",
+							EnumMember = "",
+							Constant = "",
+							Struct = "",
+							Event = "",
+							Operator = "",
+							TypeParameter = "",
+						}
+						-- From kind_icons array
+						vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind) -- This concatonates the icons with the name of the item kind
+						-- Source
+						vim_item.menu = ({
+							nvim_lsp = "[LSP]",
+							vsnip = "[Snippet]",
+							nvim_lua = "[Nvim Lua]",
+							buffer = "[Buffer]",
+							cmp_tabnine = "[TN]",
+							spell = "[Spell]",
+							luasnip = "[LuaSnip]",
+						})[entry.source.name]
 
-							vim_item.dup = ({
-								vsnip = 0,
-								nvim_lsp = 0,
-								nvim_lua = 0,
-								buffer = 0,
-							})[entry.source.name] or 0
-							return vim_item
-						end,
-					}),
+						return vim_item
+					end,
 				},
 				sorting = {
 					priority_weight = 2,
