@@ -184,6 +184,7 @@ return {
 			{ "f3fora/cmp-spell" },
 			{ "hrsh7th/cmp-buffer" },
 			{ "kdheepak/cmp-latex-symbols" },
+			{ "lukas-reineke/cmp-rg" },
 			{
 				"tzachar/cmp-tabnine",
 				build = "./install.sh",
@@ -294,6 +295,7 @@ return {
 					{ name = "cmp_tabnine" },
 					{ name = "buffer" },
 					{ name = "path" },
+					{ name = "rg" },
 					{ name = "treesitter" },
 				},
 
