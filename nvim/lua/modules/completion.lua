@@ -377,7 +377,7 @@ return {
 
 				-- set the formatters to null-ls
 				for _, package in ipairs(formatter) do
-					if package == "prettier" then
+					if package == "prettierd" then
 						table.insert(
 							source_return,
 							null_ls.builtins.formatting.prettier.with({
