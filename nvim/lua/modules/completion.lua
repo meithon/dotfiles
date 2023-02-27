@@ -443,7 +443,7 @@ return {
 							group = augroup,
 							buffer = bufnr,
 							callback = function()
-                vim.lsp.buf.format()
+								vim.lsp.buf.format()
 							end,
 						})
 					end
