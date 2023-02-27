@@ -2,7 +2,7 @@ local global = {}
 local os_name = vim.loop.os_uname().sysname
 
 local FORMATTER = {
-	"prettier",
+	"prettierd",
 	"eslint_d",
 	"stylua",
 	"goimports",
