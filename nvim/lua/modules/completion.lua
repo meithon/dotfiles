@@ -236,6 +236,11 @@ return {
 			end
 
 			cmp.setup({
+				performance = {
+					debounce = 0,
+					throttle = 200,
+					fetching_timeout = 200,
+				},
 				completion = {
 					completeopt = "menu,menuone", -- enable preselect
 				},
