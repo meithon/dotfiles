@@ -443,14 +443,7 @@ return {
 							group = augroup,
 							buffer = bufnr,
 							callback = function()
-								vim.lsp.buf.format({
-									bufnr = bufnr,
-									async = true,
-									filter = function(client)
-										return client.name == "null-ls"
-									end,
-								})
-								vim.notify("formatted")
+                vim.lsp.buf.format()
 							end,
 						})
 					end
