@@ -81,6 +81,14 @@ return {
 					Hint = { color = colors.hint },
 					Misc = { color = colors.purple },
 				},
+				handlers = {
+					cursor = true,
+					diagnostic = false,
+					gitsigns = true, -- Requires gitsigns
+					handle = true,
+					search = true, -- Requires hlslens
+					ale = false, -- Requires ALE
+				},
 			})
 			require("scrollbar.handlers.search").setup()
 			vim.cmd([[
@@ -187,7 +195,7 @@ return {
             ((true) @cap)
             ((false) @cap)
             ((string_content) @cap)
-            
+
       ]]
 			local js_query = [[
             ;; query
