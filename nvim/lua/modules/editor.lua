@@ -429,7 +429,7 @@ return {
 		"mg979/vim-visual-multi",
 		branch = "master",
 		dependencies = "kevinhwang91/nvim-hlslens",
-		keys = { "<C-n>" },
+		keys = { { "<C-n>", mode = { "v", "i", "n" } } },
 		config = function()
 			vim.cmd([[
         aug VMlens
