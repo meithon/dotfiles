@@ -7,7 +7,7 @@ local function load_options()
 		number = true,
 		mouse = "a",
 
-		expandtab = true,
+		expandtab = false,
 		tabstop = 2,
 		shiftwidth = 2,
 		softtabstop = 2,
