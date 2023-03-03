@@ -410,13 +410,9 @@ return {
 		"machakann/vim-sandwich",
 		dependencies = { "vim-wordmotion" },
 		keys = {
-			{ "sa" },
-			{ "sd" },
-			{ "sr" },
-
-			{ "sa", mode = "v" },
-			{ "sd", mode = "v" },
-			{ "sr", mode = "v" },
+			{ "sa", mode = { "v", "n" } },
+			{ "sd", mode = { "v", "n" } },
+			{ "sr", mode = { "v", "n" } },
 		},
 	},
 	{
