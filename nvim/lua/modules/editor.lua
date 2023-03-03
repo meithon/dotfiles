@@ -392,7 +392,14 @@ return {
 	},
 	{
 		"chaoren/vim-wordmotion",
-		keys = { "w", "e", "b", "W", "E", "B" },
+		keys = {
+			{ "w", mode = { "n", "v" } },
+			{ "e", mode = { "n", "v" } },
+			{ "b", mode = { "n", "v" } },
+			{ "W", mode = { "n", "v" } },
+			{ "E", mode = { "n", "v" } },
+			{ "B", mode = { "n", "v" } },
+		},
 	},
 	{
 		"max397574/better-escape.nvim",
