@@ -32,6 +32,24 @@ local changeDiagnosticSign = function()
 	end
 end
 
+local wslClicpboard = function()
+	if global.is_wsl then
+		vim.g.clipboard = {
+			name = "WslClipboard",
+			copy = {
+				["+"] = "win32yank.exe -i",
+				["*"] = "win32yank.exe -i",
+			},
+			paste = {
+				["+"] = "win32yank.exe -o",
+				["*"] = "win32yank.exe -o",
+			},
+
+			cache_enabled = 1,
+		}
+	end
+end
+
 local load_core = function()
 	createdir()
 	require("core.options")
@@ -41,6 +59,7 @@ local load_core = function()
 	require("core.lazy")
 
 	changeDiagnosticSign()
+	wslClicpboard()
 end
 
 load_core()
