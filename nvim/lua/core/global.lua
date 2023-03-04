@@ -7,7 +7,7 @@ local FORMATTER = {
 	"stylua",
 	-- go
 	"goimports",
-	"fofumpt",
+	"gofumpt",
 }
 local LINTER = {
 	"eslint_d",
