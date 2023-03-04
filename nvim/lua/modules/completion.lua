@@ -349,8 +349,8 @@ return {
 					comparators = {
 						compare.offset,
 						compare.exact,
-						require("cmp_tabnine.compare"),
 						compare.score,
+						require("cmp_tabnine.compare"),
 						compare.recently_used,
 						compare.kind,
 						compare.sort_text,
@@ -371,6 +371,7 @@ return {
 			local globals = require("core.global")
 			local formatter = globals.fotmatter
 			local linter = globals.linter
+			local code_action = globals.code_action
 			local null_ls = require("null-ls")
 			local null_sources = function()
 				local source_return = {}
@@ -427,6 +428,10 @@ return {
 							table.insert(source_return, null_ls.builtins.diagnostics[package])
 						end
 					end
+				end
+
+				for _, package in ipairs(code_action) do
+					table.insert(source_return, null_ls.builtins.code_actions[package])
 				end
 				return source_return
 			end

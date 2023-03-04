@@ -5,17 +5,27 @@ local FORMATTER = {
 	"prettierd",
 	"eslint_d",
 	"stylua",
+	-- go
 	"goimports",
+	"fofumpt",
 }
 local LINTER = {
 	"eslint_d",
 	"luacheck",
 	"revive",
 	"jsonlint",
+	-- go
+	"staticcheck",
+}
+local CODE_ACTION = {
+	-- go
+	"gomodifytags",
 }
 local LSP = {
 	"lua-language-server",
 	"typescript-language-server",
+	-- go
+	"gopls",
 }
 local ENABLE_COC = false
 
@@ -33,6 +43,7 @@ function global:load_variables()
 	self.data_dir = string.format("%s/site/", vim.fn.stdpath("data"))
 	self.fotmatter = FORMATTER
 	self.linter = LINTER
+	self.code_action = CODE_ACTION
 	self.lsp = LSP
 	self.enable_coc = ENABLE_COC
 end
