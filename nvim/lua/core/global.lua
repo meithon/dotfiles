@@ -8,6 +8,7 @@ local FORMATTER = {
 	-- go
 	"goimports",
 	"gofumpt",
+	"rustfmt",
 }
 local LINTER = {
 	"eslint_d",
@@ -26,6 +27,7 @@ local LSP = {
 	"typescript-language-server",
 	-- go
 	"gopls",
+	"rust-analyzer",
 }
 local ENABLE_COC = false
 
