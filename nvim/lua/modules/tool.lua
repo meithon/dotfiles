@@ -93,7 +93,22 @@ return {
 		"glepnir/lspsaga.nvim",
 		cmd = { "Lspsaga" },
 		module = { "lspsaga.diagnostic" },
-		config = true,
+		config = function()
+			require("lspsaga").setup({
+				finder = {
+					keys = {
+						jump_to = "p",
+						edit = { "j", "<CR>" },
+						vsplit = "v",
+						split = "s",
+						tabe = "t",
+						tabnew = "r",
+						quit = { "q", "<ESC>" },
+						close_in_preview = "<ESC>",
+					},
+				},
+			})
+		end,
 	},
 	{
 		"kkvh/vim-docker-tools",
