@@ -98,7 +98,7 @@ return {
 				finder = {
 					keys = {
 						jump_to = "p",
-						edit = { "j", "<CR>" },
+						edit = { "i", "<CR>" },
 						vsplit = "v",
 						split = "s",
 						tabe = "t",
