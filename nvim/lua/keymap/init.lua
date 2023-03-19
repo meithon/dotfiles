@@ -91,9 +91,12 @@ else
 
 	-- Lspsaga
 	-- Only jump to error
-	vim.keymap.set("n", "<C-S-e>", function()
+	vim.keymap.set("n", "<leader>p", function()
 		require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
-	end, { silent = true })
+	end)
+	vim.keymap.set("n", "<leader>n", function()
+		require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+	end)
 
 	local lspmap = {
 		["n|gh"] = map_cmd(":Lspsaga lsp_finder<CR>"):with_noremap():with_silent(),
