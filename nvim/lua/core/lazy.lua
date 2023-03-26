@@ -23,10 +23,17 @@ for _, f in ipairs(tmp) do
 end
 
 local plugin_list = {}
-for _, m in ipairs(plugins_file) do
-	local repos = require(m:sub(0, #m - 4))
+if vim.g.vscode then
+	local repos = require("modules.editor")
 	for _, plugin in ipairs(repos) do
 		table.insert(plugin_list, plugin)
+	end
+else
+	for _, m in ipairs(plugins_file) do
+		local repos = require(m:sub(0, #m - 4))
+		for _, plugin in ipairs(repos) do
+			table.insert(plugin_list, plugin)
+		end
 	end
 end
 
