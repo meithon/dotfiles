@@ -1,6 +1,6 @@
 return {
 	{
-		"xiyaowong/nvim-transparent",
+		"xiyaowong/transparent.nvim",
 		config = function()
 			require("transparent").setup({
 				enable = true, -- boolean: enable transparent
@@ -216,7 +216,6 @@ return {
 					"css",
 					"scss",
 				},
-
 				sync_install = false,
 				auto_install = true,
 				highlight = {
