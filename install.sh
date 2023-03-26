@@ -147,6 +147,8 @@ _deploy() {
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
   ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
+  ln -si $DOTPATH/.yabairc ~/.yabairc
+  ln -si $DOTPATH/.skhdrc ~/.skhdrc
 
   info "Deployed!"
 }
