@@ -297,7 +297,6 @@ return {
 					{ name = "rg" },
 					{ name = "treesitter" },
 				},
-
 				formatting = {
 					format = function(entry, vim_item)
 						local kind_icons = {
@@ -305,7 +304,6 @@ return {
 							Method = "",
 							Function = "",
 							Constructor = "",
-
 							Field = "",
 							Variable = "",
 							Class = "ﴯ",
@@ -491,11 +489,8 @@ return {
 
 			require("mason-tool-installer").setup({
 				ensure_installed = source,
-
 				auto_update = false,
-
 				run_on_start = false,
-
 				start_delay = 3000, -- 3 second delay
 			})
 		end,
