@@ -166,7 +166,6 @@ return {
 	},
 	{
 		"uga-rosa/ccc.nvim",
-
 		cmd = { "CccPick" },
 		config = function()
 			local ColorInput = require("ccc.input")
@@ -320,7 +319,6 @@ return {
 							bo = {
 								-- if the file type is one of following, the window will be ignored
 								filetype = { "neo-tree", "neo-tree-popup", "notify" },
-
 								-- if the buffer type is one of following, the window will be ignored
 								buftype = { "terminal", "quickfix" },
 							},
@@ -347,7 +345,6 @@ return {
 				close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
 				popup_border_style = "rounded",
 				enable_git_status = true,
-
 				enable_diagnostics = true,
 				sort_case_insensitive = false, -- used when sorting files and directories in the tree
 				sort_function = nil, -- use a custom function for sorting files and directories in the tree
@@ -542,7 +539,6 @@ return {
 					follow_current_file = true, -- This will find and focus the file in the active buffer every
 					-- time the current file is changed while the tree is open.
 					group_empty_dirs = true, -- when true, empty folders will be grouped together
-
 					show_unloaded = true,
 					window = {
 						mappings = {
