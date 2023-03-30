@@ -144,6 +144,7 @@ _deploy() {
   mkdir -p ~/.config/nvim
   ln -si $DOTPATH/nvim/init.lua ~/.config/nvim/.
   ln -sni $DOTPATH/nvim/lua ~/.config/nvim/.
+  ln -sni $DOTPATH/sketchybar ~/.config/sketchybar/.
   ln -si $DOTPATH/.zshrc ~/.zshrc
   ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
   ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
