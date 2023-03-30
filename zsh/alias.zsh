@@ -4,6 +4,8 @@ alias la="lsd -l -a"
 alias ..="cd .."
 alias ...="cd ../../"
 
+alias k="kubectl"
+
 # Add a subcommand named tree to git
 git() {
     if [[ $@ == "tree" ]]; then
