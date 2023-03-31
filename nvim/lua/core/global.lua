@@ -9,6 +9,7 @@ local FORMATTER = {
 	"goimports",
 	"gofumpt",
 	"rustfmt",
+	"protolint",
 }
 local LINTER = {
 	"eslint_d",
@@ -17,6 +18,7 @@ local LINTER = {
 	"jsonlint",
 	-- go
 	"staticcheck",
+	"protolint",
 }
 local CODE_ACTION = {
 	-- go
