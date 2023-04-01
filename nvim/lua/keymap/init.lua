@@ -104,7 +104,6 @@ else
 		["n|gr"] = map_cmd(":Lspsaga rename<CR>"):with_noremap():with_silent(),
 		["n|gd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
 		["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
-		["n|<C-e>"] = map_cmd(":Lspsaga diagnostic_jump_next<CR>"):with_noremap():with_silent(),
 		-- Trouble
 		["n|<Leader>lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
 	}
