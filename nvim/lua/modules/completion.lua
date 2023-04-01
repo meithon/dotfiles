@@ -453,6 +453,28 @@ return {
 				end,
 				sources = null_sources(),
 			})
+
+			local null_helpers = require("null-ls.helpers")
+			null_ls.register({
+				name = "clippy",
+				method = null_ls.methods.DIAGNOSTICS,
+				filetypes = { "rust" },
+				generator = null_ls.generator({
+					command = "cargo",
+					args = { "clippy", "--message-format", "short" },
+					to_stdin = true,
+					from_stderr = true,
+					format = "line",
+					on_output = null_helpers.diagnostics.from_pattern(
+						[[:(%d+):(%d+): (%w*): (.*)]],
+						{ "row", "col", "severity", "message" },
+						-- , {
+						-- 	pattern = [[(%w+): (%w*)]],
+						-- 	groups = { "severity", "message" },
+						{}
+					),
+				}),
+			})
 		end,
 	},
 	{
