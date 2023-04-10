@@ -21,6 +21,10 @@ zplug "BurntSushi/ripgrep"
 
 zplug "junegunn/fzf"
 
+zplug "Aloxaf/fzf-tab"
+
+zplug "zdharma-continuum/fast-syntax-highlighting", as:theme
+
 
 
 # Install plugins if there are plugins that have not been installed
