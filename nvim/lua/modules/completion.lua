@@ -413,18 +413,42 @@ return {
 								},
 							})
 						)
-					else
-						if package == "luacheck" then
-							table.insert(
-								source_return,
-								null_ls.builtins.diagnostics.luacheck.with({
-									std = "luajit",
-									globals = { "vim" },
-								})
-							)
-						else
-							table.insert(source_return, null_ls.builtins.diagnostics[package])
+					elseif package == "luacheck" then
+						table.insert(
+							source_return,
+							null_ls.builtins.diagnostics.luacheck.with({
+								std = "luajit",
+								globals = { "vim" },
+							})
+						)
+					elseif package == "cspell" then
+						-- vim辞書がなければダウンロード
+						if vim.fn.filereadable('~/.local/share/cspell/vim.txt.gz') ~= 1 then
+							local vim_dictionary_url = 'https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz'
+							io.popen('curl -fsSLo ~/.local/share/cspell/vim.txt.gz --create-dirs ' .. vim_dictionary_url)
 						end
+
+						-- ユーザー辞書がなければ作成
+						if vim.fn.filereadable('~/.local/share/cspell/user.txt') ~= 1 then
+							io.popen('mkdir -p ~/.local/share/cspell')
+							io.popen('touch ~/.local/share/cspell/user.txt')
+						end
+						table.insert(
+							source_return,
+							null_ls.builtins.diagnostics.cspell.with({
+								diagnostics_postprocess = function(diagnostic)
+									-- レベルをWARNに変更（デフォルトはERROR）
+									diagnostic.severity = vim.diagnostic.severity["WARN"]
+								end,
+								condition = function()
+									-- cspellが実行できるときのみ有効
+									return vim.fn.executable('cspell') > 0
+								end,
+								extra_args = { '--config', '~/.config/cspell/cspell.json' }
+							})
+						)
+					else
+						table.insert(source_return, null_ls.builtins.diagnostics[package])
 					end
 				end
 
