@@ -26,15 +26,3 @@ zpm load @github/junegunn/fzf
 zpm load @github/Aloxaf/fzf-tab
 
 zpm load @github/zdharma-continuum/fast-syntax-highlighting
-
-
-
-# Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-  printf "Install? [y/N]: "
-  if read -q; then
-    echo; zplug install
-  fi
-fi
-
-zplug load
