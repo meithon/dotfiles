@@ -147,7 +147,7 @@ _deploy() {
 
 	mkdir -p ~/.config
 	for file in ~/dotfiles/config/*; do
-		ln -si "$file" ~/config/.
+		ln -si "$file" ~/.config/.
 	done
   # mkdir -p ~/.config/nvim
 
