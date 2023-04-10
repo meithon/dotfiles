@@ -2,12 +2,12 @@
 
 trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
 
-set -euo pipefail
-
-# set dotfiles path as default variable
 if [ -z "${DOTPATH:-}" ]; then
     DOTPATH=$HOME/dotfiles; export DOTPATH
 fi
+
+# set dotfiles path as default variable
+set -euo pipefail
 
 # load lib functions
 # use colors on terminal
@@ -57,15 +57,15 @@ log() {
 }
 
 # check package & return flag
-is_exists() {
-  which "$1" >/dev/null 2>&1
-  return $?
-}
+DOTFILES_GITHUB="https://github.com/MeiWagatsuma/dotfiles"
 
 
 
 ### Start install script
-DOTFILES_GITHUB="https://github.com/MeiWagatsuma/dotfiles"; export DOTFILES_GITHUB
+is_exists() {
+  which "$1" >/dev/null 2>&1
+  return $?
+}; export DOTFILES_GITHUB
 
 dotfiles_logo='
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
@@ -140,16 +140,25 @@ _deploy() {
     error "$DOTPATH: not found"
     exit 1
   fi
+	shopt -s dotglob
+	for file in ~/dotfiles/home/*; do
+		ln -si "$file" ~/
+	done
 
-  mkdir -p ~/.config/nvim
-  ln -si $DOTPATH/nvim/init.lua ~/.config/nvim/.
-  ln -sni $DOTPATH/nvim/lua ~/.config/nvim/.
-  ln -sni $DOTPATH/sketchybar ~/.config/.
-  ln -si $DOTPATH/.zshrc ~/.zshrc
-  ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
-  ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
-  ln -si $DOTPATH/.yabairc ~/.yabairc
-  ln -si $DOTPATH/.skhdrc ~/.skhdrc
+	mkdir -p ~/.config
+	for file in ~/dotfiles/config/*; do
+		ln -si "$file" ~/config/.
+	done
+  # mkdir -p ~/.config/nvim
+
+  # ln -si $DOTPATH/nvim/init.lua ~/.config/nvim/.
+  # ln -sni $DOTPATH/nvim/lua ~/.config/nvim/.
+  # ln -sni $DOTPATH/sketchybar ~/.config/.
+  # ln -si $DOTPATH/.zshrc ~/.zshrc
+  # ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
+  # ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
+  # ln -si $DOTPATH/.yabairc ~/.yabairc
+  # ln -si $DOTPATH/.skhdrc ~/.skhdrc
 
   info "Deployed!"
 }
