@@ -1,29 +1,31 @@
-#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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 zplug
-source ~/.zplug/init.zsh
-zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+if [[ ! -f ~/.zpm/zpm.zsh ]]; then
+  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
+fi
+source ~/.zpm/zpm.zsh
+
 
 # 非同期処理できるようになる
-zplug "mafredri/zsh-async"
+zpm load @github/mafredri/zsh-async
 
-zplug "romkatv/powerlevel10k", as:theme, depth:1
+zpm load @github/romkatv/powerlevel10k
 
-zplug "agkozak/zsh-z"
+zpm load @github/agkozak/zsh-z
 # 過去に入力したコマンドの履歴が灰色のサジェストで出る
-zplug "zsh-users/zsh-autosuggestions"
+zpm load @github/zsh-users/zsh-autosuggestions
 # 補完強化
-zplug "zsh-users/zsh-completions"
+zpm load @github/zsh-users/zsh-completions
 # 256色表示にする
-zplug "chrissicool/zsh-256color"
+zpm load @github/chrissicool/zsh-256color
 # 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zpm load @github/zsh-users/zsh-syntax-highlighting
 
-zplug "BurntSushi/ripgrep"
+zpm load @github/BurntSushi/ripgrep
 
-zplug "junegunn/fzf"
+zpm load @github/junegunn/fzf
 
-zplug "Aloxaf/fzf-tab"
+zpm load @github/Aloxaf/fzf-tab
 
-zplug "zdharma-continuum/fast-syntax-highlighting", as:theme
+zpm load @github/zdharma-continuum/fast-syntax-highlighting
 
 
 
