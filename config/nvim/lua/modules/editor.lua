@@ -1,5 +1,12 @@
 return {
 	{
+		"sindrets/diffview.nvim",
+		dependencies = "nvim-lua/plenary.nvim",
+		config = function()
+			vim.keymap.set('n', '<leader>gl', [[:DiffviewOpen<cr>]])
+		end
+	},
+	{
 		"simeji/winresizer",
 	},
 	{
