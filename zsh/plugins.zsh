@@ -1,28 +1,29 @@
-if [[ ! -f ~/.zpm/zpm.zsh ]]; then
-  git clone --recursive https://github.com/zpm-zsh/zpm ~/.zpm
-fi
-source ~/.zpm/zpm.zsh
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
 
 
 # 非同期処理できるようになる
-zpm load @github/mafredri/zsh-async
+zinit load mafredri/zsh-async
 
-zpm load @github/romkatv/powerlevel10k
+zinit ice depth"1"
+zinit light romkatv/powerlevel10k
 
-zpm load @github/agkozak/zsh-z
+zinit load agkozak/zsh-z
 # 過去に入力したコマンドの履歴が灰色のサジェストで出る
-zpm load @github/zsh-users/zsh-autosuggestions
+zinit load zsh-users/zsh-autosuggestions
 # 補完強化
-zpm load @github/zsh-users/zsh-completions
+zinit load zsh-users/zsh-completions
 # 256色表示にする
-zpm load @github/chrissicool/zsh-256color
+zinit load chrissicool/zsh-256color
 # 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
-zpm load @github/zsh-users/zsh-syntax-highlighting
+zinit load zsh-users/zsh-syntax-highlighting
 
-zpm load @github/BurntSushi/ripgrep
+zinit load BurntSushi/ripgrep
 
-zpm load @github/junegunn/fzf
+zinit load junegunn/fzf
 
-zpm load @github/Aloxaf/fzf-tab
+zinit load Aloxaf/fzf-tab
 
-zpm load @github/zdharma-continuum/fast-syntax-highlighting
+zinit load zdharma-continuum/fast-syntax-highlighting
