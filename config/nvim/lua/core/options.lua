@@ -17,6 +17,8 @@ local function load_options()
 		undodir = HOME_PATH .. "/.vim/undodir",
 		cursorline = true,
 		swapfile = false,
+		pumblend = 25,
+		winblend = 25
 	}
 	for name, value in pairs(global_local) do
 		vim.o[name] = value
