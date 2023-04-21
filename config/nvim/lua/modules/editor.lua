@@ -3,31 +3,31 @@ return {
 		"sindrets/diffview.nvim",
 		dependencies = "nvim-lua/plenary.nvim",
 		config = function()
-			vim.keymap.set('n', '<leader>gl', [[:DiffviewOpen<cr>]])
-		end
+			vim.keymap.set("n", "<leader>gl", [[:DiffviewOpen<cr>]])
+		end,
 	},
 	{
 		"simeji/winresizer",
 	},
 	{
-		'jghauser/fold-cycle.nvim',
+		"jghauser/fold-cycle.nvim",
 		config = function()
-			require('fold-cycle').setup({
+			require("fold-cycle").setup({
 				open_if_max_closed = true, -- closing a fully closed fold will open it
 				close_if_max_opened = true, -- opening a fully open fold will close it
-				softwrap_movement_fix = false -- see below
+				softwrap_movement_fix = false, -- see below
 			})
 
-			vim.keymap.set('n', '<tab>',
-				function() return require('fold-cycle').open() end,
-				{ silent = true, desc = 'Fold-cycle: open folds' })
-			vim.keymap.set('n', '<s-tab>',
-				function() return require('fold-cycle').close() end,
-				{ silent = true, desc = 'Fold-cycle: close folds' })
-			vim.keymap.set('n', 'zC',
-				function() return require('fold-cycle').close_all() end,
-				{ remap = true, silent = true, desc = 'Fold-cycle: close all folds' })
-		end
+			vim.keymap.set("n", "<tab>", function()
+				return require("fold-cycle").open()
+			end, { silent = true, desc = "Fold-cycle: open folds" })
+			vim.keymap.set("n", "<s-tab>", function()
+				return require("fold-cycle").close()
+			end, { silent = true, desc = "Fold-cycle: close folds" })
+			vim.keymap.set("n", "zC", function()
+				return require("fold-cycle").close_all()
+			end, { remap = true, silent = true, desc = "Fold-cycle: close all folds" })
+		end,
 	},
 	{
 		"kevinhwang91/nvim-ufo",
@@ -175,7 +175,7 @@ return {
 				playground = {
 					enable = true,
 					disable = {},
-					updatetime = 25,    -- Debounced time for highlighting nodes in the playground from source code
+					updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
 					persist_queries = false, -- Whether the query persists across vim sessions
 					keybindings = {
 						toggle_query_editor = "o",
@@ -365,9 +365,9 @@ return {
 		config = function()
 			require("better_escape").setup({
 				mapping = { "jk", "kj" }, -- a table with mappings to use
-				timeout = 200,         -- the time in which the keys must be hit in ms. Use option timeoutlen by default
+				timeout = 200, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
 				clear_empty_lines = false, -- clear line after escaping if there is only whitespace
-				keys = "<Esc>",        -- keys used for escaping, if it is a function will use the result everytime
+				keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
 			})
 		end,
 	},
