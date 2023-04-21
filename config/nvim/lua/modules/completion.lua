@@ -167,7 +167,7 @@ return {
 		event = "InsertEnter",
 		module = { "cmp" },
 		dependencies = {
-			{ "onsails/lspkind.nvim",              module = { "lspkind" } },
+			{ "onsails/lspkind.nvim", module = { "lspkind" } },
 			{ "lukas-reineke/cmp-under-comparator" },
 			{ "saadparwaiz1/cmp_luasnip" },
 			{
@@ -177,7 +177,7 @@ return {
 					require("luasnip.loaders.from_vscode").lazy_load()
 				end,
 			},
-			{ "hrsh7th/cmp-nvim-lsp",      module = { "cmp_nvim_lsp" } },
+			{ "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
 			{ "hrsh7th/cmp-nvim-lua" },
 			{ "andersevenrud/cmp-tmux" },
 			{ "hrsh7th/cmp-path" },
@@ -290,7 +290,7 @@ return {
 				sources = {
 					{ name = "nvim_lsp" },
 					{ name = "spell" },
-					{ name = "luasnip",    option = { use_show_condition = false } },
+					{ name = "luasnip", option = { use_show_condition = false } },
 					{ name = "cmp_tabnine" },
 					{ name = "buffer" },
 					{ name = "path" },
@@ -423,15 +423,18 @@ return {
 						)
 					elseif package == "cspell" then
 						-- vim辞書がなければダウンロード
-						if vim.fn.filereadable('~/.local/share/cspell/vim.txt.gz') ~= 1 then
-							local vim_dictionary_url = 'https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz'
-							io.popen('curl -fsSLo ~/.local/share/cspell/vim.txt.gz --create-dirs ' .. vim_dictionary_url)
+						if vim.fn.filereadable("~/.local/share/cspell/vim.txt.gz") ~= 1 then
+							local vim_dictionary_url =
+								"https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz"
+							io.popen(
+								"curl -fsSLo ~/.local/share/cspell/vim.txt.gz --create-dirs " .. vim_dictionary_url
+							)
 						end
 
 						-- ユーザー辞書がなければ作成
-						if vim.fn.filereadable('~/.local/share/cspell/user.txt') ~= 1 then
-							io.popen('mkdir -p ~/.local/share/cspell')
-							io.popen('touch ~/.local/share/cspell/user.txt')
+						if vim.fn.filereadable("~/.local/share/cspell/user.txt") ~= 1 then
+							io.popen("mkdir -p ~/.local/share/cspell")
+							io.popen("touch ~/.local/share/cspell/user.txt")
 						end
 						table.insert(
 							source_return,
@@ -442,9 +445,9 @@ return {
 								end,
 								condition = function()
 									-- cspellが実行できるときのみ有効
-									return vim.fn.executable('cspell') > 0
+									return vim.fn.executable("cspell") > 0
 								end,
-								extra_args = { '--config', '~/.config/cspell/cspell.json' }
+								extra_args = { "--config", "~/.config/cspell/cspell.json" },
 							})
 						)
 					else
@@ -545,7 +548,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		event = "BufReadPre",
 		dependencies = {
-			{ "neovim/nvim-lspconfig",    module = "lspconfig" },
+			{ "neovim/nvim-lspconfig", module = "lspconfig" },
 			{ "ray-x/lsp_signature.nvim", module = "lsp_signature" },
 		},
 		config = function()

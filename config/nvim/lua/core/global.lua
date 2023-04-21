@@ -19,7 +19,7 @@ local LINTER = {
 	-- go
 	"staticcheck",
 	"protolint",
-	"cspell"
+	"cspell",
 }
 local CODE_ACTION = {
 	-- go
