@@ -284,18 +284,23 @@ return {
 	},
 	{
 		"nvim-telescope/telescope.nvim",
-		module = { "telescope" },
-		cmd = { "Telescope" },
 		dependencies = {
-			{ "nvim-lua/plenary.nvim", module = { "plenary" } },
-			{ "nvim-lua/popup.nvim", module = { "popup" } },
+			{ "nvim-lua/plenary.nvim" },
+			{ "nvim-lua/popup.nvim" },
+			{ "nvim-telescope/telescope-ui-select.nvim" }
 		},
 		config = function()
 			require("telescope").setup({
 				defaults = {
 					file_ignore_patterns = { "./.git/", "node_modules/" },
 				},
+				extensions = {
+					["ui-select"] = {
+						require("telescope.themes").get_dropdown {}
+					}
+				}
 			})
+			require("telescope").load_extension("ui-select")
 		end,
 	},
 	{
