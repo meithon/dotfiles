@@ -13,7 +13,7 @@ local FORMATTER = {
 }
 local LINTER = {
 	"eslint_d",
-	"luacheck",
+	"selene",
 	"revive",
 	"jsonlint",
 	-- go
