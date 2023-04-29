@@ -55,6 +55,8 @@ local map = {
 	["n|<Leader>fg"] = map_cmd(":Telescope git_files<CR>"):with_noremap(),
 	["n|<Leader>fp"] = map_cmd(":Telescope find_files<CR>"):with_noremap(),
 	["n|<Leader><Tab>"] = map_cmd(":Telescope buffers<CR>"):with_noremap(),
+	["n|<Leader>ls"] = map_cmd(":Telescope lsp_document_symbols<CR>"):with_noremap(),
+	["n|<Leader>lds"] = map_cmd(":Telescope lsp_dynamic_workspace_symbols<CR>"):with_noremap(),
 	-- Tablular
 	["v|a"] = map_cmd(":Tabularize"):with_noremap(),
 	["v|a,"] = map_cmd(":Tabularize /,<CR>"):with_noremap(),
