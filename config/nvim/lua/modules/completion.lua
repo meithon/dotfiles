@@ -163,6 +163,16 @@ end
 
 return {
 	{
+		'simrat39/rust-tools.nvim',
+		filetypes = "rust",
+		dependencies = 'neovim/nvim-lspconfig',
+		config = function()
+			local rt = require("rust-tools")
+			rt.setup()
+			rt.inlay_hints.enable()
+		end,
+	},
+	{
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
 		module = { "cmp" },
