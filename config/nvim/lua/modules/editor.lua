@@ -1,5 +1,12 @@
 return {
 	{
+		"folke/persistence.nvim",
+		event = "BufReadPre",
+		opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" } },
+		-- stylua: ignore
+		config = true
+	},
+	{
 		"sindrets/diffview.nvim",
 		dependencies = "nvim-lua/plenary.nvim",
 		config = function()
