@@ -5,6 +5,7 @@ return {
 		opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" } },
 		-- stylua: ignore
 		config = true
+,
 	},
 	{
 		"sindrets/diffview.nvim",
