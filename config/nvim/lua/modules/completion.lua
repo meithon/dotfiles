@@ -163,6 +163,10 @@ end
 
 return {
 	{
+		"folke/neodev.nvim",
+		config = true,
+	},
+	{
 		"simrat39/rust-tools.nvim",
 		filetypes = "rust",
 		dependencies = "neovim/nvim-lspconfig",
