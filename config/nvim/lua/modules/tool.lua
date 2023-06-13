@@ -1,5 +1,11 @@
 return {
 	{
+		"voldikss/vim-translator",
+		config = function()
+			vim.g.translator_target_lang = "ja"
+		end,
+	},
+	{
 		"aduros/ai.vim",
 	},
 	{
