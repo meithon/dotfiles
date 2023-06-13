@@ -1,5 +1,15 @@
 return {
 	{
+		"christoomey/vim-tmux-navigator",
+		config = function()
+			vim.g.tmux_navigator_no_mappings = 1
+			local kopts = { noremap = true, silent = true }
+			vim.api.nvim_set_keymap("n", "<C-w>h", ":TmuxNavigateLeft<CR>", kopts)
+			vim.api.nvim_set_keymap("n", "<C-w>j", ":TmuxNavigateDown<CR>", kopts)
+			vim.api.nvim_set_keymap("n", "<C-w>k", ":TmuxNavigateUp<CR>", kopts)
+			vim.api.nvim_set_keymap("n", "<C-w>l", ":TmuxNavigateRight<CR>", {})
+		end,
+	},
 	{
 		-- Manage sessions
 		"folke/persistence.nvim",
