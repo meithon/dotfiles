@@ -3,6 +3,10 @@ local map_cmd = bind.map_cmd
 local globals = require("core.global")
 
 local map = {
+	-- persistence *Settion manager
+	["n|<leader>qs"] = map_cmd([[:lua require("persistence").load()<CR>]]),
+	["n|<leader>ql"] = map_cmd([[:lua require("persistence").load({ last = true })<CR>]]),
+	["n|<leader>qd"] = map_cmd([[:lua require("persistence").stop()<CR>]]),
 	--Tabline
 	["n|<C-w>r"] = map_cmd(":TablineTabRename "):with_noremap():with_silent(),
 	-- Close-buffers
