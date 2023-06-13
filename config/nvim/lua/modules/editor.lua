@@ -98,79 +98,8 @@ return {
 	},
 	{
 		"lewis6991/gitsigns.nvim",
-		dependencies = "petertriho/nvim-scrollbar",
 		config = function()
 			require("gitsigns").setup()
-			require("scrollbar.handlers.gitsigns").setup()
-		end,
-	},
-	{
-		"petertriho/nvim-scrollbar",
-		dependencies = "kevinhwang91/nvim-hlslens",
-		config = function()
-			local colors = require("tokyonight.colors").setup()
-
-			require("scrollbar").setup({
-				handle = {
-
-					color = colors.bg_highlight,
-				},
-				marks = {
-					Search = { color = colors.orange },
-					Error = { color = colors.error },
-					Warn = { color = colors.warning },
-					Info = { color = colors.info },
-					Hint = { color = colors.hint },
-					Misc = { color = colors.purple },
-				},
-				handlers = {
-					cursor = true,
-					diagnostic = false,
-					gitsigns = true, -- Requires gitsigns
-					handle = true,
-					search = true, -- Requires hlslens
-					ale = false, -- Requires ALE
-				},
-			})
-			require("scrollbar.handlers.search").setup()
-			vim.cmd([[
-        augroup scrollbar_search_hide
-          autocmd!
-          autocmd CmdlineLeave : lua require('scrollbar.handlers.search').handler.hide()
-        augroup END
-      ]])
-		end,
-	},
-	{
-		"kevinhwang91/nvim-hlslens",
-		module = true,
-		config = function()
-			require("hlslens").setup({
-				build_position_cb = function(plist, _, _, _)
-					require("scrollbar.handlers.search").handler.show(plist.start_pos)
-				end,
-			})
-
-			local kopts = { noremap = true, silent = true }
-
-			vim.api.nvim_set_keymap(
-				"n",
-				"n",
-				[[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
-				kopts
-			)
-			vim.api.nvim_set_keymap(
-				"n",
-				"N",
-				[[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
-				kopts
-			)
-			vim.api.nvim_set_keymap("n", "*", [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			vim.api.nvim_set_keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			vim.api.nvim_set_keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-			vim.api.nvim_set_keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-
-			vim.api.nvim_set_keymap("n", "<Leader>l", "<Cmd>noh<CR>", kopts)
 		end,
 	},
 	{
