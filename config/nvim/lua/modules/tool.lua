@@ -9,6 +9,24 @@ return {
 		"aduros/ai.vim",
 	},
 	{
+		name = "mover.nvim",
+		dir = "~/workspace/mover.nvim//",
+		dev = true,
+		lazy = false,
+		config = function()
+			require("mover").setup()
+		end,
+	},
+	{
+		name = "say-hello.nvim",
+		dir = "~/workspace/say-hello.nvim//",
+		dev = true,
+		lazy = false,
+		config = function()
+			require("say-hello").setup()
+		end,
+	},
+	{
 		-- HIstory of curtsor position
 		"cbochs/portal.nvim",
 		-- Optional dependencies
@@ -36,6 +54,17 @@ return {
 				},
 			})
 			vim.api.nvim_set_keymap("n", "<C-l>", [[<Cmd>Portal jumplist forward<CR>]], {})
+		end,
+	},
+	{
+		"mrjones2014/legendary.nvim",
+		config = function()
+			require("legendary").setup({
+				-- TODO: move keymap from keymap.lua here
+				keymaps = {
+					{ "<leader>ff", ":Telescope find_files", description = "Find files" },
+				},
+			})
 		end,
 	},
 	{
@@ -147,6 +176,7 @@ return {
 						close_in_preview = "<ESC>",
 					},
 				},
+				symbol_in_winbar = { enable = false },
 			})
 		end,
 	},
@@ -340,6 +370,20 @@ return {
 				},
 			})
 			require("telescope").load_extension("ui-select")
+		end,
+	},
+	{
+		"princejoogie/dir-telescope.nvim",
+		-- telescope.nvim is a required dependency
+		dependencies = { "nvim-telescope/telescope.nvim" },
+		config = function()
+			require("dir-telescope").setup({
+				-- these are the default options set
+				hidden = true,
+				no_ignore = false,
+				show_preview = true,
+			})
+			require("telescope").load_extension("dir")
 		end,
 	},
 	{
