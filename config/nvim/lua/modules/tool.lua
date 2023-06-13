@@ -1,5 +1,8 @@
 return {
 	{
+		"aduros/ai.vim",
+	},
+	{
 		-- HIstory of curtsor position
 		"cbochs/portal.nvim",
 		-- Optional dependencies
