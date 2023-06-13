@@ -1,5 +1,34 @@
 return {
 	{
+		"cbochs/portal.nvim",
+		-- Optional dependencies
+		dependencies = {
+			"cbochs/grapple.nvim",
+			"ThePrimeagen/harpoon",
+		},
+		config = function()
+			require("portal").setup({
+				escape = {
+					["<esc>"] = true,
+					["q"] = true,
+					["<C-i>"] = true,
+					["<C-o>"] = true,
+				},
+				labels = { "a", "s", "d", "f", "g" },
+				window_options = {
+					relative = "cursor",
+					width = 80,
+					height = 8,
+					col = 5,
+					focusable = false,
+					border = "single",
+					noautocmd = true,
+				},
+			})
+			vim.api.nvim_set_keymap("n", "<C-l>", [[<Cmd>Portal jumplist forward<CR>]], {})
+		end,
+	},
+	{
 		"rest-nvim/rest.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()

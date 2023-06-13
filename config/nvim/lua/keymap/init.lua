@@ -7,6 +7,9 @@ local map = {
 	["n|<leader>qs"] = map_cmd([[:lua require("persistence").load()<CR>]]),
 	["n|<leader>ql"] = map_cmd([[:lua require("persistence").load({ last = true })<CR>]]),
 	["n|<leader>qd"] = map_cmd([[:lua require("persistence").stop()<CR>]]),
+	--Portal
+	["n|<C-o>"] = map_cmd(":Portal jumplist backward<cr>"):with_noremap():with_silent(),
+	["n|<C-l>"] = map_cmd(":Portal jumplist forward<cr>"):with_noremap():with_silent(),
 	--Tabline
 	["n|<C-w>r"] = map_cmd(":TablineTabRename "):with_noremap():with_silent(),
 	-- Close-buffers
