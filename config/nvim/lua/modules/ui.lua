@@ -1,5 +1,15 @@
 return {
 	{
+		"danilamihailov/beacon.nvim",
+		config = function()
+			vim.g.beacon_size = 120
+			vim.g.beacon_timeout = 2000
+			vim.g.beacon_fade_interval = 4
+			vim.g.beacon_start_opacity = 40
+			vim.cmd([[highlight Beacon guibg=#ff00b7 ctermbg=15]])
+		end,
+	},
+	{
 		"xiyaowong/transparent.nvim",
 		config = function()
 			require("transparent").setup({
