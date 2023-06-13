@@ -27,6 +27,6 @@ zinit load BurntSushi/ripgrep
 
 zinit load junegunn/fzf
 
-zinit load Aloxaf/fzf-tab
+zinit light Aloxaf/fzf-tab
 
 zinit load zdharma-continuum/fast-syntax-highlighting
