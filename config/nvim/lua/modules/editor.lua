@@ -1,11 +1,15 @@
 return {
 	{
+	{
+		-- Manage sessions
 		"folke/persistence.nvim",
-		event = "BufReadPre",
 		opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" } },
 		-- stylua: ignore
-		config = true
-,
+		config = function()
+			require("persistence").setup()
+			vim.api.nvim_create_user_command("RestoreLastSession", require("persistence").load, {})
+		end
+		,
 	},
 	{
 		"sindrets/diffview.nvim",

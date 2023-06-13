@@ -145,6 +145,7 @@ return {
 				{ g = "Git" },
 				{ d = "DockerToolsOpen" },
 				{ f = "Telescope find_files" },
+				{ s = "RestoreLastSession" },
 			}
 		end,
 	},
