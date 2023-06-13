@@ -15,6 +15,7 @@ local LINTER = {
 	"eslint_d",
 	"revive",
 	"jsonlint",
+	"vint",
 	-- go
 	"staticcheck",
 	"protolint",
@@ -29,6 +30,7 @@ local LSP = {
 	"typescript-language-server",
 	-- go
 	"gopls",
+	"vim-language-server",
 	"rust-analyzer",
 }
 local ENABLE_COC = false
