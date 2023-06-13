@@ -1,0 +1,12 @@
+#!/bin/sh
+
+echo "Running pre-commit checks..."
+
+result=$(stylua config/nvim/lua; echo $?)
+
+if [ $result -eq 0 ]; then
+  echo "Pre-commit passed, committing changes..."
+else
+  echo "Pre-commit failed! Aborting commit."
+  exit 1 
+fi
