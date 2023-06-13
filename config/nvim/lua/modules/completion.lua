@@ -225,6 +225,21 @@ return {
 					})
 				end,
 			},
+			{
+				"zbirenbaum/copilot-cmp",
+				config = true,
+				dependencies = {
+					{
+						"zbirenbaum/copilot.lua",
+						config = function()
+							require("copilot").setup({
+								suggestion = { enabled = true },
+								panel = { enabled = true },
+							})
+						end,
+					},
+				},
+			},
 		},
 		config = function()
 			local cmp = require("cmp")
@@ -302,6 +317,11 @@ return {
 					end, { "i", "s" }),
 				},
 				sources = {
+					{
+						name = "copilot",
+						-- keyword_length = 0,
+						max_item_count = 3,
+					},
 					{ name = "nvim_lsp" },
 					{ name = "spell" },
 					{ name = "luasnip", option = { use_show_condition = false } },
@@ -312,8 +332,12 @@ return {
 					{ name = "treesitter" },
 				},
 				formatting = {
+					label = require("copilot_cmp.format").format_label_text,
+					insert_text = require("copilot_cmp.format").format_insert_text,
+					preview = require("copilot_cmp.format").deindent,
 					format = function(entry, vim_item)
 						local kind_icons = {
+							Copilot = "",
 							Text = "",
 							Method = "",
 							Function = "",
@@ -359,6 +383,7 @@ return {
 				sorting = {
 					priority_weight = 2,
 					comparators = {
+						require("copilot_cmp.comparators").prioritize,
 						compare.offset,
 						compare.exact,
 						compare.score,
