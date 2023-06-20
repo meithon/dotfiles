@@ -158,29 +158,6 @@ return {
 		end,
 	},
 	{
-		"glepnir/lspsaga.nvim",
-		event = "LspAttach",
-		module = { "lspsaga.diagnostic" },
-		dependencies = { { "nvim-tree/nvim-web-devicons" } },
-		config = function()
-			require("lspsaga").setup({
-				finder = {
-					keys = {
-						jump_to = "p",
-						edit = { "i", "<CR>" },
-						vsplit = "v",
-						split = "s",
-						tabe = "t",
-						tabnew = "r",
-						quit = { "q", "<ESC>" },
-						close_in_preview = "<ESC>",
-					},
-				},
-				symbol_in_winbar = { enable = false },
-			})
-		end,
-	},
-	{
 		"kkvh/vim-docker-tools",
 		cmd = "DockerToolsOpen",
 	},
