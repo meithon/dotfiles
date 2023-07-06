@@ -16,7 +16,6 @@ local function load_options()
 		undofile = true,
 		undodir = HOME_PATH .. "/.vim/undodir",
 		cursorline = true,
-		swapfile = false,
 		pumblend = 25,
 		winblend = 25,
 	}
