@@ -532,6 +532,9 @@ return {
 				return source_return
 			end
 
+			vim.api.nvim_create_user_command("LspFormat", function()
+				vim.lsp.buf.format()
+			end, {})
 			-- if you want to set up formatting on save, you can use this as a callback
 			local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
