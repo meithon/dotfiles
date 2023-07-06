@@ -110,7 +110,6 @@ else
 	local lspmap = {
 		["n|gh"] = map_cmd(":Lspsaga lsp_finder<CR>"):with_noremap():with_silent(),
 		["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
-		["n|gr"] = map_cmd(":Lspsaga rename<CR>"):with_noremap():with_silent(),
 		["n|gd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
 		["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
 		-- Trouble
