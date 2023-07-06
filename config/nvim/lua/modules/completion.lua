@@ -163,6 +163,15 @@ end
 
 return {
 	{
+		"smjonas/inc-rename.nvim",
+		config = function()
+			require("inc_rename").setup()
+			vim.keymap.set("n", "gr", function()
+				return ":IncRename " .. vim.fn.expand("<cword>")
+			end, { expr = true })
+		end,
+	},
+	{
 		"glepnir/lspsaga.nvim",
 		event = "LspAttach",
 		module = { "lspsaga.diagnostic" },
