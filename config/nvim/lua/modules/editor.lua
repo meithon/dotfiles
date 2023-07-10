@@ -29,7 +29,15 @@ return {
 		end,
 	},
 	{
-		"simeji/winresizer",
+		"mrjones2014/smart-splits.nvim",
+		config = function()
+			require("smart-splits").setup()
+
+			vim.keymap.set("n", "<C-w>y", [[:SmartResizeLeft20<cr>]])
+			vim.keymap.set("n", "<C-w>u", [[:SmartResizeDown20<cr>]])
+			vim.keymap.set("n", "<C-w>i", [[:SmartResizeUp20<cr>]])
+			vim.keymap.set("n", "<C-w>o", [[:SmartResizeRight20<cr>]])
+		end,
 	},
 	{
 		"jghauser/fold-cycle.nvim",
