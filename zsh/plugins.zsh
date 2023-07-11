@@ -30,3 +30,7 @@ zinit load junegunn/fzf
 zinit light Aloxaf/fzf-tab
 
 zinit load zdharma-continuum/fast-syntax-highlighting
+
+# For postponing loading `fzf`
+zinit ice lucid wait
+zinit snippet OMZP::fzf

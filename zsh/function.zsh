@@ -61,3 +61,48 @@ function fzf-cdr-all() {
         cd $target_dir
     fi
 }
+
+
+## kuber
+function get-name() {
+ awk '{print $1}' | tail -n +2
+}
+function get-crd-name(){
+	kubectl get crd | get-name | fzf
+}
+function get-crd(){
+	kubectl get crd
+}
+function get-ns() {
+	kubectl get ns | awk '{print $1}' | tail -n +2 | fzf
+}
+
+function show-crd(){
+	kubectl get $(get-crd) -o yaml
+}
+
+function get-cr-with-namespaced() {
+	
+}
+
+function show-cr-list() {
+	kubectl get $(get-crd) --all-namespaces
+}
+
+function get-ns() {
+	 awk '{print $1} ' | tail -n +2 | uniq
+}
+
+function get-cr-list-ns() {
+	local crd
+	crd=$(get-crd-name)
+	kubectl get $crd -n $(kubectl get $crd --all-namespaces |  get-ns)
+}
+
+
+# function zshaddhistory() {
+# 	history_item="${${1%%$'\n'}%%$' ###'*} ### ${PWD}"
+#   print -sr ${(z)history_item}
+#   fc -p
+#   return 1
+# }
