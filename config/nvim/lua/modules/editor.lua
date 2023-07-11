@@ -191,10 +191,18 @@ return {
 			"anuvyklack/middleclass",
 		},
 		config = function()
-			vim.o.winwidth = 10
-			vim.o.winminwidth = 10
+			vim.o.winwidth = 5
+			vim.o.winminwidth = 5
 			vim.o.equalalways = false
-			require("windows").setup()
+			require("windows").setup({
+				-- autowidth = {
+				-- 	enable = true,
+				-- 	winwidth = 40, --		        |windows.winwidth|
+				-- 	filetype = { --	      |windows.autowidth.filetype|
+				-- 		help = 2,
+				-- 	},
+				-- },
+			})
 		end,
 	},
 	{
@@ -269,9 +277,9 @@ return {
 		config = function()
 			require("better_escape").setup({
 				mapping = { "jk", "kj" }, -- a table with mappings to use
-				timeout = 200, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
+				timeout = 200,         -- the time in which the keys must be hit in ms. Use option timeoutlen by default
 				clear_empty_lines = false, -- clear line after escaping if there is only whitespace
-				keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
+				keys = "<Esc>",        -- keys used for escaping, if it is a function will use the result everytime
 			})
 		end,
 	},
