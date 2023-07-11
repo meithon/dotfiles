@@ -366,7 +366,7 @@ return {
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		cmd = { "Neotree" },
-		tag = "v2.42",
+		branch = "v2.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
@@ -395,6 +395,27 @@ return {
 			},
 		},
 		config = function()
+			local function getTelescopeOpts(state, path)
+				return {
+					cwd = path,
+					search_dirs = { path },
+					attach_mappings = function(prompt_bufnr, map)
+						local actions = require("telescope.actions")
+						actions.select_default:replace(function()
+							actions.close(prompt_bufnr)
+							local action_state = require("telescope.actions.state")
+							local selection = action_state.get_selected_entry()
+							local filename = selection.filename
+							if filename == nil then
+								filename = selection[1]
+							end
+							-- any way to open the file without triggering auto-close event of neo-tree?
+							require("neo-tree.sources.filesystem").navigate(state, state.path, filename)
+						end)
+						return true
+					end,
+				}
+			end
 			-- Unless you are still migrating, remove the deprecated commands from v1.x
 			vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
 
@@ -409,19 +430,9 @@ return {
 			local commands = require("neo-tree.sources.filesystem.commands")
 			require("neo-tree").setup({
 				close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
-				popup_border_style = "rounded",
 				enable_git_status = true,
 				enable_diagnostics = true,
 				sort_case_insensitive = false, -- used when sorting files and directories in the tree
-				sort_function = nil, -- use a custom function for sorting files and directories in the tree
-				-- sort_function = function (a,b)
-				--       if a.type == b.type then
-				--           return a.path > b.path
-				--       else
-				--           return a.type > b.type
-
-				--       end
-				--   end , -- this sorts files and directories descendantly
 				default_component_configs = {
 					container = {
 						enable_character_fade = true,
@@ -521,8 +532,8 @@ return {
 								end
 							end
 						end,
-						["z"] = "close_all_nodes",
-						--["Z"] = "expand_all_nodes",
+						["H"] = "close_all_nodes",
+						["L"] = "expand_all_nodes",
 						["a"] = {
 							"add",
 							-- this command supports BASH style brace expansion ("x{a,b,c}" -> xa,xb,xc). see `:h neo-tree-file-actions` for details
@@ -544,6 +555,7 @@ return {
 						--    show_path = "none" -- "none", "relative", "absolute"
 						--  }
 						--}
+						-- ["o"] = "fuzzy_sorter",
 						["q"] = "close_window",
 						["R"] = "refresh",
 						["?"] = "show_help",
@@ -553,6 +565,36 @@ return {
 				},
 				nesting_rules = {},
 				filesystem = {
+					find_by_full_path_words = true,
+
+					commands = {
+						telescope_find = function(state)
+							local node = state.tree:get_node()
+							local path = node:get_id()
+							require("telescope.builtin").find_files(getTelescopeOpts(state, path))
+						end,
+						telescope_grep = function(state)
+							local node = state.tree:get_node()
+							local path = node:get_id()
+							require("telescope.builtin").live_grep(getTelescopeOpts(state, path))
+						end,
+						open_and_clear_filter = function(state)
+							local node = state.tree:get_node()
+							if node and node.type == "file" then
+								local file_path = node:get_id()
+								-- reuse built-in commands to open and clear filter
+								local cmds = require("neo-tree.sources.filesystem.commands")
+								cmds.open(state)
+								cmds.clear_filter(state)
+								-- reveal the selected file without focusing the tree
+								require("neo-tree.sources.filesystem").navigate(state, state.path, file_path)
+							end
+						end,
+						fuzzy_sorter = function(state)
+							local filter = require("neo-tree.sources.filesystem.lib.filter")
+							filter.show_filter(state, true, true, true)
+						end,
+					},
 					filtered_items = {
 						visible = false, -- when true, they will just be displayed differently than normal items
 						hide_dotfiles = true,
@@ -585,19 +627,23 @@ return {
 					-- "open_current",  -- netrw disabled, opening a directory opens within the
 					-- window like netrw would, regardless of window.position
 					-- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
-					use_libuv_file_watcher = false, -- This will use the OS level file watchers to detect changes
+					use_libuv_file_watcher = true, -- This will use the OS level file watchers to detect changes
 					-- instead of relying on nvim autocmd events.
 					window = {
 						mappings = {
 							["<bs>"] = "navigate_up",
-							["H"] = "set_root",
+							-- ["H"] = "set_root",
 							["."] = "toggle_hidden",
 							["/"] = "fuzzy_finder",
+							["o"] = "fuzzy_sorter",
 							["D"] = "fuzzy_finder_directory",
 							["f"] = "filter_on_submit",
 							["<c-x>"] = "clear_filter",
-							["gj"] = "prev_git_modified",
-							["gk"] = "next_git_modified",
+							["gk"] = "prev_git_modified",
+							["gj"] = "next_git_modified",
+							--["tf"] = "telescope_find",
+							--["tg"] = "telescope_grep",
+							-- ["o"] = "open_and_clear_filter",
 						},
 					},
 				},
@@ -618,107 +664,178 @@ return {
 					window = {
 						position = "float",
 						mappings = {
-							["A"] = "git_add_all",
+							-- ["A"] = "git_add_all",
 							["gu"] = "git_unstage_file",
-							["ga"] = "git_add_file",
-							["gr"] = "git_revert_file",
-							["gc"] = "git_commit",
-							["gp"] = "git_push",
-							["gg"] = "git_commit_and_push",
+							["gs"] = "git_stage_file",
+							-- ["ga"] = "git_add_file",
+							-- ["gr"] = "git_revert_file",
+							-- ["gc"] = "git_commit",
+							-- ["gp"] = "git_push",
+							-- ["gg"] = "git_commit_and_push",
 						},
 					},
 				},
 			})
-
-			vim.cmd([[nnoremap \ :Neotree reveal<cr>]])
 		end,
 	},
-	-- {
-	-- 	"nvim-tree/nvim-tree.lua",
-	-- 	dependencies = {
-	-- 		"nvim-tree/nvim-web-devicons", -- optional, for file icons
-	-- 	},
-	-- 	cmd = { "NvimTreeOpen", "NvimTreeToggle" },
-	-- 	config = function()
-	-- 		local lib = require("nvim-tree.lib")
-	-- 		local view = require("nvim-tree.view")
-	-- 		local api = require("nvim-tree.api")
-	--
-	-- 		local function collapse_all()
-	-- 			require("nvim-tree.actions.tree-modifiers.collapse-all").fn()
-	-- 		end
-	--
-	-- 		local function edit_or_open()
-	-- 			-- open as vsplit on current node
-	-- 			local action = "edit"
-	-- 			local node = lib.get_node_at_cursor()
-	--
-	-- 			-- Just copy what's done normally with vsplit
-	-- 			if node.link_to and not node.nodes then
-	-- 				require("nvim-tree.actions.node.open-file").fn(action, node.link_to)
-	-- 			elseif node.nodes ~= nil then
-	-- 				lib.expand_or_collapse(node)
-	-- 			else
-	-- 				require("nvim-tree.actions.node.open-file").fn(action, node.absolute_path)
-	-- 			end
-	-- 		end
-	--
-	-- 		local function vsplit_preview()
-	-- 			-- open as vsplit on current node
-	-- 			local action = "vsplit"
-	-- 			local node = lib.get_node_at_cursor()
-	--
-	-- 			-- Just copy what's done normally with vsplit
-	-- 			if node.link_to and not node.nodes then
-	-- 				require("nvim-tree.actions.node.open-file").fn(action, node.link_to)
-	-- 			elseif node.nodes ~= nil then
-	-- 				lib.expand_or_collapse(node)
-	-- 			else
-	-- 				require("nvim-tree.actions.node.open-file").fn(action, node.absolute_path)
-	-- 			end
-	--
-	-- 			-- Finally refocus on tree if it was lost
-	-- 			view.focus()
-	-- 		end
-	--
-	-- 		local function edit_or_cd()
-	-- 			-- open as vsplit on current node
-	-- 			local action = "edit"
-	-- 			local node = lib.get_node_at_cursor()
-	--
-	-- 			-- Just copy what's done normally with vsplit
-	-- 			if node.link_to and not node.nodes then
-	-- 				require("nvim-tree.actions.node.open-file").fn(action, node.link_to)
-	-- 			elseif node.nodes ~= nil then
-	-- 				api.tree.change_root_to_node(node)
-	-- 			else
-	-- 				require("nvim-tree.actions.node.open-file").fn(action, node.absolute_path)
-	-- 			end
-	-- 		end
-	-- 		require("nvim-tree").setup({
-	-- 			view = {
-	-- 				mappings = {
-	-- 					custom_only = false,
-	-- 					list = {
-	-- 						{ key = "l", action = "edit", action_cb = edit_or_open },
-	-- 						{ key = "L", action = "vsplit_preview", action_cb = vsplit_preview },
-	-- 						{ key = "h", action = "close_node" },
-	-- 						{ key = "H", action = "collapse_all", action_cb = collapse_all },
-	-- 						{ key = "<CR>", action = "cd", action_cb = edit_or_cd },
-	-- 						{ key = "<BS>", action = "dir_up" },
-	-- 						{ key = "v", action = "vsplit" },
-	-- 						{ key = "s", action = "split" },
-	-- 					},
-	-- 				},
-	-- 			},
-	-- 			actions = {
-	-- 				open_file = {
-	-- 					quit_on_open = false,
-	-- 				},
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
+	{
+		"nvim-tree/nvim-tree.lua",
+		dependencies = {
+			"nvim-tree/nvim-web-devicons", -- optional, for file icons
+		},
+		-- cmd = { "NvimTreeOpen", "NvimTreeToggle" },
+		config = function()
+			function find_directory_and_focus()
+				local actions = require("telescope.actions")
+				local action_state = require("telescope.actions.state")
+
+				local function open_nvim_tree(prompt_bufnr, _)
+					actions.select_default:replace(function()
+						local api = require("nvim-tree.api")
+
+						actions.close(prompt_bufnr)
+						local selection = action_state.get_selected_entry()
+						api.tree.open()
+						api.tree.find_file(selection.cwd .. "/" .. selection.value)
+					end)
+					return true
+				end
+
+				require("telescope.builtin").find_files({
+					find_command = { "fd", "--type", "directory", "--hidden", "--exclude", ".git/*" },
+					attach_mappings = open_nvim_tree,
+				})
+			end
+
+			vim.keymap.set("n", "fd", find_directory_and_focus)
+
+			local api = require("nvim-tree.api")
+			local openfile = require("nvim-tree.actions.node.open-file")
+			local actions = require("telescope.actions")
+			local action_state = require("telescope.actions.state")
+			local treeutils = {}
+
+			local view_selection = function(prompt_bufnr, map)
+				actions.select_default:replace(function()
+					actions.close(prompt_bufnr)
+					local selection = action_state.get_selected_entry()
+					local filename = selection.filename
+					if filename == nil then
+						filename = selection[1]
+					end
+					openfile.fn("preview", filename)
+				end)
+				return true
+			end
+
+			function treeutils.launch_live_grep(opts)
+				return treeutils.launch_telescope("live_grep", opts)
+			end
+
+			function treeutils.launch_find_files(opts)
+				return treeutils.launch_telescope("find_files", opts)
+			end
+
+			function treeutils.launch_telescope(func_name, opts)
+				local telescope_status_ok, _ = pcall(require, "telescope")
+				if not telescope_status_ok then
+					return
+				end
+				local node = api.tree.get_node_under_cursor()
+				local is_folder = node.fs_stat and node.fs_stat.type == "directory" or false
+				local basedir = is_folder and node.absolute_path or vim.fn.fnamemodify(node.absolute_path, ":h")
+				if node.name == ".." and TreeExplorer ~= nil then
+					basedir = TreeExplorer.cwd
+				end
+				opts = opts or {}
+				opts.cwd = basedir
+				opts.search_dirs = { basedir }
+				opts.attach_mappings = view_selection
+				return require("telescope.builtin")[func_name](opts)
+			end
+
+			vim.keymap.set("n", "<c-f>", treeutils.launch_find_files, {})
+			vim.keymap.set("n", "<c-g>", treeutils.launch_live_grep, {})
+
+			local lib = require("nvim-tree.lib")
+			local view = require("nvim-tree.view")
+			local api = require("nvim-tree.api")
+
+			local function collapse_all()
+				require("nvim-tree.actions.tree-modifiers.collapse-all").fn()
+			end
+
+			local function edit_or_open()
+				-- open as vsplit on current node
+				local action = "edit"
+				local node = lib.get_node_at_cursor()
+
+				-- Just copy what's done normally with vsplit
+				if node.link_to and not node.nodes then
+					require("nvim-tree.actions.node.open-file").fn(action, node.link_to)
+				elseif node.nodes ~= nil then
+					lib.expand_or_collapse(node)
+				else
+					require("nvim-tree.actions.node.open-file").fn(action, node.absolute_path)
+				end
+			end
+
+			local function vsplit_preview()
+				-- open as vsplit on current node
+				local action = "vsplit"
+				local node = lib.get_node_at_cursor()
+
+				-- Just copy what's done normally with vsplit
+				if node.link_to and not node.nodes then
+					require("nvim-tree.actions.node.open-file").fn(action, node.link_to)
+				elseif node.nodes ~= nil then
+					lib.expand_or_collapse(node)
+				else
+					require("nvim-tree.actions.node.open-file").fn(action, node.absolute_path)
+				end
+
+				-- Finally refocus on tree if it was lost
+				view.focus()
+			end
+
+			local function edit_or_cd()
+				-- open as vsplit on current node
+				local action = "edit"
+				local node = lib.get_node_at_cursor()
+
+				-- Just copy what's done normally with vsplit
+				if node.link_to and not node.nodes then
+					require("nvim-tree.actions.node.open-file").fn(action, node.link_to)
+				elseif node.nodes ~= nil then
+					api.tree.change_root_to_node(node)
+				else
+					require("nvim-tree.actions.node.open-file").fn(action, node.absolute_path)
+				end
+			end
+			require("nvim-tree").setup({
+				view = {
+					mappings = {
+						custom_only = false,
+						list = {
+							{ key = "l", action = "edit", action_cb = edit_or_open },
+							{ key = "L", action = "vsplit_preview", action_cb = vsplit_preview },
+							{ key = "h", action = "close_node" },
+							{ key = "H", action = "collapse_all_subnodes", action_cb = collapse_all },
+							{ key = "<CR>", action = "cd", action_cb = edit_or_cd },
+							{ key = "<BS>", action = "dir_up" },
+							{ key = "v", action = "vsplit" },
+							{ key = "s", action = "split" },
+						},
+					},
+				},
+				actions = {
+					open_file = {
+						quit_on_open = false,
+					},
+				},
+			})
+		end,
+	},
 	-- {
 	-- 	"obaland/vfiler.vim",
 	--
