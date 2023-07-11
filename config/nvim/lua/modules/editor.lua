@@ -102,7 +102,7 @@ return {
 				playground = {
 					enable = true,
 					disable = {},
-					updatetime = 25,    -- Debounced time for highlighting nodes in the playground from source code
+					updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
 					persist_queries = false, -- Whether the query persists across vim sessions
 					keybindings = {
 						toggle_query_editor = "o",
@@ -300,9 +300,9 @@ return {
 		config = function()
 			require("better_escape").setup({
 				mapping = { "jk", "kj" }, -- a table with mappings to use
-				timeout = 200,         -- the time in which the keys must be hit in ms. Use option timeoutlen by default
+				timeout = 200, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
 				clear_empty_lines = false, -- clear line after escaping if there is only whitespace
-				keys = "<Esc>",        -- keys used for escaping, if it is a function will use the result everytime
+				keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
 			})
 		end,
 	},
