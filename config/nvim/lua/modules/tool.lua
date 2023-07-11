@@ -62,7 +62,11 @@ return {
 			require("legendary").setup({
 				-- TODO: move keymap from keymap.lua here
 				keymaps = {
-					{ "<leader>ff", ":Telescope find_files", description = "Find files" },
+					{
+						"<leader>ff",
+						":Telescope find_files",
+						description = "Find files",
+					},
 				},
 			})
 		end,
@@ -176,7 +180,17 @@ return {
 					win_height = 12,
 					win_vheight = 12,
 					delay_syntax = 80,
-					border_chars = { "┃", "┃", "━", "━", "┏", "┓", "┗", "┛", "█" },
+					border_chars = {
+						"┃",
+						"┃",
+						"━",
+						"━",
+						"┏",
+						"┓",
+						"┗",
+						"┛",
+						"█",
+					},
 					show_title = false,
 					should_preview_cb = function(bufnr, qwinid)
 						local ret = true
@@ -204,8 +218,16 @@ return {
 				},
 				filter = {
 					fzf = {
-						action_for = { ["ctrl-s"] = "split", ["ctrl-t"] = "tab drop" },
-						extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
+						action_for = {
+							["ctrl-s"] = "split",
+							["ctrl-t"] = "tab drop",
+						},
+						extra_opts = {
+							"--bind",
+							"ctrl-o:toggle-all",
+							"--prompt",
+							"> ",
+						},
 					},
 				},
 			})
@@ -222,7 +244,18 @@ return {
 				name = "RGB/HSL/CMYK",
 				max = { 1, 1, 1, 360, 1, 1, 1, 1, 1, 1 },
 				min = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-				delta = { 1 / 255, 1 / 255, 1 / 255, 1, 0.01, 0.01, 0.005, 0.005, 0.005, 0.005 },
+				delta = {
+					1 / 255,
+					1 / 255,
+					1 / 255,
+					1,
+					0.01,
+					0.01,
+					0.005,
+					0.005,
+					0.005,
+					0.005,
+				},
 				bar_name = { "R", "G", "B", "H", "S", "L", "C", "M", "Y", "K" },
 			}, { __index = ColorInput })
 
@@ -384,7 +417,11 @@ return {
 
 							bo = {
 								-- if the file type is one of following, the window will be ignored
-								filetype = { "neo-tree", "neo-tree-popup", "notify" },
+								filetype = {
+									"neo-tree",
+									"neo-tree-popup",
+									"notify",
+								},
 								-- if the buffer type is one of following, the window will be ignored
 								buftype = { "terminal", "quickfix" },
 							},
@@ -505,7 +542,10 @@ return {
 							end
 						end,
 						["<esc>"] = "revert_preview",
-						["P"] = { "toggle_preview", config = { use_float = true } },
+						["P"] = {
+							"toggle_preview",
+							config = { use_float = true },
+						},
 						["s"] = "open_split",
 						["v"] = "open_vsplit",
 						-- ["S"] = "split_with_window_picker",
@@ -702,7 +742,14 @@ return {
 				end
 
 				require("telescope.builtin").find_files({
-					find_command = { "fd", "--type", "directory", "--hidden", "--exclude", ".git/*" },
+					find_command = {
+						"fd",
+						"--type",
+						"directory",
+						"--hidden",
+						"--exclude",
+						".git/*",
+					},
 					attach_mappings = open_nvim_tree,
 				})
 			end
@@ -817,11 +864,27 @@ return {
 					mappings = {
 						custom_only = false,
 						list = {
-							{ key = "l", action = "edit", action_cb = edit_or_open },
-							{ key = "L", action = "vsplit_preview", action_cb = vsplit_preview },
+							{
+								key = "l",
+								action = "edit",
+								action_cb = edit_or_open,
+							},
+							{
+								key = "L",
+								action = "vsplit_preview",
+								action_cb = vsplit_preview,
+							},
 							{ key = "h", action = "close_node" },
-							{ key = "H", action = "collapse_all_subnodes", action_cb = collapse_all },
-							{ key = "<CR>", action = "cd", action_cb = edit_or_cd },
+							{
+								key = "H",
+								action = "collapse_all_subnodes",
+								action_cb = collapse_all,
+							},
+							{
+								key = "<CR>",
+								action = "cd",
+								action_cb = edit_or_cd,
+							},
 							{ key = "<BS>", action = "dir_up" },
 							{ key = "v", action = "vsplit" },
 							{ key = "s", action = "split" },
