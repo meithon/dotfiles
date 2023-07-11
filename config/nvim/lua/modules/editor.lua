@@ -10,16 +10,39 @@ return {
 			vim.api.nvim_set_keymap("n", "<C-w>l", ":TmuxNavigateRight<CR>", {})
 		end,
 	},
+	-- {
+	-- 	'rmagatti/auto-session',
+	-- 	config = function()
+	-- 		require("auto-session").setup {
+	-- 			log_level = "error",
+	-- 			auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+	-- 		}
+	-- 	end
+	-- },
+	-- {
+	-- 	-- Manage sessions
+	-- 	"folke/persistence.nvim",
+	-- 	opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" } },
+	-- 	-- stylua: ignore
+	-- 	config = function()
+	-- 		require("persistence").setup()
+	-- 		vim.api.nvim_create_user_command("RestoreLastSession", require("persistence").load, {})
+	-- 	end,
+	-- },
 	{
-		-- Manage sessions
-		"folke/persistence.nvim",
-		opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals" } },
-		-- stylua: ignore
-		config = function()
-			require("persistence").setup()
-			vim.api.nvim_create_user_command("RestoreLastSession", require("persistence").load, {})
-		end
-		,
+		--		'jedrzejboczar/possession.nvim',
+		--		dependencies = { 'nvim-lua/plenary.nvim' },
+		--		config = function()
+		--			require('possession').setup {
+		--				commands = {
+		--					save = 'SSave',
+		--					load = 'SLoad',
+		--					delete = 'SDelete',
+		--					list = 'SList',
+		--				}
+		--			}
+		--			require('telescope').load_extension('possession')
+		--		end
 	},
 	{
 		"sindrets/diffview.nvim",
@@ -79,7 +102,7 @@ return {
 				playground = {
 					enable = true,
 					disable = {},
-					updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+					updatetime = 25,    -- Debounced time for highlighting nodes in the playground from source code
 					persist_queries = false, -- Whether the query persists across vim sessions
 					keybindings = {
 						toggle_query_editor = "o",
@@ -117,24 +140,24 @@ return {
 
 			-- Normal Mode Swapping:
 			-- Swap The Master Node relative to the cursor with it's siblings, Dot Repeatable
-			vim.keymap.set("n", "<C-k>", function()
-				vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
-				return "g@l"
-			end, { silent = true, expr = true })
-			vim.keymap.set("n", "<C-j>", function()
-				vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
-				return "g@l"
-			end, { silent = true, expr = true })
-
-			-- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
-			vim.keymap.set("n", "<C-l>", function()
-				vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
-				return "g@l"
-			end, { silent = true, expr = true })
-			vim.keymap.set("n", "<C-h>", function()
-				vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
-				return "g@l"
-			end, { silent = true, expr = true })
+			-- vim.keymap.set("n", "<C-k>", function()
+			-- 	vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
+			-- 	return "g@l"
+			-- end, { silent = true, expr = true })
+			-- vim.keymap.set("n", "<C-j>", function()
+			-- 	vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
+			-- 	return "g@l"
+			-- end, { silent = true, expr = true })
+			--
+			-- -- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
+			-- vim.keymap.set("n", "<C-l>", function()
+			-- 	vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
+			-- 	return "g@l"
+			-- end, { silent = true, expr = true })
+			-- vim.keymap.set("n", "<C-h>", function()
+			-- 	vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
+			-- 	return "g@l"
+			-- end, { silent = true, expr = true })
 
 			local opts = { noremap = true, silent = true }
 			-- Visual Selection from Normal Mode
