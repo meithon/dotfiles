@@ -144,18 +144,8 @@ if global.enable_coc then
 				local opts = { silent = true, nowait = true, expr = true }
 				keyset("n", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
 				keyset("n", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
-				keyset(
-					"i",
-					"<C-f>",
-					'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"',
-					opts
-				)
-				keyset(
-					"i",
-					"<C-b>",
-					'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"',
-					opts
-				)
+				keyset("i", "<C-f>", 'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"', opts)
+				keyset("i", "<C-b>", 'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"', opts)
 				keyset("v", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
 				keyset("v", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
 
@@ -163,11 +153,7 @@ if global.enable_coc then
 				vim.api.nvim_create_user_command("Format", "call CocAction('format')", {})
 
 				-- " Add `:Fold` command to fold current buffer
-				vim.api.nvim_create_user_command(
-					"Fold",
-					"call CocAction('fold', <f-args>)",
-					{ nargs = "?" }
-				)
+				vim.api.nvim_create_user_command("Fold", "call CocAction('fold', <f-args>)", { nargs = "?" })
 
 				-- Add `:OR` command for organize imports of the current buffer
 				vim.api.nvim_create_user_command(
@@ -308,8 +294,7 @@ return {
 			compare.lsp_scores = function(entry1, entry2)
 				local diff
 				if entry1.completion_item.score and entry2.completion_item.score then
-					diff = (entry2.completion_item.score * entry2.score)
-							- (entry1.completion_item.score * entry1.score)
+					diff = (entry2.completion_item.score * entry2.score) - (entry1.completion_item.score * entry1.score)
 				else
 					diff = entry2.score - entry1.score
 				end
