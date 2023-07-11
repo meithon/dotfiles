@@ -97,11 +97,11 @@ return {
 						-- at https://github.com/romgrk/fzy-lua-native
 					},
 					highlights = {
-						accent = wilder.make_hl(
-							"WilderAccent",
-							"Pmenu",
-							{ { a = 1 }, { a = 1 }, { foreground = "#f4468f" } }
-						),
+						accent = wilder.make_hl("WilderAccent", "Pmenu", {
+							{ a = 1 },
+							{ a = 1 },
+							{ foreground = "#f4468f" },
+						}),
 					},
 					left = { " ", wilder.popupmenu_devicons() },
 					right = { " ", wilder.popupmenu_scrollbar() },

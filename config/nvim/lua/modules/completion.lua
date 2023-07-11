@@ -47,7 +47,12 @@ if global.enable_coc then
 				end
 
 				local keyset = vim.keymap.set
-				local opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
+				local opts = {
+					silent = true,
+					noremap = true,
+					expr = true,
+					replace_keycodes = false,
+				}
 				keyset(
 					"i",
 					"<TAB>",
@@ -139,8 +144,18 @@ if global.enable_coc then
 				local opts = { silent = true, nowait = true, expr = true }
 				keyset("n", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
 				keyset("n", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
-				keyset("i", "<C-f>", 'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"', opts)
-				keyset("i", "<C-b>", 'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"', opts)
+				keyset(
+					"i",
+					"<C-f>",
+					'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(1)<cr>" : "<Right>"',
+					opts
+				)
+				keyset(
+					"i",
+					"<C-b>",
+					'coc#float#has_scroll() ? "<c-r>=coc#float#scroll(0)<cr>" : "<Left>"',
+					opts
+				)
 				keyset("v", "<C-f>", 'coc#float#has_scroll() ? coc#float#scroll(1) : "<C-f>"', opts)
 				keyset("v", "<C-b>", 'coc#float#has_scroll() ? coc#float#scroll(0) : "<C-b>"', opts)
 
@@ -148,7 +163,11 @@ if global.enable_coc then
 				vim.api.nvim_create_user_command("Format", "call CocAction('format')", {})
 
 				-- " Add `:Fold` command to fold current buffer
-				vim.api.nvim_create_user_command("Fold", "call CocAction('fold', <f-args>)", { nargs = "?" })
+				vim.api.nvim_create_user_command(
+					"Fold",
+					"call CocAction('fold', <f-args>)",
+					{ nargs = "?" }
+				)
 
 				-- Add `:OR` command for organize imports of the current buffer
 				vim.api.nvim_create_user_command(
@@ -213,7 +232,7 @@ return {
 		event = "InsertEnter",
 		module = { "cmp" },
 		dependencies = {
-			{ "onsails/lspkind.nvim", module = { "lspkind" } },
+			{ "onsails/lspkind.nvim",              module = { "lspkind" } },
 			{ "lukas-reineke/cmp-under-comparator" },
 			{ "saadparwaiz1/cmp_luasnip" },
 			{
@@ -223,7 +242,7 @@ return {
 					require("luasnip.loaders.from_vscode").lazy_load()
 				end,
 			},
-			{ "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
+			{ "hrsh7th/cmp-nvim-lsp",      module = { "cmp_nvim_lsp" } },
 			{ "hrsh7th/cmp-nvim-lua" },
 			{ "andersevenrud/cmp-tmux" },
 			{ "hrsh7th/cmp-path" },
@@ -289,7 +308,8 @@ return {
 			compare.lsp_scores = function(entry1, entry2)
 				local diff
 				if entry1.completion_item.score and entry2.completion_item.score then
-					diff = (entry2.completion_item.score * entry2.score) - (entry1.completion_item.score * entry1.score)
+					diff = (entry2.completion_item.score * entry2.score)
+							- (entry1.completion_item.score * entry1.score)
 				else
 					diff = entry2.score - entry1.score
 				end
@@ -356,7 +376,10 @@ return {
 					},
 					{ name = "nvim_lsp" },
 					{ name = "spell" },
-					{ name = "luasnip", option = { use_show_condition = false } },
+					{
+						name = "luasnip",
+						option = { use_show_condition = false },
+					},
 					{ name = "cmp_tabnine" },
 					{ name = "buffer" },
 					{ name = "path" },
@@ -496,7 +519,7 @@ return {
 						-- vim辞書がなければダウンロード
 						if vim.fn.filereadable("~/.local/share/cspell/vim.txt.gz") ~= 1 then
 							local vim_dictionary_url =
-								"https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz"
+							"https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz"
 							io.popen(
 								"curl -fsSLo ~/.local/share/cspell/vim.txt.gz --create-dirs " .. vim_dictionary_url
 							)
@@ -518,7 +541,10 @@ return {
 									-- cspellが実行できるときのみ有効
 									return vim.fn.executable("cspell") > 0
 								end,
-								extra_args = { "--config", "~/.config/cspell/cspell.json" },
+								extra_args = {
+									"--config",
+									"~/.config/cspell/cspell.json",
+								},
 							})
 						)
 					else
@@ -542,7 +568,10 @@ return {
 				diagnostics_format = "#{m} (#{s}: #{c})",
 				on_attach = function(client, bufnr)
 					if client.server_capabilities.documentFormattingProvider then
-						vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+						vim.api.nvim_clear_autocmds({
+							group = augroup,
+							buffer = bufnr,
+						})
 						vim.api.nvim_create_autocmd("BufWritePre", {
 							group = augroup,
 							buffer = bufnr,
@@ -624,7 +653,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		event = "BufReadPre",
 		dependencies = {
-			{ "neovim/nvim-lspconfig", module = "lspconfig" },
+			{ "neovim/nvim-lspconfig",    module = "lspconfig" },
 			{ "ray-x/lsp_signature.nvim", module = "lsp_signature" },
 		},
 		config = function()
@@ -638,7 +667,9 @@ return {
 								autoFixOnFormat = true,
 							},
 							Lua = {
-								diagnostics = { globals = { "vim" } },
+								diagnostics = {
+									globals = { "vim" },
+								},
 							},
 						},
 					}
