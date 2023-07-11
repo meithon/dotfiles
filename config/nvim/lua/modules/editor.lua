@@ -8,6 +8,7 @@ return {
                         vim.api.nvim_set_keymap("n", "<C-w>j", ":TmuxNavigateDown<CR>", kopts)
                         vim.api.nvim_set_keymap("n", "<C-w>k", ":TmuxNavigateUp<CR>", kopts)
                         vim.api.nvim_set_keymap("n", "<C-w>l", ":TmuxNavigateRight<CR>", {})
+												
                 end,
         },
         -- {
