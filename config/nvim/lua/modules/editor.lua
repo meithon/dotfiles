@@ -73,13 +73,23 @@ return {
 
 			vim.keymap.set("n", "<tab>", function()
 				return require("fold-cycle").open()
-			end, { silent = true, desc = "Fold-cycle: open folds" })
+			end, {
+				silent = true,
+				desc = "Fold-cycle: open folds",
+			})
 			vim.keymap.set("n", "<s-tab>", function()
 				return require("fold-cycle").close()
-			end, { silent = true, desc = "Fold-cycle: close folds" })
+			end, {
+				silent = true,
+				desc = "Fold-cycle: close folds",
+			})
 			vim.keymap.set("n", "zC", function()
 				return require("fold-cycle").close_all()
-			end, { remap = true, silent = true, desc = "Fold-cycle: close all folds" })
+			end, {
+				remap = true,
+				silent = true,
+				desc = "Fold-cycle: close all folds",
+			})
 		end,
 	},
 	{
@@ -174,11 +184,17 @@ return {
 			-- jump with limited targets --
 			-- jump to sibling nodes only
 			vim.keymap.set("n", "-", function()
-				sts.filtered_jump({
-					"if_statement",
-					"else_clause",
-					"else_statement",
-				}, false, { destination = "siblings" })
+				sts.filtered_jump(
+					{
+						"if_statement",
+						"else_clause",
+						"else_statement",
+					},
+					false,
+					{
+						destination = "siblings",
+					}
+				)
 			end, opts)
 			vim.keymap.set("n", "=", function()
 				sts.filtered_jump(
