@@ -547,7 +547,9 @@ return {
 							group = augroup,
 							buffer = bufnr,
 							callback = function()
-								vim.lsp.buf.format()
+								if "rust" ~= vim.api.nvim_buf_get_option(0, "filetype") then
+									vim.lsp.buf.format()
+								end
 							end,
 						})
 					end
@@ -555,27 +557,27 @@ return {
 				sources = null_sources(),
 			})
 
-			local null_helpers = require("null-ls.helpers")
-			null_ls.register({
-				name = "clippy",
-				method = null_ls.methods.DIAGNOSTICS,
-				filetypes = { "rust" },
-				generator = null_ls.generator({
-					command = "cargo",
-					args = { "clippy", "--message-format", "short" },
-					to_stdin = true,
-					from_stderr = true,
-					format = "line",
-					on_output = null_helpers.diagnostics.from_pattern(
-						[[:(%d+):(%d+): (%w*): (.*)]],
-						{ "row", "col", "severity", "message" },
-						-- , {
-						-- 	pattern = [[(%w+): (%w*)]],
-						-- 	groups = { "severity", "message" },
-						{}
-					),
-				}),
-			})
+			-- local null_helpers = require("null-ls.helpers")
+			-- null_ls.register({
+			-- 	name = "clippy",
+			-- 	method = null_ls.methods.DIAGNOSTICS,
+			-- 	filetypes = { "rust" },
+			-- 	generator = null_ls.generator({
+			-- 		command = "cargo",
+			-- 		args = { "clippy", "--message-format", "short" },
+			-- 		to_stdin = true,
+			-- 		from_stderr = true,
+			-- 		format = "line",
+			-- 		on_output = null_helpers.diagnostics.from_pattern(
+			-- 			[[:(%d+):(%d+): (%w*): (.*)]],
+			-- 			{ "row", "col", "severity", "message" },
+			-- 			-- , {
+			-- 			-- 	pattern = [[(%w+): (%w*)]],
+			-- 			-- 	groups = { "severity", "message" },
+			-- 			{}
+			-- 		),
+			-- 	}),
+			-- })
 		end,
 	},
 	{
