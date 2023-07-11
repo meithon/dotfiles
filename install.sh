@@ -140,6 +140,9 @@ _deploy() {
     error "$DOTPATH: not found"
     exit 1
   fi
+
+	ln -si pre-commit .git/hooks/pre-commit
+
 	shopt -s dotglob
 	for file in ~/dotfiles/home/*; do
 		ln -si "$file" ~/
