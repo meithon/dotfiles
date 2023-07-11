@@ -218,7 +218,7 @@ return {
 		event = "InsertEnter",
 		module = { "cmp" },
 		dependencies = {
-			{ "onsails/lspkind.nvim",              module = { "lspkind" } },
+			{ "onsails/lspkind.nvim", module = { "lspkind" } },
 			{ "lukas-reineke/cmp-under-comparator" },
 			{ "saadparwaiz1/cmp_luasnip" },
 			{
@@ -228,7 +228,7 @@ return {
 					require("luasnip.loaders.from_vscode").lazy_load()
 				end,
 			},
-			{ "hrsh7th/cmp-nvim-lsp",      module = { "cmp_nvim_lsp" } },
+			{ "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
 			{ "hrsh7th/cmp-nvim-lua" },
 			{ "andersevenrud/cmp-tmux" },
 			{ "hrsh7th/cmp-path" },
@@ -504,7 +504,7 @@ return {
 						-- vim辞書がなければダウンロード
 						if vim.fn.filereadable("~/.local/share/cspell/vim.txt.gz") ~= 1 then
 							local vim_dictionary_url =
-							"https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz"
+								"https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz"
 							io.popen(
 								"curl -fsSLo ~/.local/share/cspell/vim.txt.gz --create-dirs " .. vim_dictionary_url
 							)
@@ -638,7 +638,7 @@ return {
 		"williamboman/mason-lspconfig.nvim",
 		event = "BufReadPre",
 		dependencies = {
-			{ "neovim/nvim-lspconfig",    module = "lspconfig" },
+			{ "neovim/nvim-lspconfig", module = "lspconfig" },
 			{ "ray-x/lsp_signature.nvim", module = "lsp_signature" },
 		},
 		config = function()
