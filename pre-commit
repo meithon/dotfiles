@@ -2,7 +2,7 @@
 
 echo "Running pre-commit checks..."
 
-result=$(stylua --config-path config/nvim/lua; echo $?)
+result=$(stylua --config-path config/nvim/lua config/nvim/lua; echo $?)
 
 if [ $result -eq 0 ]; then
   echo "Pre-commit passed, committing changes..."
