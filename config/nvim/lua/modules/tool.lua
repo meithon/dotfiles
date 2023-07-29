@@ -1,5 +1,58 @@
 return {
   {
+    "AckslD/nvim-neoclip.lua",
+    dependencies = {
+      { "kkharji/sqlite.lua", module = "sqlite" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    config = function()
+      require("neoclip").setup({
+        history = 100,
+        enable_persistent_history = true,
+        db_path = vim.fn.stdpath("data") .. "/databases/neoclip.sqlite3",
+        keys = {
+          telescope = {
+            i = {
+              paste = "<cr>",
+            },
+            n = {
+              paste = "<cr>",
+            },
+          },
+          fzf = {
+            paste = "<cr>",
+          },
+        },
+      })
+
+      vim.api.nvim_create_user_command("Neoclip", function()
+        -- require("telescope.builtin").find_files(require("telescope.themes").get_dropdown)
+        require("telescope").extensions.neoclip.default(require("telescope.themes").get_cursor({
+
+          layout_config = {
+            width = 180,
+            height = 30,
+          },
+          -- width = 0.9,
+          -- winblend = 30,
+        }))
+      end, {})
+      require("telescope").load_extension("neoclip")
+    end,
+    cmd = {
+      "Telescope neoclip",
+      "Neoclip",
+    },
+    keys = {
+      {
+        [["]],
+        ":Neoclip<CR>",
+        desc = "Fzf search registry",
+        mode = { "n", "v" },
+      },
+      { [[y]], mode = { "n", "v" } },
+    },
+  },
     "voldikss/vim-translator",
     config = function()
       vim.g.translator_target_lang = "ja"
