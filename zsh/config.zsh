@@ -32,10 +32,10 @@ function tmux_split_pane() {
 	tmux select-pane -R
 }
 function tmux_vsplit() {
-	tmux split-window -v
+	tmux split-window -h
 }
 function tmux_split() {
-	tmux split-window -h
+	tmux split-window -v
 }
 function tmux_pane_select_zvm_keybind() {
 	zvm_define_widget tmux_left_pane
