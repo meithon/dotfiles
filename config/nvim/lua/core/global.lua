@@ -20,7 +20,8 @@ local LINTER = {
   "staticcheck",
   "protolint",
   "cspell",
-  "luacheck",
+  "selene",
+  -- "luacheck",
 }
 local CODE_ACTION = {
   -- go
