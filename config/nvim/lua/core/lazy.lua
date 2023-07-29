@@ -38,3 +38,5 @@ else
 end
 
 require("lazy").setup(plugin_list)
+
+require("legendary").setup({ lazy_nvim = { auto_register = true } })

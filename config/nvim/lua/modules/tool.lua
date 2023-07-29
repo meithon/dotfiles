@@ -112,16 +112,7 @@ return {
   {
     "mrjones2014/legendary.nvim",
     config = function()
-      require("legendary").setup({
-        -- TODO: move keymap from keymap.lua here
-        keymaps = {
-          {
-            "<leader>ff",
-            ":Telescope find_files",
-            description = "Find files",
-          },
-        },
-      })
+      require("legendary").setup()
     end,
   },
   {
