@@ -334,19 +334,61 @@ return {
               })
             )
           elseif package == "cspell" then
+            local cspell_config_dir = "~/.config/cspell"
+            -- $XDG_DATA_HOME/cspell
+            local cspell_data_dir = "~/.local/share/cspell"
+            local cspell_files = {
+              config = vim.call("expand", cspell_config_dir .. "/cspell.json"),
+              dotfiles = vim.call("expand", cspell_config_dir .. "/dotfiles.txt"),
+              vim = vim.call("expand", cspell_data_dir .. "/vim.txt.gz"),
+              user = vim.call("expand", cspell_data_dir .. "/user.txt"),
+            }
             -- vim辞書がなければダウンロード
             if vim.fn.filereadable("~/.local/share/cspell/vim.txt.gz") ~= 1 then
               local vim_dictionary_url =
                 "https://github.com/iamcco/coc-spell-checker/raw/master/dicts/vim/vim.txt.gz"
               io.popen(
-                "curl -fsSLo ~/.local/share/cspell/vim.txt.gz --create-dirs " .. vim_dictionary_url
+                "curl -fsSLo " .. cspell_files.vim .. " --create-dirs " .. vim_dictionary_url
               )
             end
+            -- CspellAppend
+            local cspell_append = function(opts)
+              local word = opts.args
+              if not word or word == "" then
+                -- 引数がなければcwordを取得
+                word = vim.call("expand", "<cword>"):lower()
+              end
+
+              -- bangの有無で保存先を分岐
+              local dictionary_name = opts.bang and "dotfiles" or "user"
+
+              -- shellのechoコマンドで辞書ファイルに追記
+              io.popen("echo " .. word .. " >> " .. cspell_files[dictionary_name])
+
+              -- 追加した単語および辞書を表示
+              vim.notify(
+                '"' .. word .. '" is appended to ' .. dictionary_name .. " dictionary.",
+                vim.log.levels.INFO,
+                {}
+              )
+
+              -- cspellをリロードするため、現在行を更新してすぐ戻す
+              if vim.api.nvim_get_option_value("modifiable", {}) then
+                vim.api.nvim_set_current_line(vim.api.nvim_get_current_line())
+                vim.api.nvim_command("silent! undo")
+              end
+            end
+
+            vim.api.nvim_create_user_command(
+              "CSpellAppend",
+              cspell_append,
+              { nargs = "?", bang = true }
+            )
 
             -- ユーザー辞書がなければ作成
             if vim.fn.filereadable("~/.local/share/cspell/user.txt") ~= 1 then
-              io.popen("mkdir -p ~/.local/share/cspell")
-              io.popen("touch ~/.local/share/cspell/user.txt")
+              io.popen("mkdir -p " .. cspell_data_dir)
+              io.popen("touch " .. cspell_files.user)
             end
             table.insert(
               source_return,
