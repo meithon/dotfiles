@@ -1,5 +1,12 @@
+local keybind = require("core.keybind").editor
+
 return {
   {
+    "jbyuki/instant.nvim",
+    config = function()
+      vim.g.instant_username = "mei"
+    end,
+  },
   {
     "christoomey/vim-tmux-navigator",
     config = function()
@@ -116,13 +123,13 @@ return {
         softwrap_movement_fix = false, -- see below
       })
 
-      vim.keymap.set("n", "<tab>", function()
+      vim.keymap.set("n", keybind.fold_open, function()
         return require("fold-cycle").open()
       end, {
         silent = true,
         desc = "Fold-cycle: open folds",
       })
-      vim.keymap.set("n", "<s-tab>", function()
+      vim.keymap.set("n", keybind.fold_close, function()
         return require("fold-cycle").close()
       end, {
         silent = true,
@@ -136,18 +143,21 @@ return {
         desc = "Fold-cycle: close all folds",
       })
     end,
+    enabled = not vim.g.vscode,
   },
   {
     "lewis6991/gitsigns.nvim",
     config = function()
       require("gitsigns").setup()
     end,
+    enabled = not vim.g.vscode,
   },
   {
     "folke/todo-comments.nvim",
     event = "BufReadPost",
     dependencies = "nvim-lua/plenary.nvim",
     config = true,
+    enabled = not vim.g.vscode,
   },
   {
     "nvim-treesitter/playground",
@@ -288,6 +298,7 @@ return {
         -- },
       })
     end,
+    enabled = not vim.g.vscode,
   },
   {
     "samodostal/image.nvim",
@@ -307,17 +318,21 @@ return {
         },
       })
     end,
+    enabled = not vim.g.vscode,
   },
   {
     "kazhala/close-buffers.nvim",
     config = true,
+    enabled = not vim.g.vscode,
   },
   {
     "tiagovla/scope.nvim",
     config = true,
+    enabled = not vim.g.vscode,
   },
   {
     "itchyny/vim-cursorword",
+    enabled = not vim.g.vscode,
   },
   {
     "numToStr/Comment.nvim",
@@ -332,12 +347,19 @@ return {
         map_cr = false, -- Avoid conflicts with CR keymap for completion
       })
     end,
+    enabled = not vim.g.vscode,
   },
-  { "nacro90/numb.nvim", config = true, event = "CmdwinEnter" },
+  {
+    "nacro90/numb.nvim",
+    config = true,
+    event = "CmdwinEnter",
+    enabled = not vim.g.vscode,
+  },
   {
     "godlygeek/tabular",
     cmd = "Tabularize",
     keys = { { "a ", mode = "v" }, { "a=", mode = "v" }, { "a:", mode = "v" } },
+    enabled = not vim.g.vscode,
   },
   {
     "ggandor/lightspeed.nvim",
@@ -366,6 +388,7 @@ return {
         keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
       })
     end,
+    enabled = not vim.g.vscode,
   },
   {
     "machakann/vim-sandwich",
@@ -375,12 +398,6 @@ return {
       { "sd", mode = { "v", "n" } },
       { "sr", mode = { "v", "n" } },
     },
-  },
-  {
-    "tversteeg/registers.nvim",
-    branch = "main",
-    keys = { '"' },
-    config = true,
   },
   {
     "mg979/vim-visual-multi",
@@ -396,5 +413,6 @@ return {
         aug END
       ]])
     end,
+    enabled = not vim.g.vscode,
   },
 }
