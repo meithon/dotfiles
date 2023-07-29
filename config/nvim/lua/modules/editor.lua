@@ -78,12 +78,34 @@ return {
     "mrjones2014/smart-splits.nvim",
     config = function()
       require("smart-splits").setup()
-
-      vim.keymap.set("n", "<C-w>y", [[:SmartResizeLeft20<cr>]])
-      vim.keymap.set("n", "<C-w>u", [[:SmartResizeDown20<cr>]])
-      vim.keymap.set("n", "<C-w>i", [[:SmartResizeUp20<cr>]])
-      vim.keymap.set("n", "<C-w>o", [[:SmartResizeRight20<cr>]])
     end,
+    enabled = not vim.g.vscode,
+    keys = {
+      {
+        keybind.resize_left,
+        ":SmartResizeLeft20<cr>",
+        desc = "Resize window left",
+        mode = { "n" },
+      },
+      {
+        keybind.resize_down,
+        ":SmartResizeDown20<cr>",
+        desc = "Resize window down",
+        mode = { "n" },
+      },
+      {
+        keybind.resize_up,
+        ":SmartResizeUp20<cr>",
+        desc = "Resize window up",
+        mode = { "n" },
+      },
+      {
+        keybind.resize_right,
+        ":SmartResizeRight20<cr>",
+        desc = "Resize window right",
+        mode = { "n" },
+      },
+    },
   },
   {
     "jghauser/fold-cycle.nvim",
