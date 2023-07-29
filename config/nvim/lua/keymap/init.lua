@@ -75,7 +75,22 @@ local map = {
   ["n|<Leader>tt"] = map_cmd(":FTermOpen<CR>"):with_noremap():with_silent(),
 }
 
-bind.nvim_load_mapping(map)
+local vscode_map = {
+  ["n|<Leader>e"] = map_cmd(":call VSCodeNotify('workbench.action.focusSideBar')<CR>"),
+}
+
+function MergeTables(t1, t2)
+  for k, v in pairs(t2) do
+    t1[k] = v
+  end
+  return t1
+end
+
+if vim.g.vscode then
+  bind.nvim_load_mapping(MergeTables(map, vscode_map))
+else
+  bind.nvim_load_mapping(map)
+end
 
 -- LSP only
 if globals.enable_coc then
