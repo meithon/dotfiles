@@ -2,6 +2,152 @@ local keybind = require("core.keybind").editor
 
 return {
   {
+    "ziontee113/neo-minimap",
+    config = function()
+      -- for shorthand usage
+      local nm = require("neo-minimap")
+      nm.source_on_save("/home/ziontee113/.config/nvim/lua/plugins/neo-minimap/")
+
+      nm.setup_defaults({
+        height_toggle = { 40, 85 },
+        hl_group = "DiagnosticWarn",
+        width = 120,
+        height = 40,
+      })
+
+      -- Rust -----------------------------------------------------------------------------------------------------------
+      -- Definition
+      nm.set({ "zd" }, "*.rs", {
+        events = { "BufEnter" },
+        query = {
+          --     [[
+          -- 	;; query
+          -- 	;; (impl_item (type_identifier) @cap)
+          -- 	((impl_item) @cap)
+          -- 	(function_item (identifier) @cap)
+          -- ]],
+          [[
+          	;; query
+          	(mod_item (identifier) @cap)
+						(static_item (identifier) @cap)
+          	((impl_item) @cap)
+          	(enum_item (type_identifier) @cap)
+          	(function_item (identifier) @cap)
+          	(struct_item (type_identifier) @cap)
+          	;; (impl_item (type_identifier) @cap)
+          	(macro_definition (identifier) @cap)
+          ]],
+          1,
+        },
+        regex = {},
+        search_patterns = {
+          { "impl", "<C-j>", true },
+          { "impl", "<C-k>", false },
+        },
+      })
+
+      -- Implementation
+      nm.set({ "zi" }, "*.rs", {
+        events = { "BufEnter" },
+        query = {
+          [[
+          	;; query
+          	;; (impl_item (type_identifier) @cap)
+          	((impl_item) @cap)
+          	(mod_item (identifier) @cap)
+          	(function_item (identifier) @cap)
+          	(macro_definition (identifier) @cap)
+          ]],
+          1,
+        },
+        regex = {},
+        search_patterns = {
+          { "impl", "<C-j>", true },
+          { "impl", "<C-k>", false },
+        },
+      })
+
+      -- Latex
+
+      nm.set({ "zo", "zu" }, "*.tex", {
+        events = { "BufEnter" },
+        query = {},
+        regex = {
+          { [[\\section]], [[\\subsection]], [[\\subsubsection]] },
+          { [[\\begin{.*}]] },
+        },
+      })
+
+      -- Lua
+      nm.set({ "zi", "zo", "zu" }, "*.lua", {
+        events = { "BufEnter" },
+
+        query = {
+          [[
+					;; query
+					;; ((function_declaration name: ((identifier) @name (#eq? @name "{cursorword}"))) @cap)
+					;; ((function_call name: ((identifier) @name (#eq? @name "{cursorword}"))) @cap)
+					;; ((dot_index_expression field: ((identifier) @name (#eq? @name "{cursorword}"))) @cap)
+					((function_declaration) @cap)
+					((assignment_statement(expression_list((function_definition) @cap))))
+					]],
+          1,
+          [[
+					;; query
+					((function_declaration) @cap)
+					((assignment_statement(expression_list((function_definition) @cap))))
+					((field (identifier) @cap) (#eq? @cap "keymaps"))
+					]],
+          [[
+					;; query
+					((for_statement) @cap)
+					((function_declaration) @cap)
+					((assignment_statement(expression_list((function_definition) @cap))))
+
+					((function_call (identifier)) @cap (#vim-match? @cap "^__*" ))
+					((function_call (dot_index_expression) @field (#eq? @field "vim.keymap.set")) @cap)
+					]],
+          [[
+					;; query
+					((for_statement) @cap)
+					((function_declaration) @cap)
+					((assignment_statement(expression_list((function_definition) @cap))))
+					]],
+        },
+
+        -- regex = {
+        --   {},
+        --   { [[^\s*---*\s\+\w\+]], [[--\s*=]] },
+        --   { [[^\s*---*\s\+\w\+]], [[--\s*=]] },
+        --   {},
+        -- },
+
+        search_patterns = {
+          { "function", "<C-j>", true },
+          { "function", "<C-k>", false },
+          { "keymap", "<A-j>", true },
+          { "keymap", "<A-k>", false },
+        },
+
+        -- auto_jump = false,
+        -- open_win_opts = { border = "double" },
+        win_opts = { scrolloff = 1 },
+
+        disable_indentaion = true,
+      })
+
+      -- Typescript React
+      nm.set("zi", { "typescriptreact", "javascriptreact" }, {
+        query = [[
+			;; query
+			((function_declaration) @cap)
+			((arrow_function) @cap)
+			((identifier) @cap (#vim-match? @cap "^use.*"))
+				]],
+      })
+    end,
+  },
+  {
     "jbyuki/instant.nvim",
     config = function()
       vim.g.instant_username = "mei"
@@ -11,6 +157,7 @@ return {
     "christoomey/vim-tmux-navigator",
     config = function()
       vim.g.tmux_navigator_no_mappings = 1
+      vim.g.tmux_navigator_disable_when_zoomed = 1
     end,
     enabled = not vim.g.vscode,
     keys = {
@@ -189,49 +336,67 @@ return {
     "ziontee113/syntax-tree-surfer",
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = {
-      "<C-h>",
+      {
+        "<C-h>",
+        mode = "x",
+      },
       "<C-j>",
       "<C-k>",
-      "<C-l>",
-      "vp",
-      "vc",
-      { "H", mode = "x" },
-      { "J", mode = "x" },
+      {
+        "<C-l>",
+        mode = "x",
+      },
+      "va",
+      "vi",
+      { "N", mode = "x" },
+      { "P", mode = "x" },
       { "K", mode = "x" },
       { "L", mode = "x" },
     },
     config = function()
       -- Syntax Tree Surfer
-
+      local sts = require("syntax-tree-surfer")
       -- Normal Mode Swapping:
       -- Swap The Master Node relative to the cursor with it's siblings, Dot Repeatable
-      -- vim.keymap.set("n", "<C-k>", function()
-      -- 	vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
-      -- 	return "g@l"
-      -- end, { silent = true, expr = true })
-      -- vim.keymap.set("n", "<C-j>", function()
-      -- 	vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
-      -- 	return "g@l"
-      -- end, { silent = true, expr = true })
-      --
-      -- -- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
-      -- vim.keymap.set("n", "<C-l>", function()
-      -- 	vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
-      -- 	return "g@l"
-      -- end, { silent = true, expr = true })
-      -- vim.keymap.set("n", "<C-h>", function()
-      -- 	vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
-      -- 	return "g@l"
-      -- end, { silent = true, expr = true })
+      vim.keymap.set("n", "<C-k>", function()
+        vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
+        return "g@l"
+      end, { silent = true, expr = true })
+      vim.keymap.set("n", "<C-j>", function()
+        vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
+        return "g@l"
+      end, { silent = true, expr = true })
+      vim.keymap.set("n", "sj", function() -- jump to all that you specify
+        sts.targeted_jump({
+          "function",
+          "if_statement",
+          "else_clause",
+          "else_statement",
+          "elseif_statement",
+          "for_statement",
+          "while_statement",
+          "switch_statement",
+        })
+      end)
+
+      -- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
+      vim.keymap.set("x", "<C-l>", function()
+        vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
+        return "g@l"
+      end, { silent = true, expr = true })
+      vim.keymap.set("x", "<C-h>", function()
+        vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
+        return "g@l"
+      end, { silent = true, expr = true })
 
       local opts = { noremap = true, silent = true }
       -- Visual Selection from Normal Mode
-      vim.keymap.set("n", "vp", "<cmd>STSSelectMasterNode<cr>", opts)
-      vim.keymap.set("n", "vc", "<cmd>STSSelectCurrentNode<cr>", opts)
+      vim.keymap.set("n", "va", "<cmd>STSSelectMasterNode<cr>", opts)
+      vim.keymap.set("n", "vi", "<cmd>STSSelectCurrentNode<cr>", opts)
 
       -- Select Nodes in Visual Mode
-      vim.keymap.set("x", "L", "<cmd>STSSelectNextSiblingNode<cr>", opts)
-      vim.keymap.set("x", "H", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
+      vim.keymap.set("x", "N", "<cmd>STSSelectNextSiblingNode<cr>", opts)
+      vim.keymap.set("x", "P", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
       vim.keymap.set("x", "K", "<cmd>STSSelectParentNode<cr>", opts)
       vim.keymap.set("x", "J", "<cmd>STSSelectChildNode<cr>", opts)
 
@@ -359,7 +524,6 @@ return {
     "godlygeek/tabular",
     cmd = "Tabularize",
     keys = { { "a ", mode = "v" }, { "a=", mode = "v" }, { "a:", mode = "v" } },
-    enabled = not vim.g.vscode,
   },
   {
     "ggandor/lightspeed.nvim",
@@ -402,17 +566,8 @@ return {
   {
     "mg979/vim-visual-multi",
     branch = "master",
-    dependencies = "kevinhwang91/nvim-hlslens",
     keys = { { "<C-n>", mode = { "v", "i", "n" } } },
-    config = function()
-      vim.cmd([[
-        aug VMlens
-          au!
-          au User visual_multi_start lua require('vmlens').start()
-          au User visual_multi_exit lua require('vmlens').exit()
-        aug END
-      ]])
-    end,
+    config = function() end,
     enabled = not vim.g.vscode,
   },
 }
