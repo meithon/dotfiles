@@ -53,6 +53,21 @@ return {
       { [[y]], mode = { "n", "v" } },
     },
   },
+  {
+    "mfussenegger/nvim-treehopper",
+    config = function()
+      vim.api.nvim_create_user_command("Treehopper", require("tsht").nodes, { bang = true })
+    end,
+    keys = {
+      {
+        "sh",
+        ":Treehopper<CR>",
+        desc = "Select node with hop",
+        mode = { "n" },
+      },
+    },
+  },
+  {
     "voldikss/vim-translator",
     config = function()
       vim.g.translator_target_lang = "ja"
@@ -106,7 +121,6 @@ return {
           noautocmd = true,
         },
       })
-      vim.api.nvim_set_keymap("n", "<C-l>", [[<Cmd>Portal jumplist forward<CR>]], {})
     end,
   },
   {
@@ -425,6 +439,14 @@ return {
       })
       require("telescope").load_extension("ui-select")
     end,
+    keys = {
+      {
+        "<leader>ff",
+        ":Telescope find_files<CR>",
+        desc = "Find files",
+        mode = { "n" },
+      },
+    },
   },
   {
     "princejoogie/dir-telescope.nvim",
