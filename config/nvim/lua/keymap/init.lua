@@ -28,12 +28,6 @@ local map = {
   ["x|sr"] = map_cmd("<Plug>(sandwich-replace)"):with_noremap():with_silent(),
   ["o|sr"] = map_cmd("<Plug>(sandwich-replace)"):with_noremap():with_silent(),
 
-  -- Lightspeed
-  ["n|<Leader>j"] = map_cmd("<Plug>Lightspeed_s"):with_noremap():with_silent(),
-  ["n|<Leader>k"] = map_cmd("<Plug>Lightspeed_S"):with_noremap():with_silent(),
-  ["v|<Leader>j"] = map_cmd("<Plug>Lightspeed_s"):with_noremap():with_silent(),
-  ["v|<Leader>k"] = map_cmd("<Plug>Lightspeed_S"):with_noremap():with_silent(),
-
   -- Filer
   ["n|<Leader>e"] = map_cmd(":Neotree<CR>"),
   -- Docker Tool

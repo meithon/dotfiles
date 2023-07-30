@@ -54,20 +54,6 @@ return {
     },
   },
   {
-    "mfussenegger/nvim-treehopper",
-    config = function()
-      vim.api.nvim_create_user_command("Treehopper", require("tsht").nodes, { bang = true })
-    end,
-    keys = {
-      {
-        "sh",
-        ":Treehopper<CR>",
-        desc = "Select node with hop",
-        mode = { "n" },
-      },
-    },
-  },
-  {
     "voldikss/vim-translator",
     config = function()
       vim.g.translator_target_lang = "ja"
