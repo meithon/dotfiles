@@ -29,6 +29,10 @@ zsh-defer zinit load BurntSushi/ripgrep
 
 zsh-defer zinit load junegunn/fzf
 zsh-defer zinit wait'0' lucid light-mode for Aloxaf/fzf-tab
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+zstyle ':fzf-tab:*' popup-pad 0 0
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 
 zsh-defer zinit wait'0' lucid light-mode for zdharma-continuum/fast-syntax-highlighting
 
