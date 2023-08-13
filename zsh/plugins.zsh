@@ -3,6 +3,8 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
+# for lazy load
+zinit light romkatv/zsh-defer
 # 非同期処理できるようになる
 zinit load mafredri/zsh-async
 
@@ -13,22 +15,23 @@ zinit light jeffreytse/zsh-vi-mode
 zinit ice depth"1"
 zinit light romkatv/powerlevel10k
 
-zinit load agkozak/zsh-z
+zsh-defer zinit load agkozak/zsh-z
 # 過去に入力したコマンドの履歴が灰色のサジェストで出る
-zinit load zsh-users/zsh-autosuggestions
+zsh-defer zinit load zsh-users/zsh-autosuggestions
 # 補完強化
-zinit wait'0' lucid light-mode for zsh-users/zsh-completions
+zsh-defer zinit wait'0' lucid light-mode for zsh-users/zsh-completions
 # 256色表示にする
-zinit load chrissicool/zsh-256color
+zsh-defer zinit load chrissicool/zsh-256color
 # 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
-zinit load zsh-users/zsh-syntax-highlighting
+zsh-defer zinit load zsh-users/zsh-syntax-highlighting
 
-zinit load BurntSushi/ripgrep
+zsh-defer zinit load BurntSushi/ripgrep
 
-zinit load junegunn/fzf
+zsh-defer zinit load junegunn/fzf
+zsh-defer zinit wait'0' lucid light-mode for Aloxaf/fzf-tab
 
-zinit wait'0' lucid light-mode for zdharma-continuum/fast-syntax-highlighting
+zsh-defer zinit wait'0' lucid light-mode for zdharma-continuum/fast-syntax-highlighting
 
 # For postponing loading `fzf`
-zinit ice lucid wait
-zinit snippet OMZP::fzf
+zsh-defer zinit ice lucid wait
+zsh-defer zinit snippet OMZP::fzf
