@@ -2,6 +2,19 @@ local keybind = require("core.keybind").editor
 
 return {
   {
+    "echasnovski/mini.bufremove",
+    keys = {
+      {
+        "QQ",
+        function()
+          local buf = vim.api.nvim_get_current_buf()
+          require("mini.bufremove").delete(buf, true)
+        end,
+        desc = "Close buffer like a VSCode",
+        mode = { "n" },
+      },
+    },
+  },
     "ziontee113/neo-minimap",
     config = function()
       -- for shorthand usage
