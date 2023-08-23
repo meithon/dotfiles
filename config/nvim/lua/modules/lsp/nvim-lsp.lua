@@ -1,5 +1,25 @@
 return {
   {
+    "davidosomething/format-ts-errors.nvim",
+  },
+  {
+
+    "VidocqH/lsp-lens.nvim",
+    config = function()
+      require("lsp-lens").setup()
+    end,
+  },
+  -- {
+  -- 	"ray-x/navigator.lua",
+  -- 	dependencies = {
+  -- 		{ "ray-x/guihua.lua",     run = "cd lua/fzy && make" },
+  -- 		{ "neovim/nvim-lspconfig" },
+  -- 	},
+  -- 	config = function()
+  -- 		require("navigator").setup()
+  -- 	end,
+  -- },
+  {
     "smjonas/inc-rename.nvim",
     config = function()
       require("inc_rename").setup()
@@ -32,6 +52,21 @@ return {
     end,
   },
   {
+    "aznhe21/actions-preview.nvim",
+    config = function()
+      vim.keymap.set({ "v", "n" }, "gf", require("actions-preview").code_actions)
+    end,
+    keys = {
+      {
+        "<Leader>cpa",
+        function()
+          require("actions-preview").code_actions()
+        end,
+        desc = "Code actions preview",
+      },
+    },
+  },
+  {
     "folke/neodev.nvim",
     config = true,
   },
@@ -43,11 +78,21 @@ return {
       local rt = require("rust-tools")
       rt.setup()
       rt.inlay_hints.enable()
+      -- rt.runnables.runnables()
+      vim.api.nvim_create_user_command("RustRunnables", rt.runnables.runnables, {})
     end,
+    command = {
+      {
+        "RustRunnables",
+        function()
+          require("rust-tools").runnables.runnables()
+        end,
+      },
+    },
   },
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
+    event = "VimEnter",
     module = { "cmp" },
     dependencies = {
       { "onsails/lspkind.nvim", module = { "lspkind" } },
@@ -60,7 +105,7 @@ return {
           require("luasnip.loaders.from_vscode").lazy_load()
         end,
       },
-      { "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvim_lsp" } },
+      { "hrsh7th/cmp-nvim-lsp", module = { "cmp_nvimlsp" } },
       { "hrsh7th/cmp-nvim-lua" },
       { "andersevenrud/cmp-tmux" },
       { "hrsh7th/cmp-path" },
@@ -68,32 +113,32 @@ return {
       { "hrsh7th/cmp-buffer" },
       { "kdheepak/cmp-latex-symbols" },
       { "lukas-reineke/cmp-rg" },
-      {
-        "tzachar/cmp-tabnine",
-        build = "./install.sh",
-        config = function()
-          require("cmp_tabnine.config").setup({
-            max_lines = 1000,
-            max_num_results = 20,
-            sort = true,
-            run_on_every_keystroke = true,
-            snippet_placeholder = "..",
-            ignored_file_types = {
-              -- default is not to ignore
-              -- uncomment to ignore in lua:
-              -- lua = true
-            },
-            show_prediction_strength = false,
-          })
-          vim.api.nvim_create_autocmd("BufRead", {
-            group = prefetch,
-            pattern = "*.py",
-            callback = function()
-              require("cmp_tabnine"):prefetch(vim.fn.expand("%:p"))
-            end,
-          })
-        end,
-      },
+      -- {
+      -- 	"tzachar/cmp-tabnine",
+      -- 	build = "./install.sh",
+      -- 	config = function()
+      -- 		require("cmp_tabnine.config").setup({
+      -- 			max_lines = 1000,
+      -- 			max_num_results = 20,
+      -- 			sort = true,
+      -- 			run_on_every_keystroke = true,
+      -- 			snippet_placeholder = "..",
+      -- 			ignored_file_types = {
+      -- 				-- default is not to ignore
+      -- 				-- uncomment to ignore in lua:
+      -- 				-- lua = true
+      -- 			},
+      -- 			show_prediction_strength = false,
+      -- 		})
+      -- 		vim.api.nvim_create_autocmd("BufRead", {
+      -- 			group = prefetch,
+      -- 			pattern = "*.py",
+      -- 			callback = function()
+      -- 				require("cmp_tabnine"):prefetch(vim.fn.expand("%:p"))
+      -- 			end,
+      -- 		})
+      -- 	end,
+      -- },
       {
         "zbirenbaum/copilot-cmp",
         config = true,
@@ -103,7 +148,8 @@ return {
             config = function()
               require("copilot").setup({
                 suggestion = { enabled = true },
-                panel = { enabled = true },
+                panel = { enabled = false },
+                fix_pairs = true,
               })
             end,
           },
@@ -137,7 +183,7 @@ return {
       cmp.setup({
         performance = {
           debounce = 0,
-          throttle = 200,
+          throttle = 0,
           fetching_timeout = 200,
         },
         completion = {
@@ -191,6 +237,7 @@ return {
             name = "copilot",
             -- keyword_length = 0,
             max_item_count = 3,
+            group_index = 2,
           },
           { name = "nvim_lsp" },
           { name = "spell" },
@@ -260,11 +307,11 @@ return {
             compare.offset,
             compare.exact,
             compare.score,
-            require("cmp_tabnine.compare"),
+            compare.length,
+            -- require("cmp_tabnine.compare"),
             compare.recently_used,
             compare.kind,
             compare.sort_text,
-            compare.length,
             compare.order,
           },
         },
@@ -291,8 +338,9 @@ return {
           if package == "prettierd" then
             table.insert(
               source_return,
-              null_ls.builtins.formatting.prettier.with({
+              null_ls.builtins.formatting.prettierd.with({
                 filetypes = {
+                  "html",
                   "javascript",
                   "javascriptreact",
                   "typescript",
@@ -303,6 +351,21 @@ return {
                 },
               })
             )
+            -- elseif package == "rustfmt" then
+            -- 	table.insert(
+            -- 		source_return,
+            -- 		null_ls.builtins.formatting["rustfmt"].with({
+            -- 			command = "cargo",
+            -- 			arg = {
+            -- 				"+nightly",
+            -- 				"fmt",
+            -- 				"--emit=stdout",
+            -- 				"--all",
+            -- 				"--",
+            -- 				"--config=imports_granularity=Item,group_imports=StdExternalCrate",
+            -- 			},
+            -- 		})
+            -- 	)
           else
             table.insert(source_return, null_ls.builtins.formatting[package])
           end
@@ -533,6 +596,38 @@ return {
               },
             },
           }
+
+          if server == "tsserver" then
+            opt = {
+              handlers = {
+                ["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
+                  if result.diagnostics == nil then
+                    return
+                  end
+
+                  -- ignore some tsserver diagnostics
+                  local idx = 1
+                  while idx <= #result.diagnostics do
+                    local entry = result.diagnostics[idx]
+
+                    local formatter = require("format-ts-errors")[entry.code]
+                    entry.message = formatter and formatter(entry.message) or entry.message
+
+                    -- codes: https://github.com/microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
+                    if entry.code == 80001 then
+                      -- { message = "File is a CommonJS module; it may be converted to an ES module.", }
+                      table.remove(result.diagnostics, idx)
+                    else
+                      idx = idx + 1
+                    end
+                  end
+
+                  vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+                end,
+              },
+            }
+          end
+
           require("lspconfig")[server].setup(opt)
         end,
         require("lsp_signature").setup({

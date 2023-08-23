@@ -15,6 +15,14 @@ return {
       },
     },
   },
+  {
+    "Aasim-A/scrollEOF.nvim",
+    config = true,
+  },
+  {
+    "tpope/vim-repeat",
+  },
+  {
     "ziontee113/neo-minimap",
     config = function()
       -- for shorthand usage
@@ -166,40 +174,40 @@ return {
       vim.g.instant_username = "mei"
     end,
   },
-  {
-    "christoomey/vim-tmux-navigator",
-    config = function()
-      vim.g.tmux_navigator_no_mappings = 1
-      vim.g.tmux_navigator_disable_when_zoomed = 1
-    end,
-    enabled = not vim.g.vscode,
-    keys = {
-      {
-        keybind.move_left,
-        ":TmuxNavigateLeft<CR>",
-        desc = "Move to left buffer",
-        mode = { "n" },
-      },
-      {
-        keybind.move_down,
-        ":TmuxNavigateDown<CR>",
-        desc = "Move to down buffer",
-        mode = { "n" },
-      },
-      {
-        keybind.move_up,
-        ":TmuxNavigateUp<CR>",
-        desc = "Move to up buffer",
-        mode = { "n" },
-      },
-      {
-        keybind.move_right,
-        ":TmuxNavigateRight<CR>",
-        desc = "Move to right buffer",
-        mode = { "n" },
-      },
-    },
-  },
+  -- {
+  --   "christoomey/vim-tmux-navigator",
+  --   config = function()
+  --     vim.g.tmux_navigator_no_mappings = 1
+  --     vim.g.tmux_navigator_disable_when_zoomed = 1
+  --   end,
+  --   enabled = not vim.g.vscode,
+  --   keys = {
+  --     {
+  --       keybind.move_left,
+  --       ":TmuxNavigateLeft<CR>",
+  --       desc = "Move to left buffer",
+  --       mode = { "n" },
+  --     },
+  --     {
+  --       keybind.move_down,
+  --       ":TmuxNavigateDown<CR>",
+  --       desc = "Move to down buffer",
+  --       mode = { "n" },
+  --     },
+  --     {
+  --       keybind.move_up,
+  --       ":TmuxNavigateUp<CR>",
+  --       desc = "Move to up buffer",
+  --       mode = { "n" },
+  --     },
+  --     {
+  --       keybind.move_right,
+  --       ":TmuxNavigateRight<CR>",
+  --       desc = "Move to right buffer",
+  --       mode = { "n" },
+  --     },
+  --   },
+  -- },
   -- {
   -- 	'rmagatti/auto-session',
   -- 	config = function()
@@ -277,32 +285,33 @@ return {
   {
     "jghauser/fold-cycle.nvim",
     config = function()
-      require("fold-cycle").setup({
+      local fc = require("fold-cycle")
+      fc.setup({
         open_if_max_closed = true, -- closing a fully closed fold will open it
         close_if_max_opened = true, -- opening a fully open fold will close it
         softwrap_movement_fix = false, -- see below
       })
-
-      vim.keymap.set("n", keybind.fold_open, function()
-        return require("fold-cycle").open()
-      end, {
-        silent = true,
-        desc = "Fold-cycle: open folds",
-      })
-      vim.keymap.set("n", keybind.fold_close, function()
-        return require("fold-cycle").close()
-      end, {
-        silent = true,
-        desc = "Fold-cycle: close folds",
-      })
-      vim.keymap.set("n", "zC", function()
-        return require("fold-cycle").close_all()
-      end, {
-        remap = true,
-        silent = true,
-        desc = "Fold-cycle: close all folds",
-      })
     end,
+    keys = {
+      {
+        keybind.fold_open,
+        ":lua require('fold-cycle').open()<cr>",
+        desc = "Open folds",
+        mode = { "n" },
+      },
+      {
+        keybind.fold_close,
+        ":lua require('fold-cycle').close()<cr>",
+        desc = "Close folds",
+        mode = { "n" },
+      },
+      {
+        "zC",
+        ":lua require('fold-cycle').close_all()<cr>",
+        desc = "Close all folds",
+        mode = { "n" },
+      },
+    },
     enabled = not vim.g.vscode,
   },
   {
@@ -522,6 +531,8 @@ return {
     event = "InsertEnter",
     config = function()
       require("nvim-autopairs").setup({
+
+        check_ts = true,
         map_cr = false, -- Avoid conflicts with CR keymap for completion
       })
     end,
@@ -539,6 +550,34 @@ return {
     keys = { { "a ", mode = "v" }, { "a=", mode = "v" }, { "a:", mode = "v" } },
   },
   {
+    "jinh0/eyeliner.nvim",
+    config = function()
+      local ey = require("eyeliner")
+      ey.setup({
+        highlight_on_key = true, -- show highlights only after keypress
+        dim = false, -- dim all other characters if set to true (recommended!)
+      })
+
+      vim.api.nvim_set_hl(
+        0,
+        "EyelinerPrimary",
+        { bg = "#78ff64", fg = "black", bold = true, underline = true }
+      )
+      vim.api.nvim_set_hl(
+        0,
+        "EyelinerSecondary",
+        { bg = "#ff30cf", fg = "black", underline = true }
+      )
+    end,
+    keys = {
+      { "f", mode = { "n", "v" }, desc = "Highlight f motion" },
+      { "F", mode = { "n", "v" }, desc = "Highlight F motion" },
+      { "t", mode = { "n", "v" }, desc = "Highlight t motion" },
+      { "T", mode = { "n", "v" }, desc = "Highlight T motion" },
+    },
+    cmd = "EyelinerEnable",
+  },
+  {
     "folke/flash.nvim",
     event = "VeryLazy",
     ---@type Flash.Config
@@ -552,7 +591,7 @@ return {
     },
     keys = {
       {
-        "s",
+        "<leader>s",
         mode = { "n", "x", "o" },
         function()
           require("flash").jump()

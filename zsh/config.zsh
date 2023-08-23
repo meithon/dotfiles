@@ -86,12 +86,23 @@ function fzf_vi_keybind() {
 	zvm_bindkey vicmd 'fg' fzf_vi
 }
 
+# ## find function
+# function fzf-find-file() {
+# 	find . -type f | fzf-tmux \
+# 		--preview 'bat --color "always" {}' 
+# }
+# function fzf-find-file-keybing() {
+# 	zvm_define_widget fzf-find-file
+# 	zvm_bindkey vicmd 'ff' fzf-find-file
+# }
+
 ## initial zvm
 function zvm_after_lazy_keybindings() {
 	# keybind functions
 	tmux_pane_select_zvm_keybind
 	tmux_page_scroll_zvm_keybind
 	fzf_vi_keybind
+	# fzf-find-file-keybing
 	
 	
 	zvm_define_widget q # quit command
