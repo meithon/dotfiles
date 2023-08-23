@@ -106,3 +106,25 @@ function get-cr-list-ns() {
 #   fc -p
 #   return 1
 # }
+#
+function fzf-kill-process() {
+	ps -u $USER -o pid,stat,cputime,command | \
+		sed 1d | \
+		fzf-tmux| \
+		awk '{print $1}' | \
+		xargs kill 
+}
+
+function _fzf-find-file() {
+  local file
+  file=$(find . -type f | fzf-tmux --preview 'bat --color "always" {}')
+  if [ -n "$file" ]; then
+    LBUFFER+="$file"
+  fi
+  zle reset-prompt
+}
+
+zle -N _fzf-find-file
+bindkey -v "^t" _fzf-find-file 
+
+alias f="find . -type f | fzf-tmux --preview 'bat --color "always" {}'"

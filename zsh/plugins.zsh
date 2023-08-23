@@ -30,7 +30,7 @@ zsh-defer zinit load BurntSushi/ripgrep
 zsh-defer zinit load junegunn/fzf
 zsh-defer zinit wait'0' lucid light-mode for Aloxaf/fzf-tab
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
-zstyle ':fzf-tab:*' popup-pad 0 0
+zstyle ':fzf-tab:*' popup-pad 2 1
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 
@@ -39,3 +39,8 @@ zsh-defer zinit wait'0' lucid light-mode for zdharma-continuum/fast-syntax-highl
 # For postponing loading `fzf`
 zsh-defer zinit ice lucid wait
 zsh-defer zinit snippet OMZP::fzf
+
+
+## golang
+zinit wait lucid for \
+ dim-an/cod

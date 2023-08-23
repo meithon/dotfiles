@@ -1,6 +1,6 @@
 return {
   {
-    "danilamihailov/beacon.nvim",
+    "MeiWagatsuma/beacon.nvim",
     config = function()
       vim.g.beacon_size = 120
       vim.g.beacon_timeout = 2000
@@ -109,21 +109,21 @@ return {
       )
     end,
   },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    config = function()
-      vim.opt.list = true
-      --vim.opt.listchars:append "space:⋅"
-      vim.opt.listchars:append("eol:↴")
-
-      vim.g.indent_blankline_filetype_exclude = { "startify" }
-      require("indent_blankline").setup({
-        space_char_blankline = " ",
-        show_current_context = true,
-        show_current_context_start = true,
-      })
-    end,
-  },
+  -- {
+  --   "lukas-reineke/indent-blankline.nvim",
+  --   config = function()
+  --     vim.opt.list = true
+  --     --vim.opt.listchars:append "space:⋅"
+  --     vim.opt.listchars:append("eol:↴")
+  --
+  --     vim.g.indent_blankline_filetype_exclude = { "startify" }
+  --     require("indent_blankline").setup({
+  --       space_char_blankline = " ",
+  --       show_current_context = true,
+  --       show_current_context_start = true,
+  --     })
+  --   end,
+  -- },
   {
     "mhinz/vim-startify",
     config = function()
@@ -211,7 +211,7 @@ return {
       "David-Kunz/markid",
       "windwp/nvim-ts-autotag",
       "JoosepAlviste/nvim-ts-context-commentstring",
-      "p00f/nvim-ts-rainbow",
+      -- "p00f/nvim-ts-rainbow",
       "andymass/vim-matchup",
     },
     config = function()
@@ -227,6 +227,8 @@ return {
           "vim",
           "css",
           "scss",
+          "markdown",
+          "markdown_inline",
         },
         sync_install = false,
         auto_install = true,
@@ -292,11 +294,11 @@ return {
         autotag = {
           enable = true,
         },
-        rainbow = {
-          enable = true,
-          extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-          max_file_lines = nil, -- Do not enable for files with more than n lines, int
-        },
+        -- rainbow = {
+        -- 	enable = true,
+        -- 	extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+        -- 	max_file_lines = nil, -- Do not enable for files with more than n lines, int
+        -- },
         markid = { enable = true },
         matchup = {
           enable = true,

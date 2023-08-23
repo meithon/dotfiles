@@ -30,7 +30,7 @@ local editor = {
   resize_right = "<C-w>o",
 
   -- fold
-  fold_open = "<tab>",
+  fold_open = "zf",
   fold_close = "<s_tab>",
 
   -- git
