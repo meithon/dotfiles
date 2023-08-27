@@ -62,24 +62,24 @@ return {
   {
     "aduros/ai.vim",
   },
-  {
-    name = "mover.nvim",
-    dir = "~/workspace/mover.nvim//",
-    dev = true,
-    lazy = false,
-    config = function()
-      require("mover").setup()
-    end,
-  },
-  {
-    name = "say-hello.nvim",
-    dir = "~/workspace/say-hello.nvim//",
-    dev = true,
-    lazy = false,
-    config = function()
-      require("say-hello").setup()
-    end,
-  },
+  -- {
+  --   name = "mover.nvim",
+  --   dir = "~/workspace/mover.nvim//",
+  --   dev = true,
+  --   lazy = false,
+  --   config = function()
+  --     require("mover").setup()
+  --   end,
+  -- },
+  -- {
+  --   name = "say-hello.nvim",
+  --   dir = "~/workspace/say-hello.nvim//",
+  --   dev = true,
+  --   lazy = false,
+  --   config = function()
+  --     require("say-hello").setup()
+  --   end,
+  -- },
   {
     -- HIstory of curtsor position
     "cbochs/portal.nvim",
