@@ -19,7 +19,17 @@ zsh-defer zinit load agkozak/zsh-z
 # 過去に入力したコマンドの履歴が灰色のサジェストで出る
 zsh-defer zinit load zsh-users/zsh-autosuggestions
 # 補完強化
-zsh-defer zinit wait'0' lucid light-mode for zsh-users/zsh-completions
+# zsh-defer zinit wait'0' lucid light-mode for zsh-users/zsh-completions
+# zinit load marlonrichert/zsh-autocomplete
+
+# zstyle ':autocomplete:*' insert-unambiguous yes
+# zstyle '：autocomplete：* ' fzf-completion yes	
+
+# zinit ice pick="zsh/fzf-zsh-completion.sh"
+# zinit load lincheney/fzf-tab-completion 
+# bindkey '^I' fzf_completion
+# zstyle ':completion::*:git::git,add,*' fzf-completion-opts --preview='git -c color.status=always status --short'
+
 # 256色表示にする
 zsh-defer zinit load chrissicool/zsh-256color
 # 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
@@ -33,6 +43,7 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':fzf-tab:*' popup-pad 2 1
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+zstyle ':fzf-tab:*' fzf-bindings 'space:accept'
 
 zsh-defer zinit wait'0' lucid light-mode for zdharma-continuum/fast-syntax-highlighting
 
@@ -40,7 +51,10 @@ zsh-defer zinit wait'0' lucid light-mode for zdharma-continuum/fast-syntax-highl
 zsh-defer zinit ice lucid wait
 zsh-defer zinit snippet OMZP::fzf
 
-
+#
+# bindkey "^I" fzf-tab-complete
+#
+#
 ## golang
 zinit wait lucid for \
  dim-an/cod
