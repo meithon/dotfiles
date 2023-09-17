@@ -50,7 +50,7 @@ local pbind = {}
 
 function pbind.map_cr(cmd_string)
   local ro = rhs_options:new()
-  return ro:map_cr(cmd_string)
+  return ro:map_cmd(":" .. cmd_string .. "<CR>")
 end
 
 function pbind.map_cmd(cmd_string)
