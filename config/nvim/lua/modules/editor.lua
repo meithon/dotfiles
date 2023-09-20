@@ -2,6 +2,23 @@ local keybind = require("core.keybind").editor
 
 return {
   {
+    "napmn/react-extract.nvim",
+    config = function()
+      require("react-extract").setup()
+
+      vim.api.nvim_create_user_command(
+        "ReactRefactor",
+        require("react-extract").extract_to_current_file,
+        {}
+      )
+      vim.api.nvim_create_user_command(
+        "ReactRefactorNewFile",
+        require("react-extract").extract_to_new_file,
+        {}
+      )
+    end,
+  },
+  {
     "echasnovski/mini.bufremove",
     keys = {
       {
