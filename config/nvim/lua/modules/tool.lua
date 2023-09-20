@@ -988,29 +988,29 @@ return {
   --     })
   --   end,
   -- },
-  -- {
-  -- 	"obaland/vfiler.vim",
-  --
-  -- 	cmd = "VFiler",
-  -- 	dependencies = {
-  -- 		"obaland/vfiler-column-devicons",
-  -- 	},
-  -- 	config = function()
-  -- 		require("vfiler/config").setup({
-  -- 			options = {
-  -- 				columns = "indent,devicons,name,git",
-  -- 				auto_cd = true,
-  -- 				auto_resize = true,
-  -- 				keep = true,
-  -- 				layout = "left",
-  -- 				width = 40,
-  -- 				git = {
-  -- 					enabled = true,
-  -- 					untracked = true,
-  -- 					ignored = true,
-  -- 				},
-  -- 			},
-  -- 		})
-  -- 	end,
-  -- },
+  {
+    "obaland/vfiler.vim",
+
+    cmd = "VFiler",
+    dependencies = {
+      "obaland/vfiler-column-devicons",
+    },
+    config = function()
+      require("vfiler/config").setup({
+        options = {
+          columns = "indent,devicons,name,git",
+          auto_cd = true,
+          auto_resize = true,
+          keep = true,
+          layout = "left",
+          width = 40,
+          git = {
+            enabled = true,
+            untracked = true,
+            ignored = true,
+          },
+        },
+      })
+    end,
+  },
 }

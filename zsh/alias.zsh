@@ -6,6 +6,11 @@ alias ...="cd ../../"
 
 alias k="kubectl"
 
+## node
+alias pn="pnpm"
+alias pnr="pnpm run"
+alias pne="pnpm exec"
+
 # Add a subcommand named tree to git
 git() {
     if [[ $@ == "tree" ]]; then

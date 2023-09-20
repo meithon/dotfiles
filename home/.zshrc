@@ -50,3 +50,22 @@ fi
 
 
 eval $(thefuck --alias)
+eval "$(direnv hook zsh)"
+
+# bun completions
+[ -s "/Users/mei/.bun/_bun" ] && source "/Users/mei/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+export EDITOR=nvim
+# Should your editor deal with streamed vs on disk files differently, also set...
+export K9S_EDITOR=nvim
+
+# pnpm
+export PNPM_HOME="/Users/mei/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

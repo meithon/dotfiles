@@ -151,7 +151,14 @@ return {
   },
   {
     "nvim-lualine/lualine.nvim",
+    dependencies = {
+      {
+        "SmiteshP/nvim-navic",
+        dependencies = "neovim/nvim-lspconfig",
+      },
+    },
     config = function()
+      local navic = require("nvim-navic")
       require("lualine").setup({
         options = {
           globalstatus = true,
@@ -178,7 +185,6 @@ return {
               },
             },
             "encoding",
-            "filetype",
           },
           lualine_y = { "progress" },
           lualine_z = { "location" },
