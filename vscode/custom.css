@@ -1,0 +1,85 @@
+:root {
+  --tab-height: 1rem;
+	--notification-color: #0000009a;
+}
+
+
+.monaco-workbench .part>.title {
+  height: var(--tab-height) !important;
+}
+.title {
+	background-color: transparent !important;
+  /* height: var(--tab-height) !important; */
+}
+.title .monaco-icon-label:before {
+  height: 16px !important;
+}
+.title>.title-actions {
+  height: 100% !important;
+}
+.title .breadcrumbs-control {
+  height: 100% !important;
+}
+.title .label-container {
+  height: var(--tab-height) !important;
+}
+.title .label-container {
+  height: 100% !important;
+	align-items: center !important;
+}
+.title .label-container .monaco-icon-label {
+	line-height: 100% !important;
+	align-items: center !important;
+}
+
+
+.notification-toast {
+	background-color: var(--notification-color) !important;
+	border: solid 2px #0bedff8c !important;
+}
+.notifications-list-container {
+	background-color: transparent !important;
+}
+
+
+.sticky-widget {
+	background-color: #00000033 !important;
+	text-shadow: 0 0 10px #fff,0 0 15px #fff;
+	text-shadow: 0 0 4px, 2px 0 2px BLACK, -2px 0 2px BLACK; 
+}
+
+.view-lines .monaco-mouse-cursor-text > div {
+    left: 0 !important;
+}
+.line-numbers {
+	left: 0 !important;
+}	
+.codicon-debug-breakpoint {
+	left: 22px !important;
+}
+
+
+
+/* .editor-container  div.margin-view-overlays { */
+/* 	left: 44px !important; */
+/* } */
+
+
+/* diff line */
+.editor-container .dirty-diff-glyph{
+	left: -5px !important;
+}
+
+
+/* indent-guide width */
+.editor-container > div > div > div.overflow-guard > div.monaco-scrollable-element.editor-scrollable.vs-dark.mac {
+	/* left: 44px !important; */
+	left: 38px !important;
+	width: calc(100% - 38px + 2px)) !important;
+}
+
+
+
+
+
+
