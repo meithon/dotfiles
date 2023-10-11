@@ -1,3 +1,11 @@
-config=$(ls -d ~/dotfiles/nvim-switcher/lib/*/ | fzf)
+DIRECTORY_PATH="$HOME/dotfiles/nvim-switcher/lib"
 
-NVIM_APPMNAME=$config nvim
+selected_dir=$(for dir in "$DIRECTORY_PATH"/*; do
+    if [ -d "$dir" ]; then
+        basename "$dir"
+    fi
+done | fzf)
+
+echo $selected_dir
+
+NVIM_APPNAME=$selected_dir nvim
