@@ -47,21 +47,6 @@ function fzf-git-add() {
     fi
 }
 
-# fzf-cdr
-function fzf-cdr() {
-    target_dir=$(unbuffer lsd -l | fzf --ansi | awk '{print $12}')
-    if [ -n "$target_dir" ]; then
-        cd $target_dir
-    fi
-}
-
-function fzf-cdr-all() {
-    target_dir=$(unbuffer lsd -la | fzf --ansi | awk '{print $12}')
-    if [ -n "$target_dir" ]; then
-        cd $target_dir
-    fi
-}
-
 
 ## kuber
 function get-name() {
@@ -128,3 +113,57 @@ zle -N _fzf-find-file
 bindkey -v "^t" _fzf-find-file 
 
 alias f="find . -type f | fzf-tmux --preview 'bat --color "always" {}'"
+
+function find-git-file() {
+		# 現在のディレクトリからGitリポジトリのルートまでの相対パスを取得
+	REL_PATH=$(git rev-parse --show-prefix)
+
+	# fzfで表示する際に相対パスを取り除き、選択した結果に相対パスを追加
+	git -C $(git rev-parse --show-toplevel) ls-files | awk -v rel="$REL_PATH" '{gsub("^"rel, "", $0); print}' | fzf | awk -v rel="$REL_PATH" '{print rel $0}'
+}
+
+function z-readonly() {
+	#!/bin/bash
+
+	input_file="$HOME/.z"
+
+	while IFS= read -r line
+	do
+			echo "$line" | cut -d'|' -f1
+	done < "$input_file"
+
+}
+
+#it used by tmux.conf
+relative-path () {
+	source=$1
+	target=$2
+
+	common_part=$source
+	back=
+	while [ "${target#$common_part}" = "${target}" ]; do
+		common_part=$(dirname $common_part)
+		back="../${back}"
+	done
+
+	echo ${back}${target#$common_part/}
+}
+get-path-from-tmux-status() {
+	arg="$1"
+	echo "$arg" | sed -E 's@^(/[^[:space:]]+).*@\1@'
+}
+get-tmux-current-dir(){
+	tmux display-message -p "#{session_path}"
+}
+relative-current-dir-for-tmux(){
+	relative-path $(get-tmux-current-dir) $(pwd)
+}
+
+
+function tmux-switch ()
+{
+	tmux switch -t "$(tmux lsp -a -F "#{session_name}:#{window_name}" |fzf --preview 'tmux capture-pane -pe -t {}')"
+}
+zle -N tmux-switch
+bindkey '^j' tmux-switch
+

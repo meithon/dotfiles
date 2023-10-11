@@ -1,0 +1,80 @@
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:12:50
+❯ tmux capture-pane -p -S e-
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:12:53
+❯ tmux capture-pane -p -S -e
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:12:55
+❯ tmux capture-pane -p -S -e -
+command capture-pane: too many arguments (need at most 0)
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:12:57
+❯ tmux capture-pane -p -S -e
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:12:58
+❯ tmux capture-pane -p -S -e - | vim -
+command capture-pane: too many arguments (need at most 0)
+Vim: 標準入力から読込み中...
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                             ✔ 1|0  17:13:08
+❯ tmux capture-pane -p -e
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:18
+❯ tmux capture-pane -p -e -S
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:20
+❯ tmux capture-pane -p -S
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:23
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:28
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:29
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:30
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:30
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:31
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:31
+❯ tmux capture-pane -e -p -S
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:33
+❯ tmux capture-pane -e -p -S
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:34
+❯ tmux capture-pane -e -S -p
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:36
+❯ tmux capture-pane -e -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:38
+❯ tmux capture-pane -ep
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:39
+❯ tmux capture-pane -pe
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:41
+❯ tmux capture-pane -po
+command capture-pane: unknown flag -o
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:43
+❯ tmux capture-pane -p
+
+  ~/dotfiles   main *4 !11                                                                                                                                                                                                                                                                                    17:13:44
+❯ tmux capture-pane -p -E
+
+ [38;5;31m [1m[38;5;39m~[0m[38;5;31m[49m/[1m[38;5;39mdotfiles[0m[38;5;31m[49m [38;5;76m[38;5;178m [38;5;76m main *4 [38;5;178m!11[39m                                                                                                                                                                                                                                                                                   [38;5;66m 17:13:49
+[38;5;76m❯[39m [32mtmux[39m [33mcapture-pane[39m [36m-p[39m [36m-a
+[39mno alternate screen
+ [38;5;31m [1m[38;5;39m~[0m[38;5;31m[49m/[1m[38;5;39mdotfiles[0m[38;5;31m[49m [38;5;76m[38;5;178m [38;5;76m main *4 [38;5;178m!11[39m                                                                                                                                                                                                                                                                                   [38;5;66m 17:13:53
+[38;5;196m❯[39m [32mtmux[39m [33mcapture-pane[39m [36m-epS
+
+[39m [38;5;31m [1m[38;5;39m~[0m[38;5;31m[49m/[1m[38;5;39mdotfiles[0m[38;5;31m[49m [38;5;76m[38;5;178m [38;5;76m main *4 [38;5;178m!11[39m                                                                                                                                                                                                                                                                                   [38;5;66m 17:14:31
+[38;5;76m❯[39m [32mtmux[39m [33mcapture-pane[39m [36m-epS[39m > hello
+

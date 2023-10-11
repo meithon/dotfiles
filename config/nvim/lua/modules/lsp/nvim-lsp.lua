@@ -28,6 +28,18 @@ return {
       end, { expr = true })
     end,
   },
+
+	-- {
+	-- 		'ray-x/navigator.lua',
+	-- 		dependencies = {
+	-- 				{ 'ray-x/guihua.lua', run = 'cd lua/fzy && make' },
+	-- 				{ 'neovim/nvim-lspconfig' },
+	-- 		},
+	-- 		config = function()
+	-- 			require("navigator").setup()
+	-- 		end
+	-- },
+
   {
     "glepnir/lspsaga.nvim",
     event = "LspAttach",
@@ -50,6 +62,15 @@ return {
         symbol_in_winbar = { enable = false },
       })
     end,
+		keys = {
+			{ 'gh', ':Lspsaga finder<CR>', description = '' },
+			{ '<Leader>ca', ':Lspsaga code_action<CR>', description = '' },
+			{ 'gd', ':Lspsaga goto_definition<CR>', description = '' },
+			{ '<Leader>pd', '', description = '' },
+			{ 'gt', ':Lspsaga goto_type_definition', description = '' },
+			{ '<Leader>pt', ':Lspsaga peek_type_definition', description = '' },
+			{ 'K', ':Lspsaga hover_doc<CR>', description = '' },
+		}
   },
   {
     "aznhe21/actions-preview.nvim",
@@ -158,7 +179,7 @@ return {
     },
     config = function()
       local cmp = require("cmp")
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+      -- local cmp_autopairs = require("nvim-autopairs.completion.cmp")
       local lspkind = require("lspkind")
       local luasnip = require("luasnip")
       luasnip.config.setup({
@@ -166,7 +187,7 @@ return {
         delete_check_events = "TextChanged,InsertEnter",
       })
 
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      -- cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
       local compare = require("cmp.config.compare")
       compare.lsp_scores = function(entry1, entry2)
@@ -488,21 +509,22 @@ return {
       local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
       null_ls.setup({
+				debug = true,
         diagnostics_format = "#{m} (#{s}: #{c})",
         on_attach = function(client, bufnr)
           if client.server_capabilities.documentFormattingProvider then
-            vim.api.nvim_clear_autocmds({
-              group = augroup,
-              buffer = bufnr,
-            })
             vim.api.nvim_create_autocmd("BufWritePre", {
               group = augroup,
               buffer = bufnr,
               callback = function()
-                if "rust" ~= vim.api.nvim_buf_get_option(0, "filetype") then
-                  vim.lsp.buf.format()
-                end
+                -- if "rust" ~= vim.api.nvim_buf_get_option(0, "filetype") then
+                vim.lsp.buf.format()
+                -- end
               end,
+            })
+            vim.api.nvim_clear_autocmds({
+              group = augroup,
+              buffer = bufnr,
             })
           end
         end,
@@ -511,24 +533,24 @@ return {
 
       -- local null_helpers = require("null-ls.helpers")
       -- null_ls.register({
-      -- 	name = "clippy",
-      -- 	method = null_ls.methods.DIAGNOSTICS,
-      -- 	filetypes = { "rust" },
-      -- 	generator = null_ls.generator({
-      -- 		command = "cargo",
-      -- 		args = { "clippy", "--message-format", "short" },
-      -- 		to_stdin = true,
-      -- 		from_stderr = true,
-      -- 		format = "line",
-      -- 		on_output = null_helpers.diagnostics.from_pattern(
-      -- 			[[:(%d+):(%d+): (%w*): (.*)]],
-      -- 			{ "row", "col", "severity", "message" },
-      -- 			-- , {
-      -- 			-- 	pattern = [[(%w+): (%w*)]],
-      -- 			-- 	groups = { "severity", "message" },
-      -- 			{}
-      -- 		),
-      -- 	}),
+      --   name = "clippy",
+      --   method = null_ls.methods.DIAGNOSTICS,
+      --   filetypes = { "rust" },
+      --   generator = null_ls.generator({
+      --     command = "cargo",
+      --     args = { "clippy", "--message-format", "short" },
+      --     to_stdin = true,
+      --     from_stderr = true,
+      --     format = "line",
+      --     on_output = null_helpers.diagnostics.from_pattern(
+      --       [[:(%d+):(%d+): (%w*): (.*)]],
+      --       { "row", "col", "severity", "message" },
+      --       -- , {
+      --       -- 	pattern = [[(%w+): (%w*)]],
+      --       -- 	groups = { "severity", "message" },
+      --       {}
+      --     ),
+      --   }),
       -- })
     end,
   },
