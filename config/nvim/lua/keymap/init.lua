@@ -109,13 +109,13 @@ else
   end)
 
   local lspmap = {
-    ["n|gh"] = map_cmd(":Lspsaga finder<CR>"):with_noremap():with_silent(),
-    ["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
-    ["n|gd"] = map_cmd(":Lspsaga goto_definition<CR>"):with_noremap():with_silent(),
-    ["n|<Leader>pd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
-    ["n|gt"] = map_cmd(":Lspsaga goto_type_definition<CR>"):with_noremap():with_silent(),
-    ["n|<Leader>pt"] = map_cmd(":Lspsaga peek_type_definition<CR>"):with_noremap():with_silent(),
-    ["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
+    -- ["n|gh"] = map_cmd(":Lspsaga finder<CR>"):with_noremap():with_silent(),
+    -- ["n|<Leader>ca"] = map_cmd(":Lspsaga code_action<CR>"):with_noremap():with_silent(),
+    -- ["n|gd"] = map_cmd(":Lspsaga goto_definition<CR>"):with_noremap():with_silent(),
+    -- ["n|<Leader>pd"] = map_cmd(":Lspsaga peek_definition<CR>"):with_noremap():with_silent(),
+    -- ["n|gt"] = map_cmd(":Lspsaga goto_type_definition<CR>"):with_noremap():with_silent(),
+    -- ["n|<Leader>pt"] = map_cmd(":Lspsaga peek_type_definition<CR>"):with_noremap():with_silent(),
+    -- ["n|K"] = map_cmd(":Lspsaga hover_doc<CR>"):with_noremap():with_silent(),
     -- Trouble
     ["n|<Leader>lt"] = map_cmd(":Trouble<CR>"):with_noremap(),
   }

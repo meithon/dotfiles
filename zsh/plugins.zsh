@@ -32,6 +32,7 @@ zsh-defer zinit load zsh-users/zsh-autosuggestions
 
 # 256色表示にする
 zsh-defer zinit load chrissicool/zsh-256color
+zsh-defer zinit load zinitsebastiencs/icons-in-terminal pick 'install.sh'
 # 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
 zsh-defer zinit load zsh-users/zsh-syntax-highlighting
 

@@ -20,8 +20,4 @@ git() {
     fi
 }
 
-alias fga="fzf-git-add"
-alias fd='fzf-cdr'
-alias fda='fzf-cdr-all'
-
 alias chrome='open /Applications/Google\ Chrome.app/'

@@ -2,6 +2,12 @@ local keybind = require("core.keybind").editor
 
 return {
   {
+    "andersevenrud/nvim_context_vt",
+    config = function()
+      require("nvim_context_vt").setup()
+    end,
+  },
+  {
     "napmn/react-extract.nvim",
     config = function()
       require("react-extract").setup()
@@ -543,17 +549,23 @@ return {
     keys = { "gc", { "gc", mode = "v" } },
     config = true,
   },
+  -- {
+  --   "windwp/nvim-autopairs",
+  --   event = "InsertEnter",
+  --   config = function()
+  --     require("nvim-autopairs").setup({
+  --
+  --       check_ts = true,
+  --       map_cr = false, -- Avoid conflicts with CR keymap for completion
+  --     })
+  --   end,
+  --   enabled = not vim.g.vscode,
+  -- },
   {
-    "windwp/nvim-autopairs",
-    event = "InsertEnter",
+    "ZhiyuanLck/smart-pairs",
     config = function()
-      require("nvim-autopairs").setup({
-
-        check_ts = true,
-        map_cr = false, -- Avoid conflicts with CR keymap for completion
-      })
+      require("pairs"):setup()
     end,
-    enabled = not vim.g.vscode,
   },
   {
     "nacro90/numb.nvim",
