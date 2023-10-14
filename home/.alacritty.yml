@@ -5,13 +5,13 @@ env:
   TERM: xterm-256color
 font:
   normal:
-    family: Hack Nerd Font
+    family: ProFont IIx Nerd Font Mono
     style: Regular
   bold:
-    family: Hack Nerd Font
+    family: ProFont IIx Nerd Font Mono
     style: Bold
   italic:
-    family: Hack Nerd Font
+    family: ProFont IIx Nerd Font Mono 
     style: Italic
   size: 11
 key_bindings:

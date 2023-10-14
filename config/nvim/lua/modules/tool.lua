@@ -1,59 +1,4 @@
 return {
-	-- {
-	-- 	"pwntester/codeql.nvim",
-	-- 	dependencies = {
-	-- 		"MunifTanjim/nui.nvim",
-	-- 		"nvim-lua/telescope.nvim",
-	-- 		-- {
-	-- 		-- 	"s1n7ax/nvim-window-picker",
-	-- 		-- 	tag = "v1.*",
-	-- 		-- 	config = function()
-	-- 		-- 		require("window-picker").setup({
-	-- 		-- 			autoselect_one = true,
-	-- 		-- 			include_current = false,
-	-- 		-- 			filter_rules = {
-	-- 		-- 				bo = {
-	-- 		-- 					filetype = {
-	-- 		-- 						"codeql_panel",
-	-- 		-- 						"codeql_explorer",
-	-- 		-- 						"qf",
-	-- 		-- 						"TelescopePrompt",
-	-- 		-- 						"TelescopeResults",
-	-- 		-- 						"notify",
-	-- 		-- 						"noice",
-	-- 		-- 						"NvimTree",
-	-- 		-- 						"neo-tree",
-	-- 		-- 					},
-	-- 		-- 					buftype = { "terminal" },
-	-- 		-- 				},
-	-- 		-- 			},
-	-- 		-- 			current_win_hl_color = "#e35e4f",
-	-- 		-- 			other_win_hl_color = "#44cc41",
-	-- 		-- 		})
-	-- 		-- 	end,
-	-- 		-- },
-	-- 	},
-	-- 	config = function()
-	-- 		require("codeql").setup({})
-	-- 	end,
-	-- },
-
-	-- {
-	-- 	"nvim-neotest/neotest",
-	-- 	dependencies = {
-	-- 		"nvim-lua/plenary.nvim",
-	-- 		"nvim-treesitter/nvim-treesitter",
-	-- 		"antoinemadec/FixCursorHold.nvim",
-	-- 		"rouge8/neotest-rust",
-	-- 	},
-	-- 	config = function()
-	-- 		require("neotest").setup({
-	-- 			adapters = {
-	-- 				require("neotest-rust"),
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
 	{
 		"IndianBoy42/tree-sitter-just",
 		config = function()
@@ -1045,7 +990,6 @@ return {
 	-- },
 	{
 		"obaland/vfiler.vim",
-
 		cmd = "VFiler",
 		dependencies = {
 			"obaland/vfiler-column-devicons",
