@@ -1,4 +1,7 @@
 alias vi="nvim"
+alias vv="~/dotfiles/nvim-switcher/switcher.sh"
+alias lv="NVIM_APPNAME=LazyVim nvim"
+
 alias ll="lsd -l"
 alias la="lsd -l -a"
 alias ..="cd .."
