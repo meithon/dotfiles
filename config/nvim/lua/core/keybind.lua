@@ -27,6 +27,7 @@ local editor = {
   resize_left = "<C-w>y",
   resize_down = "<C-w>u",
   resize_up = "<C-w>i",
+
   resize_right = "<C-w>o",
 
   -- fold
