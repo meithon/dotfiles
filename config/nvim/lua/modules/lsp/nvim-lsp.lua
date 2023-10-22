@@ -61,15 +61,36 @@ return {
         },
         symbol_in_winbar = { enable = false },
       })
+			vim.keymap.set("n", "<leader>p", function()
+				require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+			end)
+			vim.keymap.set("n", "<leader>n", function()
+				require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+			end)
+
     end,
 		keys = {
-			{ 'gh', ':Lspsaga finder<CR>', description = '' },
-			{ '<Leader>ca', ':Lspsaga code_action<CR>', description = '' },
-			{ 'gd', ':Lspsaga goto_definition<CR>', description = '' },
-			{ '<Leader>pd', '', description = '' },
-			{ 'gt', ':Lspsaga goto_type_definition', description = '' },
-			{ '<Leader>pt', ':Lspsaga peek_type_definition', description = '' },
-			{ 'K', ':Lspsaga hover_doc<CR>', description = '' },
+			-- {
+			-- 	"<Leader>p",
+			-- 	function()
+			-- 		require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+			-- 	end,
+			-- 	desc = "Goto next error",
+			-- },
+			-- {
+			-- 	"<Leader>n",
+			-- 	function()
+			-- 		require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+			-- 	end,
+			-- 	desc = "Goto prev error",
+			-- },
+			{ 'gh', ':Lspsaga finder<CR>', desc = '' },
+			{ '<Leader>ca', ':Lspsaga code_action<CR>', desc = '' },
+			{ 'gd', ':Lspsaga goto_definition<CR>', desc = '' },
+			{ '<Leader>pd', '', desc = '' },
+			{ 'gt', ':Lspsaga goto_type_definition', desc = '' },
+			{ '<Leader>pt', ':Lspsaga peek_type_definition', desc = '' },
+			{ 'K', ':Lspsaga hover_doc<CR>', desc = '' },
 		}
   },
   {
@@ -341,7 +362,7 @@ return {
   },
   {
     "jose-elias-alvarez/null-ls.nvim",
-    event = "InsertEnter",
+    -- event = "InsertEnter",
     dependencies = {
       { "nvim-lua/plenary.nvim" },
     },

@@ -34,6 +34,7 @@ local LSP = {
   "gopls",
   "vim-language-server",
   "rust-analyzer",
+	"pyright"
 }
 local ENABLE_COC = false
 
