@@ -339,7 +339,7 @@ return {
           else
             cmp.complete()
           end
-        end),
+        end, { "i", "s" }),
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.confirm({
