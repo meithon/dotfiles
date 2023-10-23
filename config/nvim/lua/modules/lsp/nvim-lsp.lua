@@ -29,16 +29,16 @@ return {
     end,
   },
 
-	-- {
-	-- 		'ray-x/navigator.lua',
-	-- 		dependencies = {
-	-- 				{ 'ray-x/guihua.lua', run = 'cd lua/fzy && make' },
-	-- 				{ 'neovim/nvim-lspconfig' },
-	-- 		},
-	-- 		config = function()
-	-- 			require("navigator").setup()
-	-- 		end
-	-- },
+  -- {
+  -- 		'ray-x/navigator.lua',
+  -- 		dependencies = {
+  -- 				{ 'ray-x/guihua.lua', run = 'cd lua/fzy && make' },
+  -- 				{ 'neovim/nvim-lspconfig' },
+  -- 		},
+  -- 		config = function()
+  -- 			require("navigator").setup()
+  -- 		end
+  -- },
 
   {
     "glepnir/lspsaga.nvim",
@@ -61,37 +61,36 @@ return {
         },
         symbol_in_winbar = { enable = false },
       })
-			vim.keymap.set("n", "<leader>p", function()
-				require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
-			end)
-			vim.keymap.set("n", "<leader>n", function()
-				require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
-			end)
-
+      vim.keymap.set("n", "<leader>p", function()
+        require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+      end)
+      vim.keymap.set("n", "<leader>n", function()
+        require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+      end)
     end,
-		keys = {
-			-- {
-			-- 	"<Leader>p",
-			-- 	function()
-			-- 		require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
-			-- 	end,
-			-- 	desc = "Goto next error",
-			-- },
-			-- {
-			-- 	"<Leader>n",
-			-- 	function()
-			-- 		require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
-			-- 	end,
-			-- 	desc = "Goto prev error",
-			-- },
-			{ 'gh', ':Lspsaga finder<CR>', desc = '' },
-			{ '<Leader>ca', ':Lspsaga code_action<CR>', desc = '' },
-			{ 'gd', ':Lspsaga goto_definition<CR>', desc = '' },
-			{ '<Leader>pd', '', desc = '' },
-			{ 'gt', ':Lspsaga goto_type_definition', desc = '' },
-			{ '<Leader>pt', ':Lspsaga peek_type_definition', desc = '' },
-			{ 'K', ':Lspsaga hover_doc<CR>', desc = '' },
-		}
+    keys = {
+      -- {
+      -- 	"<Leader>p",
+      -- 	function()
+      -- 		require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+      -- 	end,
+      -- 	desc = "Goto next error",
+      -- },
+      -- {
+      -- 	"<Leader>n",
+      -- 	function()
+      -- 		require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+      -- 	end,
+      -- 	desc = "Goto prev error",
+      -- },
+      { "gh", ":Lspsaga finder<CR>", desc = "" },
+      { "<Leader>ca", ":Lspsaga code_action<CR>", desc = "" },
+      { "gd", ":Lspsaga goto_definition<CR>", desc = "" },
+      { "<Leader>pd", "", desc = "" },
+      { "gt", ":Lspsaga goto_type_definition", desc = "" },
+      { "<Leader>pt", ":Lspsaga peek_type_definition", desc = "" },
+      { "K", ":Lspsaga hover_doc<CR>", desc = "" },
+    },
   },
   {
     "aznhe21/actions-preview.nvim",
@@ -530,7 +529,7 @@ return {
       local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
       null_ls.setup({
-				debug = true,
+        debug = true,
         diagnostics_format = "#{m} (#{s}: #{c})",
         on_attach = function(client, bufnr)
           if client.server_capabilities.documentFormattingProvider then
