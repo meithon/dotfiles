@@ -1,0 +1,58 @@
+shell = "zsh"
+
+[templates]
+defer = "{{ hooks | get: \"pre\" | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks | get: \"post\" | nl }}"
+
+# apply = ["defer"]
+
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+[plugins.zsh-async]
+github = "mafredri/zsh-async"
+apply = ["defer"]
+
+[plugins.zsh-vi-mode]
+github = "jeffreytse/zsh-vi-mode"
+apply = ["defer"]
+
+[plugins.powerlevel10k]
+github = "romkatv/powerlevel10k"
+
+[plugins."z.lua"]
+github = "skywind3000/z.lua"
+
+# [plugins.zsh-z]
+# github = "agkozak/zsh-z"
+# apply = ["defer"]
+#
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
+#
+# [plugins.zsh-256color]
+# github = "chrissicool/zsh-256color"
+
+# [plugins.zsh-syntax-highlighting]
+# github = "zsh-users/zsh-syntax-highlighting"
+#
+[plugins.ripgrep]
+github = "BurntSushi/ripgrep"
+apply = ["defer"]
+
+[plugins.fzf]
+github = "junegunn/fzf"
+apply = ["defer"]
+
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+apply = ["defer"]
+# apply = ["wait0", "lucid", "light-mode"]
+
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+apply = ["defer"]
+
+[plugins.cod]
+github = "dim-an/cod"
+apply = ["defer"]
