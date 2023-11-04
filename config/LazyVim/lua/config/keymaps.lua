@@ -3,7 +3,7 @@
 -- Add any additional keymaps here
 local map = vim.keymap.set
 
-map({ "n", "v" }, "x", '"_x"', { noremap = true })
+map({ "n", "v" }, "x", '"_x', { noremap = true })
 
 map("n", "<CR>", "i<CR><ESC>", { noremap = true })
 
