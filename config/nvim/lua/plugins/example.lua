@@ -563,13 +563,12 @@ return {
   -- override nvim-cmp and add cmp-emoji
   {
     "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-emoji", "hrsh7th/cmp-cmdline" },
+    dependencies = { "hrsh7th/cmp-emoji" },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       table.insert(opts.sources, { name = "emoji" })
     end,
   },
-
   {
     "nvim-telescope/telescope.nvim",
     keys = {
@@ -619,12 +618,10 @@ return {
       return {}
     end,
   },
-  -- then: setup supertab in cmp
-  {
+  { -- setup cmp-cmdline
     "hrsh7th/nvim-cmp",
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      local luasnip = require("luasnip")
+    dependencies = { "hrsh7th/cmp-cmdline", "hrsh7th/cmp-nvim-lsp-document-symbol" },
+    config = function()
       local cmp = require("cmp")
       -- `:` cmdline setup.
       cmp.setup.cmdline(":", {
@@ -640,13 +637,23 @@ return {
           },
         }),
       })
-      -- `/` cmdline setup.
-      cmp.setup.cmdline("/", {
+      require("cmp").setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = {
+        sources = cmp.config.sources({
+          { name = "nvim_lsp_document_symbol" },
+        }, {
           { name = "buffer" },
-        },
+        }),
       })
+    end,
+  },
+  -- then: setup supertab in cmp
+  {
+    "hrsh7th/nvim-cmp",
+    ---@param opts cmp.ConfigSchema
+    opts = function(_, opts)
+      local luasnip = require("luasnip")
+      local cmp = require("cmp")
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<C-e>"] = cmp.mapping(function()
