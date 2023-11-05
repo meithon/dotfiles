@@ -619,13 +619,25 @@ return {
     end,
   },
   { -- setup cmp-cmdline
-    "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-cmdline", "hrsh7th/cmp-nvim-lsp-document-symbol" },
+    "hrsh7th/cmp-cmdline",
+    dependencies = {
+      "hrsh7th/nvim-cmp",
+      "hrsh7th/cmp-nvim-lsp-document-symbol",
+    },
     config = function()
       local cmp = require("cmp")
       -- `:` cmdline setup.
       cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Tab>"] = cmp.mapping({
+            c = function()
+              cmp.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+              })
+            end,
+          }),
+        }),
         sources = cmp.config.sources({
           { name = "path" },
         }, {
@@ -637,8 +649,18 @@ return {
           },
         }),
       })
+
       require("cmp").setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Tab>"] = cmp.mapping({
+            c = function()
+              cmp.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+              })
+            end,
+          }),
+        }),
         sources = cmp.config.sources({
           { name = "nvim_lsp_document_symbol" },
         }, {
@@ -679,11 +701,18 @@ return {
         ["<C-n>"] = cmp.mapping({
           c = function()
             if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+              cmp.select_next_item()
             else
-              vim.api.nvim_feedkeys(t("<Down>"), "n", true)
+              cmp.complete()
             end
           end,
+          -- c = function()
+          --   if cmp.visible() then
+          --     cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+          --   else
+          --     vim.api.nvim_feedkeys(t("<Down>"), "n", true)
+          --   end
+          -- end,
           i = function(fallback)
             if cmp.visible() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -693,13 +722,13 @@ return {
           end,
         }),
         ["<C-p>"] = cmp.mapping({
-          c = function()
-            if cmp.visible() then
-              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            else
-              vim.api.nvim_feedkeys(t("<Up>"), "n", true)
-            end
-          end,
+          -- c = function()
+          --   if cmp.visible() then
+          --     cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+          --   else
+          --     vim.api.nvim_feedkeys(t("<Up>"), "n", true)
+          --   end
+          -- end,
           i = function(fallback)
             if cmp.visible() then
               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
