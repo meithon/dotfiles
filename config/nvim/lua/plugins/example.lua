@@ -51,7 +51,7 @@ return {
   { -- bracket highlight
     "utilyre/sentiment.nvim",
     version = "*",
-    event = "VeryLazy", -- keep for lazy loading
+    event = "InsertEnter", -- keep for lazy loading
     opts = {
       -- config
     },
@@ -481,53 +481,6 @@ return {
     "echasnovski/mini.indentscope",
     enabled = false,
   },
-  "echasnovski/mini.indentscope",
-  -- Replace command UI
-  {
-    "folke/noice.nvim",
-    enabled = false,
-  },
-  {
-    "gelguy/wilder.nvim",
-    dependencies = {
-      { "romgrk/fzy-lua-native", build = "make" },
-    },
-    config = function()
-      local wilder = require("wilder")
-      wilder.setup({ modes = { ":", "/", "?" } })
-      -- Disable Python remote plugin
-      wilder.set_option("use_python_remote_plugin", 0)
-
-      wilder.set_option("pipeline", {
-        wilder.branch(
-          wilder.cmdline_pipeline({
-            fuzzy = 1,
-            fuzzy_filter = wilder.lua_fzy_filter(),
-          }),
-          wilder.search_pipeline()
-        ),
-      })
-
-      wilder.set_option(
-        "renderer",
-        wilder.popupmenu_renderer({
-          highlighter = {
-            wilder.lua_fzy_highlighter(), -- requires fzy-lua-native vim plugin found
-            -- at https://github.com/romgrk/fzy-lua-native
-          },
-          highlights = {
-            accent = wilder.make_hl("WilderAccent", "Pmenu", {
-              { a = 1 },
-              { a = 1 },
-              { foreground = "#f4468f" },
-            }),
-          },
-          left = { " ", wilder.popupmenu_devicons() },
-          right = { " ", wilder.popupmenu_scrollbar() },
-        })
-      )
-    end,
-  },
   {
     "NeogitOrg/neogit",
     dependencies = {
@@ -610,7 +563,7 @@ return {
   -- override nvim-cmp and add cmp-emoji
   {
     "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-emoji" },
+    dependencies = { "hrsh7th/cmp-emoji", "hrsh7th/cmp-cmdline" },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       table.insert(opts.sources, { name = "emoji" })
@@ -673,6 +626,27 @@ return {
     opts = function(_, opts)
       local luasnip = require("luasnip")
       local cmp = require("cmp")
+      -- `:` cmdline setup.
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = "path" },
+        }, {
+          {
+            name = "cmdline",
+            option = {
+              ignore_cmds = { "Man", "!" },
+            },
+          },
+        }),
+      })
+      -- `/` cmdline setup.
+      cmp.setup.cmdline("/", {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = "buffer" },
+        },
+      })
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<C-e>"] = cmp.mapping(function()
