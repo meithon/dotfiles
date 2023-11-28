@@ -56,3 +56,9 @@ apply = ["defer"]
 [plugins.cod]
 github = "dim-an/cod"
 apply = ["defer"]
+
+[plugins.per-directory-history]
+github = "jimhester/per-directory-history"
+[plugins.per-directory-history.hooks]
+pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"

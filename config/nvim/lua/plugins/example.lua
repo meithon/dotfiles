@@ -3,192 +3,130 @@
 -- In your plugin files, you can:
 -- * add extra plugins
 -- * disable/enabled LazyVim plugins
+--
 -- * override the configuration of LazyVim plugins
 local map = vim.keymap.set
 return {
-  { -- auto 改行
-    "hrsh7th/nvim-insx",
-    config = function()
-      -- require("insx.preset.standard").setup()
-      -- local insx = require("insx")
-      -- Simple pair deletion recipe.
-      -- require("insx").add(
-      --   "(",
-      --   require("insx.recipe.auto_pair")({
-      --     open = "(",
-      --     close = ")",
+  { -- add window picker to neo-tree
+    "nvim-neo-tree/neo-tree.nvim",
+    dependencies = {
+      {
+        "s1n7ax/nvim-window-picker",
+        version = "2.*",
+        config = function()
+          require("window-picker").setup({
+            filter_rules = {
+              include_current_win = false,
+              autoselect_one = true,
+              -- filter using buffer options
+              bo = {
+                -- if the file type is one of following, the window will be ignored
+                filetype = { "neo-tree", "neo-tree-popup", "notify" },
+                -- if the buffer type is one of following, the window will be ignored
+                buftype = { "terminal", "quickfix" },
+              },
+            },
+            highlights = {
+              statusline = {
+                focused = {
+                  fg = "#ededed",
+                  bg = "#e35e4f",
+                  bold = true,
+                },
+                unfocused = {
+                  fg = "#ededed",
+                  bg = "#44cc41",
+                  bold = true,
+                },
+              },
+              winbar = {
+                focused = {
+                  fg = "#ededed",
+                  bg = "#e35e4f",
+                  bold = true,
+                },
+                unfocused = {
+                  fg = "#ededed",
+                  bg = "#44cc41",
+                  bold = true,
+                },
+              },
+            },
+          })
+        end,
+      },
+    },
+  },
+
+  { --
+    "nvimtools/none-ls.nvim",
+    opts = function(_, opts)
+      local null_ls = require("null-ls")
+      for i, item in ipairs(opts) do
+        if item == null_ls.builtins.diagnostics.eslint then
+          opts[i] = null_ls.builtins.diagnostics.eslint.with({
+            diagnostics_postprocess = function(diagnostic)
+              diagnostic.severity = vim.diagnostic.severity.WARN
+            end,
+          })
+          break
+        end
+      end
+      -- table.insert(
+      --   opts.sources,
+      --   null_ls.builtins.diagnostics.eslint.with({
+      --     diagnostics_postprocess = function(diagnostic)
+      --       diagnostic.severity = vim.diagnostic.severity.WARN
+      --     end,
       --   })
       -- )
-      -- require("insx").add(
-      --   "(",
-      --   require("insx.recipe.auto_pair").strings({
-      --     open = [[']],
-      --     close = [[']],
-      --   })
-      -- ) -- preset for strings.
-
-      local esc = require("insx").helper.regex.esc
-      require("insx").add(
-        "<CR>",
-        require("insx.recipe.fast_break")({
-          open_pat = esc("("),
-          close_pat = esc(")"),
-          arguments = true,
-          html_attrs = true,
-        })
-      )
-      -- Simple pair deletion recipe.
-      --
-    end,
-    event = "InsertEnter",
-  },
-
-  {
-    "ckolkey/ts-node-action",
-    dependencies = { "nvim-treesitter" },
-    opts = {},
-  },
-  { -- bracket highlight
-    "utilyre/sentiment.nvim",
-    version = "*",
-    event = "InsertEnter", -- keep for lazy loading
-    opts = {
-      -- config
-    },
-    init = function()
-      -- `matchparen.vim` needs to be disabled manually in case of lazy loading
-      vim.g.loaded_matchparen = 1
     end,
   },
-  { -- jump to bracker in insert mode
-    "abecodes/tabout.nvim",
-    config = function()
-      require("tabout").setup({
-        tabkey = "<Tab>", -- key to trigger tabout, set to an empty string to disable
-        backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
-        act_as_tab = true, -- shift content if tab out is not possible
-        act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-        default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-        default_shift_tab = "<C-d>", -- reverse shift default action,
-        enable_backwards = true, -- well ...
-        completion = true, -- if the tabkey is used in a completion pum
-        tabouts = {
-          { open = "'", close = "'" },
-          { open = '"', close = '"' },
-          { open = "`", close = "`" },
-          { open = "(", close = ")" },
-          { open = "[", close = "]" },
-          { open = "{", close = "}" },
-        },
-        ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
-        exclude = {}, -- tabout will ignore these filetypes
-      })
-    end,
-    dependencies = { "nvim-treesitter", "nvim-cmp" }, -- or require if not used so far
-  },
-  {
-    "altermo/ultimate-autopair.nvim",
-    event = { "InsertEnter", "CmdlineEnter" },
-    branch = "v0.6", --recomended as each new version will have breaking changes
-    opts = {
+  { -- better typescript error
+    "neovim/nvim-lspconfig",
+    dependencies = "davidosomething/format-ts-errors.nvim",
+    ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+    opts = function(_, opts)
+      opts.servers.tsserver.handlers = {
+        ["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
+          if result.diagnostics == nil then
+            return
+          end
 
-      fastwarp = { -- *ultimate-autopair-map-fastwarp-config*
-        -- enable=true,
-        -- enable_normal=true,
-        -- enable_reverse=true,
-        -- hopout=false,
-        --{(|)} > fastwarp > {(}|)
-        map = "<C-x>", --string or table
-        -- rmap='<A-E>', --string or table
-        -- cmap='<A-e>', --string or table
-        -- rcmap='<A-E>', --string or table
-      },
-      --Config goes here
+          -- ignore some tsserver diagnostics
+          local idx = 1
+          while idx <= #result.diagnostics do
+            local entry = result.diagnostics[idx]
+
+            local formatter = require("format-ts-errors")[entry.code]
+            entry.message = formatter and formatter(entry.message) or entry.message
+
+            -- codes: https://github.com/microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
+            if entry.code == 80001 then
+              -- { message = "File is a CommonJS module; it may be converted to an ES module.", }
+              table.remove(result.diagnostics, idx)
+            else
+              idx = idx + 1
+            end
+          end
+
+          vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+        end,
+      }
+    end,
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = {
+      "poljar/typos.nvim",
     },
+    opts = function(_, opts)
+      local typos = require("typos")
+      typos.setup()
+      table.insert(opts.sources, typos.actions)
+    end,
   },
-  {
-    "echasnovski/mini.pairs",
-    eneabled = false,
-  },
-  {
-    "folke/zen-mode.nvim",
-    opts = {
-      backdrop = 0.85, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
-      width = 340, -- width of the Zen window
-      -- height = 0.95, -- height of the Zen window
-    },
-    config = true,
-    cmd = "ZenMode",
-  },
-  -- {
-  --   "sindrets/winshift.nvim",
-  --   cmd = "WinShift",
-  --   config = function()
-  --     require("winshift").setup()
-  --   end,
-  -- },
-  -- {
-  --   "anuvyklack/windows.nvim",
-  --   dependencies = "anuvyklack/middleclass",
-  --   config = function()
-  --     require("windows").setup()
-  --   end,
-  -- },
-  -- {
-  --   "nvim-focus/focus.nvim",
-  --   version = "*",
-  --   config = function()
-  --     require("focus").setup({
-  --       autoresize = {
-  --         -- enable = true, -- Enable or disable auto-resizing of splits
-  --         -- width = 20, -- Force width for the focused window
-  --         -- height = 0, -- Force height for the focused window
-  --         -- minwidth = 50, -- Force minimum width for the unfocused window
-  --         -- minheight = 0, -- Force minimum height for the unfocused window
-  --         -- height_quickfix = 10, -- Set the height of quickfix panel
-  --       },
-  --     })
-  --
-  --     -- local ignore_filetypes = { "neo-tree" }
-  --     local ignore_filetypes = { "neo-tree" }
-  --     local ignore_buftypes = { "nofile", "prompt", "popup" }
-  --
-  --     local augroup = vim.api.nvim_create_augroup("FocusDisable", { clear = true })
-  --
-  --     -- vim.api.nvim_create_autocmd("WinEnter", {
-  --     --   group = augroup,
-  --     --   callback = function(_)
-  --     --     if vim.tbl_contains(ignore_buftypes, vim.bo.buftype) then
-  --     --       vim.w.focus_disable = true
-  --     --     else
-  --     --       vim.w.focus_disable = false
-  --     --     end
-  --     --   end,
-  --     --   desc = "Disable focus autoresize for BufType",
-  --     -- })
-  --
-  --     vim.api.nvim_create_autocmd("FileType", {
-  --       group = augroup,
-  --       callback = function(_)
-  --         if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
-  --           vim.b.focus_disable = true
-  --         else
-  --           vim.b.focus_disable = false
-  --         end
-  --       end,
-  --       desc = "Disable focus autoresize for FileType",
-  --     })
-  --   end,
-  -- },
-  -- Resize Window
-  -- {
-  --   "camspiers/lens.vim",
-  --   config = function()
-  --     vim.cmd([[ let g:lens#animate = 0 ]])
-  --   end,
-  -- },
-  -- change completion settiongs
-  {
+  { -- change completion settings
     "hrsh7th/nvim-cmp",
     version = false, -- last release is way too old
     event = "InsertEnter",
@@ -232,180 +170,6 @@ return {
     --   end
     --   require("cmp").setup(opts)
     -- end,
-  },
-  -- AI Plugins
-  {
-    "Bryley/neoai.nvim",
-    dependencies = { "MunifTanjim/nui.nvim" },
-    keys = {
-      "NeoAI",
-      "NeoAIOpen",
-      "NeoAIClose",
-      "NeoAIToggle",
-      "NeoAIContext",
-      "NeoAIContextOpen",
-      "NeoAIContextClose",
-      "NeoAIInject",
-      "NeoAIInjectCode",
-      "NeoAIInjectContext",
-      "NeoAIInjectContextCode",
-    },
-    config = function()
-      require("neoai").setup({
-        -- Options go here
-      })
-    end,
-  },
-  {
-    "jackMort/ChatGPT.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("chatgpt").setup()
-    end,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-  },
-  -- search word from git commits
-  {
-    "aaronhallaert/advanced-git-search.nvim",
-    config = function()
-      -- optional: setup telescope before loading the extension
-      require("telescope").setup({
-        -- move this to the place where you call the telescope setup function
-        extensions = {
-          advanced_git_search = {
-
-            {
-              -- fugitive or diffview
-              diff_plugin = "fugitive",
-              -- customize git in previewer
-              -- e.g. flags such as { "--no-pager" }, or { "-c", "delta.side-by-side=false" }
-              git_flags = {},
-              -- customize git diff in previewer
-              -- e.g. flags such as { "--raw" }
-              git_diff_flags = {},
-              -- Show builtin git pickers when executing "show_custom_functions" or :AdvancedGitSearch
-              show_builtin_git_pickers = false,
-              entry_default_author_or_date = "author", -- one of "author" or "date"
-
-              -- Telescope layout setup
-              telescope_theme = {
-                function_name_1 = {
-                  -- Theme options
-                },
-                function_name_2 = "dropdown",
-                -- e.g. realistic example
-                show_custom_functions = {
-                  layout_config = { width = 0.4, height = 0.4 },
-                },
-              },
-            },
-
-            -- See Config
-            --
-          },
-        },
-      })
-
-      require("telescope").load_extension("advanced_git_search")
-    end,
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      -- to show diff splits and open commits in browser
-      "tpope/vim-fugitive",
-      -- to open commits in browser with fugitive
-      "tpope/vim-rhubarb",
-      -- optional: to replace the diff from fugitive with diffview.nvim
-      -- (fugitive is still needed to open in browser)
-      -- "sindrets/diffview.nvim",
-    },
-  },
-  {
-    "kosayoda/nvim-lightbulb",
-    config = function()
-      require("nvim-lightbulb").setup({
-        autocmd = { enabled = true },
-      })
-    end,
-  },
-
-  {
-    "folke/trouble.nvim",
-    cmd = { "TroubleToggle", "Trouble" },
-    opts = { use_diagnostic_signs = false },
-  },
-  {
-    "nvimdev/lspsaga.nvim",
-    opt = {},
-    config = function(_, opts)
-      require("lspsaga").setup(opts)
-      -- disabe default keymaps
-      vim.keymap.set("n", "<leader>l", function() end) -- Open lazy
-    end,
-    cmd = "Lspsaga",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter", -- optional
-      "nvim-tree/nvim-web-devicons", -- optional
-    },
-    keys = {
-      -- replace LazyVim command
-      {
-        "[e",
-        function()
-          require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
-        end,
-        desc = "Go to previous error",
-      },
-      {
-        "]e",
-        function()
-          require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
-        end,
-        desc = "Go to prev error",
-      },
-      {
-        "[d",
-        function()
-          require("lspsaga.diagnostic"):goto_prev()
-        end,
-        desc = "Go to prev diagnostic",
-      },
-      {
-        "]d",
-        function()
-          require("lspsaga.diagnostic"):goto_next()
-        end,
-        desc = "Go to next diagnostic",
-      },
-      {
-        "<leader>l",
-        desc = "Remap <leader>l",
-      },
-      {
-        "<leader>ld",
-        function()
-          require("lspsaga.definition"):init(1, 1)
-        end,
-        desc = "Peek to definition (Lspsaga)",
-      },
-      {
-        "<leader>ly",
-        function()
-          require("lspsaga.definition"):init(2, 1)
-        end,
-        desc = "Peek to t[y]pe definition (Lspsaga)",
-      },
-      {
-        "<leader>lf",
-        function()
-          require("lspsaga.definition"):init(2, 1)
-        end,
-        desc = "Peek to t[y]pe definition (Lspsaga)",
-      },
-    },
   },
   {
     "nvim-treesitter/playground",
@@ -482,59 +246,6 @@ return {
     enabled = false,
   },
   {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim", -- required
-      "nvim-telescope/telescope.nvim", -- optional
-      "sindrets/diffview.nvim", -- optional
-      "ibhagwan/fzf-lua", -- optional
-    },
-    opts = {},
-    config = function(opts)
-      require("neogit").setup(opts)
-      map("n", "<space>gs", "<cmd>Neogit<cr>", { desc = "Open git tool interface" })
-    end,
-    keys = {
-      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Open git tool interface" },
-    },
-  },
-  {
-    "xiyaowong/transparent.nvim",
-    config = function()
-      require("transparent").setup({
-        extra_groups = { -- table/string: additional groups that should be cleared
-          -- In particular, when you set it to 'all', that means all available groups
-
-          -- example of akinsho/nvim-bufferline.lua
-          "BufferLineTabClose",
-          "BufferlineBufferSelected",
-          "BufferLineFill",
-          "BufferLineBackground",
-          "BufferLineSeparator",
-          "BufferLineIndicatorSelected",
-        },
-      })
-    end,
-  },
-  {
-    "mg979/vim-visual-multi",
-    branch = "master",
-    keys = { { "<C-n>", mode = { "v", "i", "n" } } },
-    config = function() end,
-    enabled = not vim.g.vscode,
-  },
-  {
-    "chaoren/vim-wordmotion",
-    keys = {
-      { "w", mode = { "n", "v" } },
-      { "e", mode = { "n", "v" } },
-      { "b", mode = { "n", "v" } },
-      { "W", mode = { "n", "v" } },
-      { "E", mode = { "n", "v" } },
-      { "B", mode = { "n", "v" } },
-    },
-  },
-  {
     "akinsho/bufferline.nvim",
     opts = function(_, opts)
       -- table.insert(opts.options, { show_close_icon = false })
@@ -550,14 +261,6 @@ return {
         },
       })
     end,
-  },
-
-  -- add symbols-outline
-  {
-    "simrat39/symbols-outline.nvim",
-    cmd = "SymbolsOutline",
-    keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
-    config = true,
   },
 
   -- override nvim-cmp and add cmp-emoji
@@ -595,18 +298,6 @@ return {
         sorting_strategy = "ascending",
         winblend = 0,
       },
-    },
-  },
-
-  -- add telescope-fzf-native
-  {
-    "telescope.nvim",
-    dependencies = {
-      "nvim-telescope/telescope-fzf-native.nvim",
-      build = "make",
-      config = function()
-        require("telescope").load_extension("fzf")
-      end,
     },
   },
 

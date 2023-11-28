@@ -71,3 +71,17 @@ esac
 # pnpm end
 source /Users/mei/.docker/init-zsh.sh || true # Added by Docker Desktop
 
+# enable completions of homebrew
+if type brew &>/dev/null
+then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+  autoload -Uz compinit
+  compinit
+fi
+
+
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+[ -f ~/.inshellisense/key-bindings.zsh ] && source ~/.inshellisense/key-bindings.zsh
