@@ -21,3 +21,6 @@ map(
   "<cmd>Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>:Gitsigns toggle_linehl<cr>",
   { desc = "Show git diff" }
 )
+map("n", "gd", function()
+  require("telescope.builtin").lsp_definitions({ reuse_win = false }) -- repalce to reuse_win=false
+end, { desc = "Goto Definition" })
