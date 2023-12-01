@@ -1,9 +1,0 @@
-{
-    "workspace.library": [
-        "/Users/mei/.local/share/nvim/lazy/neodev.nvim/types/nightly",
-        "/Users/mei/.local/share/bob/nightly/nvim-macos/share/nvim/runtime/lua",
-        "/Users/mei/dotfiles/nvim-switcher/lib/LazyVim/lua",
-        "${3rd}/luv/library"
-    ],
-    "completion.autoRequire": false
-}

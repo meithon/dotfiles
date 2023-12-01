@@ -1,8 +1,151 @@
 local map = vim.keymap.set
+
+---@alias Plugins plugins.Plugin[]
+---@type Plugins
 return {
+  {
+    "kazhala/close-buffers.nvim",
+    config = true,
+    cmd = "BDelete",
+    keys = {
+      { "<leader>bo", "<cmd>BDelete! hidden<cr>", desc = "Delete other buffers <close-buffers.nvim>" },
+    },
+    dependencies = {
+      "akinsho/bufferline.nvim",
+      keys = {
+        -- Disable default keymap of LazyVim
+        { "<leader>bo", false, desc = "Delete other buffers" },
+      },
+    },
+  },
+  -- {
+  --   "drybalka/tree-climber.nvim",
+  --   -- config = function()
+  --   --   require("tree-climber").setup()
+  --   -- end,
+  --   keys = {
+  --     {
+  --       "H",
+  --       function()
+  --         require("tree-climber").goto_parent()
+  --       end,
+  --       desc = "Tree Climber: goto parent",
+  --     },
+  --     {
+  --       "L",
+  --       function()
+  --         require("tree-climber").goto_child()
+  --       end,
+  --       desc = "Tree Climber: goto child",
+  --     },
+  --     {
+  --       "J",
+  --       function()
+  --         require("tree-climber").goto_next()
+  --       end,
+  --       desc = "Tree Climber: goto next",
+  --     },
+  --     {
+  --       "K",
+  --       function()
+  --         require("tree-climber").goto_prev()
+  --       end,
+  --       desc = "Tree Climber: goto prev",
+  --     },
+  --     {
+  --       "in",
+  --       function()
+  --         require("tree-climber").select_node()
+  --       end,
+  --       desc = "Tree Climber: select node",
+  --     },
+  --     {
+  --       "<c-k>",
+  --       function()
+  --         require("tree-climber").swap_prev()
+  --       end,
+  --       desc = "Tree Climber: swap prev",
+  --     },
+  --     {
+  --       "<c-j>",
+  --       function()
+  --         require("tree-climber").swap_next()
+  --       end,
+  --       desc = "Tree Climber: swap next",
+  --     },
+  --     {
+  --       "<c-h>",
+  --       function()
+  --         require("tree-climber").highlight_node()
+  --       end,
+  --       desc = "Tree Climber: highlight node",
+  --     },
+  --   },
+  -- },
+  { -- display value in debug mode
+    "theHamsta/nvim-dap-virtual-text",
+    config = function()
+      require("nvim-dap-virtual-text").setup({})
+    end,
+  },
+  { -- tab space
+    "tiagovla/scope.nvim",
+    config = true,
+    event = "TabNew",
+    enabled = not vim.g.vscode,
+  },
+  {
+    "jinh0/eyeliner.nvim",
+    config = function()
+      local ey = require("eyeliner")
+      ey.setup({
+        highlight_on_key = true, -- show highlights only after keypress
+        dim = false, -- dim all other characters if set to true (recommended!)
+      })
+
+      vim.api.nvim_set_hl(0, "EyelinerPrimary", { bg = "#78ff64", fg = "black", bold = true, underline = true })
+      vim.api.nvim_set_hl(0, "EyelinerSecondary", { bg = "#ff30cf", fg = "black", underline = true })
+    end,
+    keys = {
+      { "f", mode = { "n", "v" }, desc = "Highlight f motion" },
+      { "F", mode = { "n", "v" }, desc = "Highlight F motion" },
+      { "t", mode = { "n", "v" }, desc = "Highlight t motion" },
+      { "T", mode = { "n", "v" }, desc = "Highlight T motion" },
+    },
+    cmd = "EyelinerEnable",
+    dependencies = {
+      { "folke/flash.nvim", enabled = false }, -- Disable lazyvim plugin
+    },
+  },
+  { -- fold
+    "jghauser/fold-cycle.nvim",
+    config = function()
+      require("fold-cycle").setup()
+    end,
+    keys = {
+      { "_", "<cmd>lua require('fold-cycle').open()<cr>", desc = "Fold-cycle: open folds" },
+      { "-", "<cmd>lua require('fold-cycle').close()<cr>", desc = "Fold-cycle: close folds" },
+      { "zC", "<cmd>lua require('fold-cycle').close_all()<cr>", desc = "Fold-cycle: close all folds" },
+    },
+  },
+  {
+    "andersevenrud/nvim_context_vt",
+    event = "BufReadPost",
+    config = function()
+      require("nvim_context_vt").setup()
+    end,
+  },
+  {
+    "Aasim-A/scrollEOF.nvim",
+    event = "CursorMoved",
+    config = true,
+  },
   { -- color picker
     "uga-rosa/ccc.nvim",
     cmd = { "CccPick" },
+    keys = {
+      { "<leader><cr>", "<cmd>CccPick<cr>", desc = "Color picker" },
+    },
     config = function()
       local ColorInput = require("ccc.input")
       local convert = require("ccc.utils.convert")
@@ -140,6 +283,14 @@ return {
   },
   { -- translate
     "voldikss/vim-translator",
+    cmd = {
+      "Translate",
+      "TranslateH",
+      "TranslateL",
+      "TranslateR",
+      "TranslateW",
+      "TranslateX",
+    },
     config = function()
       vim.g.translator_target_lang = "ja"
     end,
@@ -183,7 +334,7 @@ return {
   { -- bracket highlight
     "utilyre/sentiment.nvim",
     version = "*",
-    event = "InsertEnter", -- keep for lazy loading
+    event = "CursorMoved", -- keep for lazy loading
     opts = {
       -- config
     },
@@ -217,6 +368,10 @@ return {
         exclude = {}, -- tabout will ignore these filetypes
       })
     end,
+    keys = {
+      { "<Tab>", mode = { "i", "s" } },
+      { "<S-Tab>", mode = { "i", "s" } },
+    },
     dependencies = { "nvim-treesitter", "nvim-cmp" }, -- or require if not used so far
   },
 
@@ -249,6 +404,7 @@ return {
 
   { -- zen mode
     "Pocco81/true-zen.nvim",
+    cmd = { "TZFocus", "TZNarrow", "TZAtaraxis", "TZMinimalist" },
     config = function()
       require("true-zen").setup({})
     end,
@@ -257,7 +413,6 @@ return {
   { -- move window mode
     "sindrets/winshift.nvim",
     cmd = "WinShift",
-
     keys = {
       {
         "<C-w>[",
@@ -295,10 +450,16 @@ return {
   },
   {
     "jackMort/ChatGPT.nvim",
-    event = "VeryLazy",
     config = function()
       require("chatgpt").setup()
     end,
+    cmd = {
+      "ChatGPT",
+      "ChatGPTRun",
+      "ChatGPTActAs",
+      "ChatGPTCompleteCode",
+      "ChatGPTEditWithInstructions",
+    },
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
@@ -308,6 +469,7 @@ return {
 
   { -- search word from git commits
     "aaronhallaert/advanced-git-search.nvim",
+    cdm = "AdvancedGitSearch",
     config = function()
       -- optional: setup telescope before loading the extension
       require("telescope").setup({
@@ -363,6 +525,7 @@ return {
 
   {
     "kosayoda/nvim-lightbulb",
+    event = "BufReadPost",
     config = function()
       require("nvim-lightbulb").setup({
         autocmd = { enabled = true },

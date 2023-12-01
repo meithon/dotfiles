@@ -1,5 +1,113 @@
 local map = vim.keymap.set
+local Util = require("lazyvim.util")
+local icons = require("lazyvim.config").icons
+
+---@param opts? {relative: "cwd"|"root", modified_hl: string?}
+local function pretty_path(opts)
+  opts = vim.tbl_extend("force", {
+    relative = "cwd",
+    modified_hl = "Constant",
+  }, opts or {})
+
+  return function()
+    local path = vim.fn.expand("%:p") --[[@as string]]
+
+    if path == "" then
+      return ""
+    end
+    local root = Util.root.get({ normalize = true })
+    local cwd = Util.root.cwd()
+
+    if opts.relative == "cwd" and path:find(cwd, 1, true) == 1 then
+      path = path:sub(#cwd + 2)
+    else
+      path = path:sub(#root + 2)
+    end
+
+    local sep = package.config:sub(1, 1)
+    local parts = vim.split(path, "[\\/]")
+    -- if #parts > 4 then
+    --   parts = { parts[1], "…", parts[#parts - 1], parts[#parts] }
+    -- end
+
+    -- if opts.modified_hl and vim.bo.modified then
+    --   parts[#parts] = M.format(self, parts[#parts], opts.modified_hl)
+    -- end
+
+    return table.concat(parts, sep)
+  end
+end
+
+---@alias Mode "n"|"i"|"v"|"x"|"s"|"o"|"t"|"c"|"l"|"r"|"!"|"v"
+
+---@alias Keymap fun(a: {[1]: string, [2]:string, mode:Mode[]|Mode, desc: string})
+
+---@alias VimEvent "BufAdd"| "BufDelete"| "BufEnter"| "BufFilePost"| "BufFilePre"| "BufHidden"| "BufLeave"| "BufModifiedSeufNewFile"| "BufRead" |  "BufReadPost"| "BufReadCmd"| "BufReadPre"| "BufUnload"| "BufWinEnter"| "BufWinLeave"| "BufWipeout"| "BufWrite" | "BufWritePre"| "BufWriteCmd"| "BufWritePost"| "ChanInfo"| "ChanOpen"| "CmdUndefined"| "CmdlineChanged"| "CmdlineEnter"| "CmdlineLeave"| "CmdwinEnter"| "CmdwinLeave"| "ColorScheme"| "ColorSchemePre"| "CompleteChanged"| "CompleteDonePre"| "CompleteDone"| "CursorHold"| "CursorHoldI" | "CursorMoved" | "CursorMovedI" | "DiffUpdated" | "DirChanged" | "DirChangedPre" | "ExitPre" | "FileAppendCmd" | "FileAppendPost" | "FileAppendPre" | "FileChangedRO" | "FileChangedShell" | "FileChangedShellPost" | "FileReadCmd" | "FileReadPost" | "FileReadPre" | "FileType" | "FileWriteCmd" | "FileWritePost" | "FileWritePre" | "FilterReadPost" | "FilterReadPre" | "FilterWritePost" | "FilterWritePre" | "FocusGained" | "FocusLost" | "FuncUndefined" | "UIEnter" | "UILeave" | "InsertChange" | "InsertCharPre" | "InsertEnter" | "InsertLeavePre" | "InsertLeave" | "MenuPopup" | "ModeChanged" |  "ModeChanged"  | "ModeChanged" |  "WinEnter"|"Win" | "OptionSet" | "QuickFixCmdPre" | "QuickFixCmdPost" | "QuitPre" | "RemoteReply" | "SearchWrapped" | "RecordingEnter" | "RecordingLeave" | "SessionLoadPost" | "ShellCmdPost" | "Signal" | "ShellFilterPost" | "SourcePre" | "SourcePost" | "SourceCmd" | "SpellFileMissing" | "StdinReadPost" | "StdinReadPre" | "SwapExists" | "Syntax" | "TabEnter" | "TabLeave" | "TabNew" | "TabNewEntered" | "TabClosed" | "TermOpen" | "TermEnter" | "TermLeave" | "TermClose" | "TermResponse" | "TextChanged" | "TextChangedI" | "TextChangedP" | "TextChangedT" | "TextYankPost" | "User" | "UserGettingBored" | "VimEnter" | "VimLeave" | "VimLeavePre" | "VimResized" | "VimResume" | "VimSuspend" | "WinClosed" | "WinEnter" | "WinLeave" | "WinNew" | "WinScrolled" | "WinResized"
+---@alias Event VimEvent | "VaryLazy"
+
+---@class Key
+---@field [1] string
+---@field [2] string|function | false
+
+---@class OnePlugin
+---@field [1] string
+---@field opts? function | table
+---@field keys? Key[]|function|
+---@field event? Event[]|Event
+---@field config? function | true
+
+---@class Plugin : OnePlugin
+---@field dependencies? OnePlugin[]|OnePlugin |string[]|string
+
+---@alias plugins.Plugin Plugin
+
+---@type Plugin[]
 return {
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = function(_, opts)
+      opts.sections.lualine_c = {
+        {
+          "diagnostics",
+          symbols = {
+            error = icons.diagnostics.Error,
+            warn = icons.diagnostics.Warn,
+            info = icons.diagnostics.Info,
+            hint = icons.diagnostics.Hint,
+          },
+        },
+        { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+        { pretty_path({ relative = "cwd" }) },
+      }
+    end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      "David-Kunz/markid",
+    },
+    opts = function(_, opts)
+      opts.markid = {
+        enable = true,
+      }
+    end,
+  },
+  { -- Add vitest runner
+    "rcarriga/neotest",
+    dependencies = {
+      "marilari88/neotest-vitest",
+    },
+    opts = function(_, opts)
+      table.insert(opts.adapters, require("neotest-vitest"))
+    end,
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = function(_, opts)
+      -- opts.window.mappings["H"] = "close_all_nodes"
+      opts.window.mappings["L"] = "expand_all_nodes"
+    end,
+  },
   { -- add window picker to neo-tree
     "nvim-neo-tree/neo-tree.nvim",
     dependencies = {
@@ -65,14 +173,14 @@ return {
           break
         end
       end
-      -- table.insert(
-      --   opts.sources,
-      --   null_ls.builtins.diagnostics.eslint.with({
-      --     diagnostics_postprocess = function(diagnostic)
-      --       diagnostic.severity = vim.diagnostic.severity.WARN
-      --     end,
-      --   })
-      -- )
+      table.insert(
+        opts.sources,
+        null_ls.builtins.diagnostics.eslint.with({
+          diagnostics_postprocess = function(diagnostic)
+            diagnostic.severity = vim.diagnostic.severity.WARN
+          end,
+        })
+      )
     end,
   },
   { -- better typescript error
@@ -119,51 +227,7 @@ return {
       table.insert(opts.sources, typos.actions)
     end,
   },
-  { -- change completion settings
-    "hrsh7th/nvim-cmp",
-    version = false, -- last release is way too old
-    event = "InsertEnter",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip",
-    },
 
-    opts = function(_, opts)
-      local compare = require("cmp.config.compare")
-
-      opts.sorting = {
-        priority_weight = 2,
-        comparators = {
-          require("copilot_cmp.comparators").prioritize,
-          compare.offset,
-          compare.exact,
-          compare.score,
-          compare.length,
-          -- require("cmp_tabnine.compare"),
-          compare.recently_used,
-          compare.kind,
-          compare.sort_text,
-          compare.order,
-        },
-      }
-    end,
-    -- opts = function()
-    --   local cmp = require("cmp")
-    --   local defaults = require("cmp.config.default")()
-    --   return {
-    --       sorting = defaults.sorting,
-    --   }
-    -- end,
-    -- ---@param opts cmp.ConfigSchema
-    -- config = function(_, opts)
-    --   for _, source in ipairs(opts.sources) do
-    --     source.group_index = source.group_index or 1
-    --   end
-    --   require("cmp").setup(opts)
-    -- end,
-  },
   {
     "nvim-treesitter/playground",
     cmd = "TSPlaygroundToggle",
@@ -179,6 +243,7 @@ return {
   {
     "ziontee113/syntax-tree-surfer",
     dependencies = "nvim-treesitter/nvim-treesitter",
+
     keys = {
       { "vi", "<cmd>STSSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
       { "va", "<cmd>STSSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
@@ -256,15 +321,6 @@ return {
     end,
   },
 
-  -- override nvim-cmp and add cmp-emoji
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-emoji" },
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      table.insert(opts.sources, { name = "emoji" })
-    end,
-  },
   {
     "nvim-telescope/telescope.nvim",
     keys = {
@@ -356,19 +412,19 @@ return {
   -- then: setup supertab in cmp
   {
     "hrsh7th/nvim-cmp",
-    ---@param opts cmp.ConfigSchema
+
     opts = function(_, opts)
       local luasnip = require("luasnip")
       local cmp = require("cmp")
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<C-e>"] = cmp.mapping(function()
+        ["<C-e>"] = function()
           if cmp.visible() then
             cmp.abort()
           else
             cmp.complete()
           end
-        end, { "i", "s" }),
+        end,
         ["<Tab>"] = cmp.mapping(function(fallback)
           if cmp.visible() then
             cmp.confirm({
@@ -422,6 +478,47 @@ return {
           end,
         }),
       })
+    end,
+  },
+  { -- override nvim-cmp and add cmp-emoji
+    "hrsh7th/nvim-cmp",
+    dependencies = { "hrsh7th/cmp-emoji" },
+    opts = function(_, opts)
+      table.insert(opts.sources, { name = "emoji" })
+    end,
+  },
+  { -- change completion settings
+    "hrsh7th/nvim-cmp",
+    version = false, -- last release is way too old
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "saadparwaiz1/cmp_luasnip",
+    },
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    ---@param opts cmp.ConfigSchema
+    opts = function(_, opts)
+      local compare = require("cmp.config.compare")
+
+      opts.sorting = {
+        priority_weight = 2,
+        comparators = {
+          require("copilot_cmp.comparators").prioritize,
+          compare.offset,
+          compare.exact,
+          compare.score,
+          compare.length,
+          -- require("cmp_tabnine.compare"),
+          compare.recently_used,
+          compare.kind,
+          compare.sort_text,
+          compare.order,
+        },
+      }
     end,
   },
 }

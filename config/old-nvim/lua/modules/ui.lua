@@ -1,32 +1,32 @@
 return {
-  {
-    "MeiWagatsuma/beacon.nvim",
-    config = function()
-      vim.g.beacon_size = 120
-      vim.g.beacon_timeout = 2000
-      vim.g.beacon_fade_interval = 4
-      vim.g.beacon_start_opacity = 40
-      vim.cmd([[highlight Beacon guibg=#ff00b7 ctermbg=15]])
-    end,
-  },
-  {
-    "xiyaowong/transparent.nvim",
-    config = function()
-      require("transparent").setup({
-        extra_groups = { -- table/string: additional groups that should be cleared
-          -- In particular, when you set it to 'all', that means all available groups
-
-          -- example of akinsho/nvim-bufferline.lua
-          "BufferLineTabClose",
-          "BufferlineBufferSelected",
-          "BufferLineFill",
-          "BufferLineBackground",
-          "BufferLineSeparator",
-          "BufferLineIndicatorSelected",
-        },
-      })
-    end,
-  },
+  -- {
+  --   "MeiWagatsuma/beacon.nvim",
+  --   config = function()
+  --     vim.g.beacon_size = 120
+  --     vim.g.beacon_timeout = 2000
+  --     vim.g.beacon_fade_interval = 4
+  --     vim.g.beacon_start_opacity = 40
+  --     vim.cmd([[highlight Beacon guibg=#ff00b7 ctermbg=15]])
+  --   end,
+  -- },
+  -- {
+  --   "xiyaowong/transparent.nvim",
+  --   config = function()
+  --     require("transparent").setup({
+  --       extra_groups = { -- table/string: additional groups that should be cleared
+  --         -- In particular, when you set it to 'all', that means all available groups
+  --
+  --         -- example of akinsho/nvim-bufferline.lua
+  --         "BufferLineTabClose",
+  --         "BufferlineBufferSelected",
+  --         "BufferLineFill",
+  --         "BufferLineBackground",
+  --         "BufferLineSeparator",
+  --         "BufferLineIndicatorSelected",
+  --       },
+  --     })
+  --   end,
+  -- },
   {
     "folke/tokyonight.nvim",
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
@@ -36,119 +36,119 @@ return {
       vim.cmd([[colorscheme tokyonight]])
     end,
   },
-  {
-    "lilydjwg/colorizer",
-    priority = 1,
-  },
-  {
-    "folke/noice.nvim",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
-    },
-    config = function()
-      require("noice").setup({
-        messages = {
-          enabled = false,
-        },
-        cmdline = {
-          enabled = false,
-        },
-        lsp = {
-          signature = {
-            enabled = false,
-          },
-        },
-      })
-      local notify = require("notify")
-      notify.setup({
-        background_colour = "#000000",
-      })
-
-      vim.notify = notify
-    end,
-  },
-  {
-    "gelguy/wilder.nvim",
-    dependencies = {
-      { "romgrk/fzy-lua-native", build = "make" },
-    },
-    config = function()
-      local wilder = require("wilder")
-      wilder.setup({ modes = { ":", "/", "?" } })
-      -- Disable Python remote plugin
-      wilder.set_option("use_python_remote_plugin", 0)
-
-      wilder.set_option("pipeline", {
-        wilder.branch(
-          wilder.cmdline_pipeline({
-            fuzzy = 1,
-            fuzzy_filter = wilder.lua_fzy_filter(),
-          }),
-          wilder.search_pipeline()
-        ),
-      })
-
-      wilder.set_option(
-        "renderer",
-        wilder.popupmenu_renderer({
-          highlighter = {
-            wilder.lua_fzy_highlighter(), -- requires fzy-lua-native vim plugin found
-            -- at https://github.com/romgrk/fzy-lua-native
-          },
-          highlights = {
-            accent = wilder.make_hl("WilderAccent", "Pmenu", {
-              { a = 1 },
-              { a = 1 },
-              { foreground = "#f4468f" },
-            }),
-          },
-          left = { " ", wilder.popupmenu_devicons() },
-          right = { " ", wilder.popupmenu_scrollbar() },
-        })
-      )
-    end,
-  },
   -- {
-  --   "lukas-reineke/indent-blankline.nvim",
+  --   "lilydjwg/colorizer",
+  --   priority = 1,
+  -- },
+  -- {
+  --   "folke/noice.nvim",
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "rcarriga/nvim-notify",
+  --   },
   --   config = function()
-  --     vim.opt.list = true
-  --     --vim.opt.listchars:append "space:⋅"
-  --     vim.opt.listchars:append("eol:↴")
-  --
-  --     vim.g.indent_blankline_filetype_exclude = { "startify" }
-  --     require("indent_blankline").setup({
-  --       space_char_blankline = " ",
-  --       show_current_context = true,
-  --       show_current_context_start = true,
+  --     require("noice").setup({
+  --       messages = {
+  --         enabled = false,
+  --       },
+  --       cmdline = {
+  --         enabled = false,
+  --       },
+  --       lsp = {
+  --         signature = {
+  --           enabled = false,
+  --         },
+  --       },
   --     })
+  --     local notify = require("notify")
+  --     notify.setup({
+  --       background_colour = "#000000",
+  --     })
+  --
+  --     vim.notify = notify
   --   end,
   -- },
-  {
-    "mhinz/vim-startify",
-    config = function()
-      vim.g.startify_padding_left = math.floor((vim.fn.winwidth(0) - 70) / 2)
-      local ascii = {
-        "███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
-        "████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
-        "██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
-        "██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
-        "██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
-        "╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
-      }
-
-      local center = vim.fn["startify#center"]
-      vim.g.startify_custom_header = center(ascii)
-
-      vim.g.startify_commands = {
-        { t = "Neotree" },
-        { g = "Git" },
-        { d = "DockerToolsOpen" },
-        { f = "Telescope find_files" },
-        { s = "RestoreLastSession" },
-      }
-    end,
-  },
+  -- {
+  --   "gelguy/wilder.nvim",
+  --   dependencies = {
+  --     { "romgrk/fzy-lua-native", build = "make" },
+  --   },
+  --   config = function()
+  --     local wilder = require("wilder")
+  --     wilder.setup({ modes = { ":", "/", "?" } })
+  --     -- Disable Python remote plugin
+  --     wilder.set_option("use_python_remote_plugin", 0)
+  --
+  --     wilder.set_option("pipeline", {
+  --       wilder.branch(
+  --         wilder.cmdline_pipeline({
+  --           fuzzy = 1,
+  --           fuzzy_filter = wilder.lua_fzy_filter(),
+  --         }),
+  --         wilder.search_pipeline()
+  --       ),
+  --     })
+  --
+  --     wilder.set_option(
+  --       "renderer",
+  --       wilder.popupmenu_renderer({
+  --         highlighter = {
+  --           wilder.lua_fzy_highlighter(), -- requires fzy-lua-native vim plugin found
+  --           -- at https://github.com/romgrk/fzy-lua-native
+  --         },
+  --         highlights = {
+  --           accent = wilder.make_hl("WilderAccent", "Pmenu", {
+  --             { a = 1 },
+  --             { a = 1 },
+  --             { foreground = "#f4468f" },
+  --           }),
+  --         },
+  --         left = { " ", wilder.popupmenu_devicons() },
+  --         right = { " ", wilder.popupmenu_scrollbar() },
+  --       })
+  --     )
+  --   end,
+  -- },
+  -- -- {
+  -- --   "lukas-reineke/indent-blankline.nvim",
+  -- --   config = function()
+  -- --     vim.opt.list = true
+  -- --     --vim.opt.listchars:append "space:⋅"
+  -- --     vim.opt.listchars:append("eol:↴")
+  -- --
+  -- --     vim.g.indent_blankline_filetype_exclude = { "startify" }
+  -- --     require("indent_blankline").setup({
+  -- --       space_char_blankline = " ",
+  -- --       show_current_context = true,
+  -- --       show_current_context_start = true,
+  -- --     })
+  -- --   end,
+  -- -- },
+  -- {
+  --   "mhinz/vim-startify",
+  --   config = function()
+  --     vim.g.startify_padding_left = math.floor((vim.fn.winwidth(0) - 70) / 2)
+  --     local ascii = {
+  --       "███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
+  --       "████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
+  --       "██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
+  --       "██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
+  --       "██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
+  --       "╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
+  --     }
+  --
+  --     local center = vim.fn["startify#center"]
+  --     vim.g.startify_custom_header = center(ascii)
+  --
+  --     vim.g.startify_commands = {
+  --       { t = "Neotree" },
+  --       { g = "Git" },
+  --       { d = "DockerToolsOpen" },
+  --       { f = "Telescope find_files" },
+  --       { s = "RestoreLastSession" },
+  --     }
+  --   end,
+  -- },
   {
     "nvim-lualine/lualine.nvim",
     dependencies = {
@@ -215,10 +215,10 @@ return {
       "nvim-treesitter/nvim-treesitter-textobjects",
       "theHamsta/tree-sitter-html",
       "David-Kunz/markid",
-      "windwp/nvim-ts-autotag",
-      "JoosepAlviste/nvim-ts-context-commentstring",
-      -- "p00f/nvim-ts-rainbow",
-      "andymass/vim-matchup",
+      -- "windwp/nvim-ts-autotag",
+      -- "JoosepAlviste/nvim-ts-context-commentstring",
+      -- -- "p00f/nvim-ts-rainbow",
+      -- "andymass/vim-matchup",
     },
     config = function()
       require("nvim-treesitter.configs").setup({
