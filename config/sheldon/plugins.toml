@@ -62,3 +62,7 @@ github = "jimhester/per-directory-history"
 [plugins.per-directory-history.hooks]
 pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
 post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+
+
+[plugins.zsh-abbrev-alias]
+github = "momo-lab/zsh-abbrev-alias"

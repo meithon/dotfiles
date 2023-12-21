@@ -4,6 +4,21 @@ local map = vim.keymap.set
 ---@type Plugins
 return {
   {
+    "someone-stole-my-name/yaml-companion.nvim",
+    dependencies = {
+      { "neovim/nvim-lspconfig" },
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    config = function()
+      require("telescope").load_extension("yaml_schema")
+    end,
+  },
+  {
+    "sindrets/diffview.nvim",
+    cmd = "DiffviewOpen",
+  },
+  {
     "kazhala/close-buffers.nvim",
     config = true,
     cmd = "BDelete",
@@ -469,7 +484,7 @@ return {
 
   { -- search word from git commits
     "aaronhallaert/advanced-git-search.nvim",
-    cdm = "AdvancedGitSearch",
+    cmd = "AdvancedGitSearch",
     config = function()
       -- optional: setup telescope before loading the extension
       require("telescope").setup({

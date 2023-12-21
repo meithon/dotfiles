@@ -1,3 +1,5 @@
+import:
+  - ~/.config/alacritty/catppuccin/catppuccin-mocha.yml
 window:
   opacity: 0.8
   decorations: buttonless

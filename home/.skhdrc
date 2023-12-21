@@ -64,6 +64,8 @@ alt - 9 : yabai -m space --focus 9
 # balance size of windows
 # shift + alt - 0 : yabai -m space --balance
 
+# float / unfloat window and center on screen
+alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
 # make floating window fill screen
 # shift + alt - up     : yabai -m window --grid 1:1:0:0:1:1
 

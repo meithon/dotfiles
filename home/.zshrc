@@ -85,3 +85,7 @@ fi
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 [ -f ~/.inshellisense/key-bindings.zsh ] && source ~/.inshellisense/key-bindings.zsh
+
+source /Users/mei/.config/broot/launcher/bash/br
+
+. /opt/homebrew/opt/asdf/libexec/asdf.sh

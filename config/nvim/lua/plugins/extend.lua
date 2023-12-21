@@ -42,19 +42,23 @@ end
 
 ---@alias Keymap fun(a: {[1]: string, [2]:string, mode:Mode[]|Mode, desc: string})
 
+---@alias Filetype "qf" | "javascript" |"javascriptreact"|"typescriptreact" | "typescript"
 ---@alias VimEvent "BufAdd"| "BufDelete"| "BufEnter"| "BufFilePost"| "BufFilePre"| "BufHidden"| "BufLeave"| "BufModifiedSeufNewFile"| "BufRead" |  "BufReadPost"| "BufReadCmd"| "BufReadPre"| "BufUnload"| "BufWinEnter"| "BufWinLeave"| "BufWipeout"| "BufWrite" | "BufWritePre"| "BufWriteCmd"| "BufWritePost"| "ChanInfo"| "ChanOpen"| "CmdUndefined"| "CmdlineChanged"| "CmdlineEnter"| "CmdlineLeave"| "CmdwinEnter"| "CmdwinLeave"| "ColorScheme"| "ColorSchemePre"| "CompleteChanged"| "CompleteDonePre"| "CompleteDone"| "CursorHold"| "CursorHoldI" | "CursorMoved" | "CursorMovedI" | "DiffUpdated" | "DirChanged" | "DirChangedPre" | "ExitPre" | "FileAppendCmd" | "FileAppendPost" | "FileAppendPre" | "FileChangedRO" | "FileChangedShell" | "FileChangedShellPost" | "FileReadCmd" | "FileReadPost" | "FileReadPre" | "FileType" | "FileWriteCmd" | "FileWritePost" | "FileWritePre" | "FilterReadPost" | "FilterReadPre" | "FilterWritePost" | "FilterWritePre" | "FocusGained" | "FocusLost" | "FuncUndefined" | "UIEnter" | "UILeave" | "InsertChange" | "InsertCharPre" | "InsertEnter" | "InsertLeavePre" | "InsertLeave" | "MenuPopup" | "ModeChanged" |  "ModeChanged"  | "ModeChanged" |  "WinEnter"|"Win" | "OptionSet" | "QuickFixCmdPre" | "QuickFixCmdPost" | "QuitPre" | "RemoteReply" | "SearchWrapped" | "RecordingEnter" | "RecordingLeave" | "SessionLoadPost" | "ShellCmdPost" | "Signal" | "ShellFilterPost" | "SourcePre" | "SourcePost" | "SourceCmd" | "SpellFileMissing" | "StdinReadPost" | "StdinReadPre" | "SwapExists" | "Syntax" | "TabEnter" | "TabLeave" | "TabNew" | "TabNewEntered" | "TabClosed" | "TermOpen" | "TermEnter" | "TermLeave" | "TermClose" | "TermResponse" | "TextChanged" | "TextChangedI" | "TextChangedP" | "TextChangedT" | "TextYankPost" | "User" | "UserGettingBored" | "VimEnter" | "VimLeave" | "VimLeavePre" | "VimResized" | "VimResume" | "VimSuspend" | "WinClosed" | "WinEnter" | "WinLeave" | "WinNew" | "WinScrolled" | "WinResized"
----@alias Event VimEvent | "VaryLazy"
+---@alias Event VimEvent|"VaryLazy"
 
 ---@class Key
 ---@field [1] string
 ---@field [2] string|function | false
+---@field mode? Mode[]|Mode
+---@field desc? string
 
 ---@class OnePlugin
 ---@field [1] string
 ---@field opts? function | table
----@field keys? Key[]|function|
+---@field keys? Key[]|Key|fun()
 ---@field event? Event[]|Event
 ---@field config? function | true
+---@field ft? Filetype[]|Filetype
 
 ---@class Plugin : OnePlugin
 ---@field dependencies? OnePlugin[]|OnePlugin |string[]|string
@@ -63,6 +67,21 @@ end
 
 ---@type Plugin[]
 return {
+  {
+    "gbprod/yanky.nvim",
+    dependencies = { { "kkharji/sqlite.lua", enabled = not jit.os:find("Windows") } },
+
+    ---@param opts table
+    opts = function(_, opts)
+      opts.ring.history_length = 10
+    end,
+    setup = function()
+      require("yanky").setup({ r })
+    end,
+    --   highlight = { timer = 250 },
+    --   ring = { storage = jit.os:find("Windows") and "shada" or "sqlite" },
+    -- },
+  },
   {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
@@ -159,30 +178,30 @@ return {
     },
   },
 
-  { --
-    "nvimtools/none-ls.nvim",
-    opts = function(_, opts)
-      local null_ls = require("null-ls")
-      for i, item in ipairs(opts) do
-        if item == null_ls.builtins.diagnostics.eslint then
-          opts[i] = null_ls.builtins.diagnostics.eslint.with({
-            diagnostics_postprocess = function(diagnostic)
-              diagnostic.severity = vim.diagnostic.severity.WARN
-            end,
-          })
-          break
-        end
-      end
-      table.insert(
-        opts.sources,
-        null_ls.builtins.diagnostics.eslint.with({
-          diagnostics_postprocess = function(diagnostic)
-            diagnostic.severity = vim.diagnostic.severity.WARN
-          end,
-        })
-      )
-    end,
-  },
+  -- { --
+  --   "nvimtools/none-ls.nvim",
+  --   opts = function(_, opts)
+  --     local null_ls = require("null-ls")
+  --     for i, item in ipairs(opts) do
+  --       if item == null_ls.builtins.diagnostics.eslint then
+  --         opts[i] = null_ls.builtins.diagnostics.eslint.with({
+  --           diagnostics_postprocess = function(diagnostic)
+  --             diagnostic.severity = vim.diagnostic.severity.WARN
+  --           end,
+  --         })
+  --         break
+  --       end
+  --     end
+  --     table.insert(
+  --       opts.sources,
+  --       null_ls.builtins.diagnostics.eslint.with({
+  --         diagnostics_postprocess = function(diagnostic)
+  --           diagnostic.severity = vim.diagnostic.severity.WARN
+  --         end,
+  --       })
+  --     )
+  --   end,
+  -- },
   { -- better typescript error
     "neovim/nvim-lspconfig",
     dependencies = "davidosomething/format-ts-errors.nvim",
@@ -214,25 +233,57 @@ return {
           vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
         end,
       }
+      opts.servers.rust_analyzer.settings = {
+        ["rust-analyzer"] = {
+
+          procMacro = {
+            ignored = {
+              leptos_macro = {
+                -- optional: --
+                -- "component",
+                "server",
+              },
+            },
+          },
+        },
+      }
+      -- require('lspconfig').rust_analyzer.setup {
+      --   -- Other Configs ...
+      --   settings = {
+      --     ["rust-analyzer"] = {
+      --       -- Other Settings ...
+      --       procMacro = {
+      --         ignored = {
+      --             leptos_macro = {
+      --                 -- optional: --
+      --                 -- "component",
+      --                 "server",
+      --             },
+      --         },
+      --       },
+      --     },
+      --   }
+      -- }
     end,
   },
-  {
-    "nvimtools/none-ls.nvim",
-    dependencies = {
-      "poljar/typos.nvim",
-    },
-    opts = function(_, opts)
-      local typos = require("typos")
-      typos.setup()
-      table.insert(opts.sources, typos.actions)
-    end,
-  },
+  -- {
+  --   "nvimtools/none-ls.nvim",
+  --   dependencies = {
+  --     "poljar/typos.nvim",
+  --   },
+  --   opts = function(_, opts)
+  --     local typos = require("typos")
+  --     typos.setup()
+  --     table.insert(opts.sources, typos.actions)
+  --   end,
+  -- },
 
   {
     "nvim-treesitter/playground",
     cmd = "TSPlaygroundToggle",
     dependencies = "nvim-treesitter/nvim-treesitter",
     config = function()
+      ---@diagnostic disable-next-line: missing-fields
       require("nvim-treesitter.configs").setup({
         playground = {
           enable = true,
@@ -354,9 +405,7 @@ return {
   -- first: disable default <tab> and <s-tab> behavior in LuaSnip
   {
     "L3MON4D3/LuaSnip",
-    keys = function()
-      return {}
-    end,
+    keys = function() end,
   },
   { -- setup cmp-cmdline
     "hrsh7th/cmp-cmdline",
@@ -390,7 +439,7 @@ return {
         }),
       })
 
-      require("cmp").setup.cmdline("/", {
+      cmp.setup.cmdline("/", {
         mapping = cmp.mapping.preset.cmdline({
           ["<Tab>"] = cmp.mapping({
             c = function()
