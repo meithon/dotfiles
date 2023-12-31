@@ -4,7 +4,38 @@ local map = vim.keymap.set
 ---@type Plugins
 return {
   {
+    "pwntester/octo.nvim",
+    cmd = "Octo",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("octo").setup()
+    end,
+  },
+  {
     "someone-stole-my-name/yaml-companion.nvim",
+    dependencies = {
+      { "neovim/nvim-lspconfig" },
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope.nvim" },
+    },
+    config = function()
+      require("telescope").load_extension("yaml_schema")
+      local cfg = require("yaml-companion").setup({
+        -- Add any options here, or leave empty to use the default settings
+        -- lspconfig = {
+        --   cmd = {"yaml-language-server"}
+        -- },
+      })
+      require("lspconfig")["yamlls"].setup(cfg)
+    end,
+  },
+  {
+    "someone-stole-my-name/yaml-companion.nvim",
+    ft = "yaml",
     dependencies = {
       { "neovim/nvim-lspconfig" },
       { "nvim-lua/plenary.nvim" },
@@ -99,6 +130,7 @@ return {
   -- },
   { -- display value in debug mode
     "theHamsta/nvim-dap-virtual-text",
+    event = "BufReadPost",
     config = function()
       require("nvim-dap-virtual-text").setup({})
     end,
@@ -343,6 +375,7 @@ return {
   },
   { -- TODO: not working
     "ckolkey/ts-node-action",
+    event = "BufRead",
     dependencies = { "nvim-treesitter" },
     opts = {},
   },
