@@ -124,7 +124,30 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     opts = function(_, opts)
       -- opts.window.mappings["H"] = "close_all_nodes"
-      opts.window.mappings["L"] = "expand_all_nodes"
+      local mappings = vim.tbl_extend("force", opts.window.mappings, {
+        ["s"] = "open_split",
+        ["v"] = "open_vsplit",
+        -- ["H"] = "close_all_nodes",
+        ["l"] = function(state)
+          local node = state.tree:get_node()
+          if node.type == "directory" then
+            if not node:is_expanded() then
+              require("neo-tree.sources.filesystem").toggle_directory(state, node)
+            elseif node:has_children() then
+              require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
+            end
+          end
+        end,
+        ["h"] = function(state)
+          local node = state.tree:get_node()
+          if node.type == "directory" and node:is_expanded() then
+            require("neo-tree.sources.filesystem").toggle_directory(state, node)
+          else
+            require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
+          end
+        end,
+      })
+      opts.window.mappings = mappings
     end,
   },
   { -- add window picker to neo-tree
@@ -233,20 +256,13 @@ return {
           vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
         end,
       }
-      opts.servers.rust_analyzer.settings = {
-        ["rust-analyzer"] = {
-
-          procMacro = {
-            ignored = {
-              leptos_macro = {
-                -- optional: --
-                -- "component",
-                "server",
-              },
-            },
-          },
-        },
-      }
+      -- table.insert(opts.servers.rust_analyzer.settings["rust-analyzer"].procMacro.ignored, {
+      --   leptos_macro = {
+      --     -- optional: --
+      --     -- "component",
+      --     "server",
+      --   },
+      -- })
       -- require('lspconfig').rust_analyzer.setup {
       --   -- Other Configs ...
       --   settings = {
@@ -409,6 +425,7 @@ return {
   },
   { -- setup cmp-cmdline
     "hrsh7th/cmp-cmdline",
+    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
     dependencies = {
       "hrsh7th/nvim-cmp",
       "hrsh7th/cmp-nvim-lsp-document-symbol",
@@ -461,6 +478,7 @@ return {
   -- then: setup supertab in cmp
   {
     "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
 
     opts = function(_, opts)
       local luasnip = require("luasnip")
@@ -531,6 +549,7 @@ return {
   },
   { -- override nvim-cmp and add cmp-emoji
     "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
     dependencies = { "hrsh7th/cmp-emoji" },
     opts = function(_, opts)
       table.insert(opts.sources, { name = "emoji" })
@@ -538,6 +557,7 @@ return {
   },
   { -- change completion settings
     "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
     version = false, -- last release is way too old
     event = "InsertEnter",
     dependencies = {
@@ -548,6 +568,7 @@ return {
     },
   },
   {
+    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
     "hrsh7th/nvim-cmp",
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
