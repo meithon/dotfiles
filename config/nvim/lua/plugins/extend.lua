@@ -68,6 +68,64 @@ end
 ---@type Plugin[]
 return {
   {
+    "L3MON4D3/LuaSnip",
+    config = function()
+      local ls = require("luasnip")
+      local sn = ls.snippet_node
+      local s = ls.snippet
+      local t = ls.text_node
+      local f = ls.function_node
+      local d = ls.dynamic_node
+      local i = ls.insert_node
+      local postfix = require("luasnip.extras.postfix").postfix
+
+      local newline = ""
+
+      ls.add_snippets("typescript", {
+        s("inSorceVitest", {
+          t({ "if (import.meta.vitest) {", "	const { it, expect } = import.meta.vitest;", [[	test("]] }),
+          i(1),
+          t({ '" () => {', "    " }),
+          i(2),
+          t({ "", "	});", "}" }),
+        }),
+        postfix(".print", {
+          d(1, function(_, parent)
+            return sn(nil, { t({ "console.log(" .. parent.env.POSTFIX_MATCH .. ")", newline }) })
+          end),
+        }),
+        postfix(".dbg", {
+          d(1, function(_, parent)
+            return sn(nil, {
+              t({ 'console.log("' .. parent.env.POSTFIX_MATCH .. ': ", ' .. parent.env.POSTFIX_MATCH .. ")" }),
+            })
+          end),
+        }),
+      })
+
+      ls.add_snippets("all", {
+        postfix(".let", {
+          d(1, function(_, parent)
+            return sn(nil, { t("let " .. parent.env.POSTFIX_MATCH .. " = ") })
+          end),
+        }),
+
+        postfix(".const", {
+          d(1, function(_, parent)
+            return sn(nil, { t("const " .. parent.env.POSTFIX_MATCH .. " = ") })
+          end),
+        }),
+        --         if (import.meta.vitest) {
+        --   const { it, expect } = import.meta.vitest;
+        --   it("", () => {
+        --   });
+        -- }
+      }, {
+        key = "all",
+      })
+    end,
+  },
+  {
     "gbprod/yanky.nvim",
     dependencies = { { "kkharji/sqlite.lua", enabled = not jit.os:find("Windows") } },
 
@@ -76,7 +134,7 @@ return {
       opts.ring.history_length = 10
     end,
     setup = function()
-      require("yanky").setup({ r })
+      require("yanky").setup({})
     end,
     --   highlight = { timer = 250 },
     --   ring = { storage = jit.os:find("Windows") and "shada" or "sqlite" },
@@ -114,7 +172,8 @@ return {
   { -- Add vitest runner
     "rcarriga/neotest",
     dependencies = {
-      "marilari88/neotest-vitest",
+      -- "marilari88/neotest-vitest",
+      "rneithon/neotest-vitest",
     },
     opts = function(_, opts)
       table.insert(opts.adapters, require("neotest-vitest"))
@@ -138,14 +197,14 @@ return {
             end
           end
         end,
-        ["h"] = function(state)
-          local node = state.tree:get_node()
-          if node.type == "directory" and node:is_expanded() then
-            require("neo-tree.sources.filesystem").toggle_directory(state, node)
-          else
-            require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
-          end
-        end,
+        -- ["h"] = function(state)
+        --   local node = state.tree:get_node()
+        --   if node.type == "directory" and node:is_expanded() then
+        --     require("neo-tree.sources.filesystem").toggle_directory(state, node)
+        --   else
+        --     require("neo-tree.ui.renderer").focus_node(state, node:get_parent_id())
+        --   end
+        -- end,
       })
       opts.window.mappings = mappings
     end,
@@ -229,6 +288,14 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = "davidosomething/format-ts-errors.nvim",
     ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+    keys = {
+      {
+        "gd",
+        [[<cmd>require("telescope.builtin").lsp_definitions({ reuse_win = false })<cr>]],
+        mode = "n",
+        desc = "Goto Definition",
+      },
+    },
     opts = function(_, opts)
       opts.servers.tsserver.handlers = {
         ["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
@@ -361,15 +428,26 @@ return {
     },
   },
   -- Disable code context
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    enabled = false,
-  },
+  -- {
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   enabled = false,
+  -- },
   -- Disable indent line
-  {
-    "echasnovski/mini.indentscope",
-    enabled = false,
-  },
+  -- {
+  --   "echasnovski/mini.indentscope",
+  --   --   enabled = false,
+  --   -- opts = function(_, opts)
+  --   --   -- opts.draw.animation = require("mini.indentscope").gen_animation.none()
+  --   --   -- table.insert(opts.draw.animation, require("mini.indentscope").gen_animation.none())
+  --   --   -- vim.tbl_extend(
+  --   --   --   "force",
+  --   --   --   opts,
+  --   --   --   { draw = {
+  --   --   --     animation = require("mini.indentscope").gen_animation.none(),
+  --   --   --   } }
+  --   --   -- )
+  --   -- end,
+  -- },
   {
     "akinsho/bufferline.nvim",
     opts = function(_, opts)
@@ -406,6 +484,17 @@ return {
         desc = "Find Git File",
       },
     },
+    init = function()
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+      keys[#keys + 1] = {
+        "gd",
+        function()
+          require("telescope.builtin").lsp_definitions({ reuse_win = false })
+        end,
+        mode = "n",
+        desc = "Goto Definition",
+      }
+    end,
     -- change some options
     opts = {
       defaults = {
@@ -559,33 +648,85 @@ return {
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
     version = false, -- last release is way too old
-    event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "saadparwaiz1/cmp_luasnip",
+      {
+        "Exafunction/codeium.nvim",
+        cmd = "Codeium",
+        build = ":Codeium Auth",
+        opts = {},
+      },
     },
   },
   {
     event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
-    "hrsh7th/nvim-cmp",
+    "nvim-cmp",
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local compare = require("cmp.config.compare")
+      local cmp = require("cmp")
+
+      -- table.insert(opts.sources, 1, {
+      --   name = "copilot",
+      --   group_index = 1,
+      --   priority = 100,
+      -- })
+
+      local remove_source = { "luasnip", "copilot", "codeium" }
+      for i, source in ipairs(opts.sources) do
+        if vim.tbl_contains(remove_source, source.name) then
+          vim.notify("remove " .. source.name)
+          table.remove(opts.sources, i)
+        end
+      end
+
+      table.insert(opts.sources, {
+        name = "codeium",
+        -- group_index = 1,
+        -- priority = 100,
+      })
+
+      table.insert(opts.sources, {
+        name = "copilot",
+        group_index = nil,
+        --   -- priority = 100,
+      })
+      table.insert(opts.sources, {
+        name = "luasnip",
+        -- group_index = 1,
+        -- priority = 120,
+      })
+
+      -- local a = vim.tbl_extend("force", opts.sources, {
+      -- })
+      vim.notify(vim.inspect(a))
+      -- table.insert(opts.sources, 1, {
+      --   name = "copilot",
+      --   group_index = 1,
+      --   priority = 100,
+      -- })
+      --
+      -- table.insert(opts.sources, {
+      --   name = "luasnip",
+      --   group_index = 1,
+      --   priority = 120,
+      -- })
 
       opts.sorting = {
-        priority_weight = 2,
+        priority_weight = 1,
         comparators = {
-          require("copilot_cmp.comparators").prioritize,
+          compare.length,
           compare.offset,
           compare.exact,
+          -- compare.scopes,
           compare.score,
-          compare.length,
-          -- require("cmp_tabnine.compare"),
           compare.recently_used,
+          compare.locality,
           compare.kind,
-          compare.sort_text,
+          -- compare.sort_text,
           compare.order,
         },
       }

@@ -4,6 +4,69 @@ local map = vim.keymap.set
 ---@type Plugins
 return {
   {
+    "nvim-telescope/telescope.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "debugloop/telescope-undo.nvim",
+    },
+    keys = {
+      {
+        "<leader>fu",
+        "<cmd>Telescope undo<cr>",
+        desc = "Telescope undo",
+      },
+    },
+    config = function()
+      require("telescope").setup({ extensions = { undo = {} } })
+      require("telescope").load_extension("undo")
+    end,
+  },
+  {
+    "nvimdev/dashboard-nvim",
+    opts = function(_, opts)
+      local logo = [[
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                      
+       ████ ██████           █████      ██                      
+      ███████████             █████                              
+      █████████ ███████████████████ ███   ███████████    
+     █████████  ███    █████████████ █████ ██████████████    
+    █████████ ██████████ █████████ █████ █████ ████ █████    
+  ███████████ ███    ███ █████████ █████ █████ ████ █████   
+ ██████  █████████████████████ ████ █████ █████ ████ ██████  
+                                                                        
+                                                                        
+                                                                        
+      ]]
+
+      logo = string.rep("\n", 8) .. logo .. "\n\n"
+      opts.config.header = vim.split(logo, "\n")
+    end,
+    --
+    --     -- local opts = {
+    --     --  theme = "doom",
+    --     --  hide = {
+    --     --    -- this is taken care of by lualine
+    --     --    -- enabling this messes up the actual laststatus setting after loading a file
+    --     --    statusline = false,
+    --     --  },
+    --     --  config = {
+    --     --    header = vim.split(logo, "\n"),
+    --    end,
+  },
+  {
+    "ecthelionvi/NeoComposer.nvim",
+    dependencies = { "kkharji/sqlite.lua" },
+    opts = {},
+    cmd = {
+      "EditMacros",
+      "ClearNeoComposer",
+    },
+  },
+  {
     "pwntester/octo.nvim",
     cmd = "Octo",
     dependencies = {
@@ -13,6 +76,33 @@ return {
     },
     config = function()
       require("octo").setup()
+    end,
+  },
+  {
+    "nanotee/sqls.nvim",
+    cmd = {
+      "SqlsExecuteQuery",
+      "SqlsExecuteQueryVertical",
+      "SqlsShowDatabases",
+      "SqlsShowSchemas",
+      "SqlsShowConnections",
+      "SqlsSwitchDatabase",
+      "SqlsSwitchConnection",
+    },
+    ft = { "sql", "mysql", "plsql" },
+    config = function()
+      require("lspconfig")["sqls"].setup({
+        on_attach = function(client, bufnr)
+          require("sqls").on_attach(client, bufnr)
+        end,
+      })
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "SqlsConnectionChoice",
+        callback = function(event)
+          vim.notify(event.data.choice)
+        end,
+      })
     end,
   },
   {
