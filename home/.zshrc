@@ -12,11 +12,12 @@ fi
 #   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 # fi
 
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# must load before zsh config
+eval "$(sheldon source)"
 
 ZSHHOME="${HOME}/dotfiles/zsh"
 
+# load zsh configs
 if [ -d $ZSHHOME -a -r $ZSHHOME -a \
   -x $ZSHHOME ]; then
     for i in $ZSHHOME/*; do
@@ -56,8 +57,9 @@ if (which zprof > /dev/null 2>&1) ;then
 fi
 
 
-eval $(thefuck --alias)
+# eval $(thefuck --alias)
 eval "$(direnv hook zsh)"
+eval "$(zoxide init zsh)"
 
 # bun completions
 [ -s "/Users/mei/.bun/_bun" ] && source "/Users/mei/.bun/_bun"
@@ -89,10 +91,13 @@ fi
 
 
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 [ -f ~/.inshellisense/key-bindings.zsh ] && source ~/.inshellisense/key-bindings.zsh
 
 source /Users/mei/.config/broot/launcher/bash/br
 
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# . /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+PATH=~/.console-ninja/.bin:$PATH
+eval "$(~/.local/bin/mise activate zsh)"

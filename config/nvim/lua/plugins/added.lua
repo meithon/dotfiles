@@ -3,6 +3,117 @@ local map = vim.keymap.set
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 return {
+  { "akinsho/toggleterm.nvim", version = "*", config = true },
+  {
+    "nvim-telescope/telescope-frecency.nvim",
+    config = function()
+      require("telescope").load_extension("frecency")
+    end,
+    keys = {
+      {
+        "<Leader><Leader>",
+        "<cmd>Telescope frecency<CR>",
+        "Telescope frequent",
+      },
+    },
+  },
+  {
+    "towolf/vim-helm",
+  },
+  {
+    "kawre/leetcode.nvim",
+    build = ":TSUpdate html",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "nvim-lua/plenary.nvim", -- required by telescope
+      "MunifTanjim/nui.nvim",
+
+      -- optional
+      "nvim-treesitter/nvim-treesitter",
+      "rcarriga/nvim-notify",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {
+      -- getenv
+      storage = {
+        home = os.getenv("HOME") .. "/workspace/leetcode",
+      },
+      -- configuration goes here
+      lang = "typescript",
+    },
+  },
+  -- Using packer
+  {
+    "LeonHeidelbach/trailblazer.nvim",
+    config = function()
+      require("trailblazer").setup({})
+    end,
+    -- :TrailBlazerNewTrailMark 	<window? number>
+    -- <buffer? string | number>
+    -- <cursor_pos_row? number>
+    -- <cursor_pos_col? number> 	Create a new / toggle existing trail mark at the current cursor position or at the specified window / buffer / position.
+    -- :TrailBlazerTrackBack 	<buffer? string | number> 	Move to the last global trail mark or the last one within the specified buffer and remove it from the trail mark stack.
+    -- :TrailBlazerPeekMovePreviousUp 	<buffer? string | number 	Move to the previous global trail mark or the previous one within the specified buffer leading up to the oldest one without removing it from the trail mark stack. In chronologically sorted trail mark modes this will move the trail mark cursor up.
+    -- :TrailBlazerPeekMoveNextDown 	<buffer? string | number> 	Move to the next global trail mark or the next one within the specified buffer leading up to the newest one without removing it from the trail mark stack. In chronologically sorted trail mark modes this will move the trail mark cursor down.
+    -- :TrailBlazerMoveToNearest 	<buffer? string | number>
+    -- <directive? string>
+    -- <dist_type? string> 	Move to the nearest trail mark in the current or the nearest trail mark within the specified buffer. This calculates either the minimum Manhattan Distance or the minimum linear character distance between the current cursor position and the qualifying trail marks depending on dist_type => ("man_dist", "lin_char_dist"). Passing one of the available motion directives to this command will change the behavior of this motion.
+    -- :TrailBlazerMoveToTrailMarkCursor 		Move to the trail mark cursor in the current stack.
+    -- :TrailBlazerDeleteAllTrailMarks 	<buffer? string | number> 	Delete all trail marks globally or within the specified buffer.
+    -- :TrailBlazerPasteAtLastTrailMark 	<buffer? string | number> 	Paste the contents of any selected register at the last global trail mark or the last one within the specified buffer and remove it from the trail mark stack.
+    -- :TrailBlazerPasteAtAllTrailMarks 	<buffer? string | number> 	Paste the contents of any selected register at all global trail marks or at all trail marks within the specified buffer.
+    -- :TrailBlazerTrailMarkSelectMode 	<mode? string> 	Cycle through or set the current trail mark selection mode.
+    -- :TrailBlazerToggleTrailMarkList 	<type? string>
+    -- <buffer? string | number> 	Toggle a global list of all trail marks or a subset within the given buffer. If no arguments are specified the current trail mark selection mode will be used to populate the list with either a subset or all trail marks in the mode specific order.
+    -- :TrailBlazerOpenTrailMarkList 	<type? string>
+    -- <buffer? string | number> 	Open a global list of all trail marks or a subset within the given buffer. If no arguments are specified the current trail mark selection mode will be used to populate the list with either a subset or all trail marks in the mode specific order.
+    -- :TrailBlazerCloseTrailMarkList 	<type? string> 	Close the specified trail mark list. If no arguments are specified all lists will be closed.
+    -- :TrailBlazerSwitchTrailMarkStack 	<stack_name? string> 	Switch to the specified trail mark stack. If no stack under the specified name exists, it will be created. If no arguments are specified the default stack will be selected.
+    -- :TrailBlazerAddTrailMarkStack 	<stack_name? string> 	Add a new trail mark stack. If no arguments are specified the default stack will be added to the list of trail mark stacks.
+    -- :TrailBlazerDeleteTrailMarkStacks 	<stack_name? string>
+    -- ... 	Delete the specified trail mark stacks. If no arguments are specified the current trail mark stack will be deleted.
+    -- :TrailBlazerDeleteAllTrailMarkStacks 		Delete all trail mark stacks.
+    -- :TrailBlazerSwitchNextTrailMarkStack 	<sort_mode? string> 	Switch to the next trail mark stack using the specified sorting mode. If no arguments are specified the current default sort mode will be used.
+    -- :TrailBlazerSwitchPreviousTrailMarkStack 	<sort_mode? string> 	Switch to the previous trail mark stack using the specified sorting mode. If no arguments are specified the current default sort mode will be used.
+    -- :TrailBlazerSetTrailMarkStackSortMode 	<sort_mode? string> 	Cycle through or set the current trail mark stack sort mode.
+    -- :TrailBlazerSaveSession 	<session_path? string> 	Save all trail mark stacks and and the current configuration to a session file. If no arguments are specified the session will be saved in the default session directory. You will find more information here.
+    -- :TrailBlazerLoadSession 	<session_path? string> 	Load a previous session from a session file. If no arguments are specified the session will be loaded from the default session directory. You will find more information here.
+    -- :TrailBlazerDeleteSession 	<session_path? string> 	Delete any valid session file. If no arguments are specified the session will be deleted from the default session directory. You will find more information here.
+    keys = {
+      {
+        "<leader>j",
+        "<cmd>TrailBlazerNewTrailMark<cr>",
+      },
+      {
+        "<C-j>",
+        "<cmd>TrailBlazerTrackBack<cr>",
+      },
+      {
+        "<C-h>",
+        "<cmd>TrailBlazerPeekMovePreviousUp<cr>",
+      },
+      {
+        "<C-l>",
+        "<cmd>TrailBlazerPeekMoveNextDown<cr>",
+      },
+      {
+        "<C-l>",
+        "<cmd>TrailBlazerPeekMoveNextDown<cr>",
+      },
+    },
+  },
+  -- lazy.nvim
+  {
+    "robitx/gp.nvim",
+    config = function()
+      require("gp").setup()
+
+      -- or setup with your own config (see Install > Configuration in Readme)
+      -- require("gp").setup(config)
+
+      -- shortcuts might be setup here (see Usage > Shortcuts in Readme)
+    end,
+  },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -521,11 +632,17 @@ return {
         enabled = false,
       },
     },
+    keys = {
+      { "<C-x>", mode = "i" },
+    },
     event = { "InsertEnter", "CmdlineEnter" },
     branch = "v0.6", --recomended as each new version will have breaking changes
     opts = {
 
       fastwarp = { -- *ultimate-autopair-map-fastwarp-config*
+        multi = true,
+        -- {},
+        -- { faster = true, map = "<C-x>" },
         -- enable=true,
         -- enable_normal=true,
         -- enable_reverse=true,
@@ -537,6 +654,10 @@ return {
         -- rcmap='<A-E>', --string or table
       },
       --Config goes here
+
+      internal_pairs = {
+        { "<", ">", suround = false },
+      },
     },
   },
 

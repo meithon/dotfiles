@@ -16,9 +16,14 @@ bindkey '^r' fzf-history-search
 # zplug "rupa/z", use:z.sh
 
 fzf-z-search() {
-    local res=$(z | sort -rn | cut -c 12- | fzf)
-    if [ -n "$res" ]; then
-        BUFFER+="cd $res"
+    # .lua
+    # local res=$(z | sort -rn | cut -c 12- | fzf)
+    
+    # use zoxide
+    local path=$(zoxide query --interactive)
+
+    if [ -n "$path" ]; then
+        BUFFER+="cd $path"
         zle accept-line
     else
         return 1
