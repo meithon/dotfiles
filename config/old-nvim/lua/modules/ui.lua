@@ -215,7 +215,7 @@ return {
       "nvim-treesitter/nvim-treesitter-textobjects",
       "theHamsta/tree-sitter-html",
       "David-Kunz/markid",
-      -- "windwp/nvim-ts-autotag",
+      "windwp/nvim-ts-autotag",
       -- "JoosepAlviste/nvim-ts-context-commentstring",
       -- -- "p00f/nvim-ts-rainbow",
       -- "andymass/vim-matchup",

@@ -2,6 +2,26 @@ local map = vim.keymap.set
 local Util = require("lazyvim.util")
 local icons = require("lazyvim.config").icons
 
+local Path = require("plenary.path")
+
+local function find_node_modules(start_path)
+  local current_path = Path:new(start_path or vim.loop.cwd()):absolute()
+  local root_path = Path:new("/"):absolute()
+
+  while current_path ~= root_path do
+    local node_modules_path = Path:new(current_path, "node_modules")
+
+    if node_modules_path:exists() and node_modules_path:is_dir() then
+      return node_modules_path:absolute()
+    end
+
+    -- Move up one directory
+    current_path = Path:new(current_path):parent():absolute()
+  end
+
+  return "" -- node_modules not found
+end
+
 ---@param opts? {relative: "cwd"|"root", modified_hl: string?}
 local function pretty_path(opts)
   opts = vim.tbl_extend("force", {
@@ -68,6 +88,35 @@ end
 ---@type Plugin[]
 return {
   {
+    "nvim-lualine/lualine.nvim",
+
+    opts = function(_, opts)
+      opts.inactive_winbar = {
+        lualine_c = {
+          pretty_path({ relative = "cwd" }),
+        },
+      }
+      opts.winbar = {
+
+        lualine_c = {
+          pretty_path({ relative = "cwd" }),
+        },
+      }
+    end,
+  },
+  -- word highlight
+  {
+    "RRethy/vim-illuminate",
+    config = function()
+      vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
+      vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
+      vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
+    end,
+    opts = function(_, opts)
+      opts.delay = 0
+    end,
+  },
+  {
     "L3MON4D3/LuaSnip",
     config = function()
       local ls = require("luasnip")
@@ -97,7 +146,18 @@ return {
         postfix(".dbg", {
           d(1, function(_, parent)
             return sn(nil, {
-              t({ 'console.log("' .. parent.env.POSTFIX_MATCH .. ': ", ' .. parent.env.POSTFIX_MATCH .. ")" }),
+
+              -- console.log('a:', a);
+              -- t({ 'console.log("' .. parent.env.POSTFIX_MATCH .. ': ", ' .. parent.env.POSTFIX_MATCH .. ")" }),
+              -- console.log(JSON.stringify(a, null, 2));
+              t({
+                'console.log("'
+                  .. parent.env.POSTFIX_MATCH
+                  .. ":,"
+                  .. '"JSON.stringify('
+                  .. parent.env.POSTFIX_MATCH
+                  .. ", null, 2));",
+              }),
             })
           end),
         }),
@@ -154,7 +214,11 @@ return {
           },
         },
         { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-        { pretty_path({ relative = "cwd" }) },
+        {
+          function()
+            return Util.root.cwd()
+          end,
+        },
       }
     end,
   },
@@ -162,9 +226,13 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       "David-Kunz/markid",
+      "windwp/nvim-ts-autotag",
     },
     opts = function(_, opts)
       opts.markid = {
+        enable = true,
+      }
+      opts.autotag = {
         enable = true,
       }
     end,
@@ -172,11 +240,74 @@ return {
   { -- Add vitest runner
     "rcarriga/neotest",
     dependencies = {
-      -- "marilari88/neotest-vitest",
-      "rneithon/neotest-vitest",
+      "marilari88/neotest-vitest",
+      -- "rneithon/neotest-vitest",
+      "thenbe/neotest-playwright",
     },
     opts = function(_, opts)
       table.insert(opts.adapters, require("neotest-vitest"))
+      table.insert(
+        opts.adapters,
+        require("neotest-playwright").adapter({
+          options = {
+            persist_project_selection = false,
+
+            enable_dynamic_test_discovery = true,
+
+            preset = "none", -- "none" | "headed" | "debug"
+
+            get_playwright_binary = function()
+              --   return vim.loop.cwd() + "/node_modules/.bin/playwright"
+              return find_node_modules() .. "/.bin/playwright"
+            end,
+
+            -- get_playwright_config = function()
+            --   return vim.loop.cwd() + "/playwright.config.ts"
+            -- end,
+
+            -- Controls the location of the spawned test process.
+            -- Has no affect on neither the location of the binary nor the location of the config file.
+            -- get_cwd = function()
+            --   return vim.loop.cwd()
+            -- end,
+
+            -- env = { },
+
+            -- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
+            extra_args = {},
+
+            -- Filter directories when searching for test files. Useful in large projects (see performance notes).
+            -- filter_dir = function(name, rel_path, root)
+            --   return name ~= "node_modules"
+            -- end,
+
+            ---Filter directories when searching for test files
+            ---@async
+            ---@param name string Name of directory
+            ---@param rel_path string Path to directory, relative to root
+            ---@param root string Root directory of project
+            ---@return boolean
+            -- filter_dir = function(name, rel_path, root)
+            --   local full_path = root .. "/" .. rel_path
+            --
+            --   if root:match("tobari") then
+            --     if full_path:match("^packages/e2e-test") then
+            --       return true
+            --     else
+            --       return false
+            --     end
+            --   else
+            --     return name ~= "node_modules"
+            --   end
+            -- end,
+          },
+        })
+      )
+      table.insert(opts, {
+        consumers = {
+          playwright = require("neotest-playwright").consumers,
+        },
+      })
     end,
   },
   {
@@ -468,6 +599,9 @@ return {
 
   {
     "nvim-telescope/telescope.nvim",
+    dependencies = {
+      "jvgrootveld/telescope-zoxide",
+    },
     keys = {
       -- add a keymap to browse plugin files
       -- stylua: ignore
@@ -483,6 +617,16 @@ return {
         end,
         desc = "Find Git File",
       },
+      {
+        "<leader><tab>",
+        "<cmd>Telescope buffers<cr>",
+        desc = "Buffers",
+      },
+      {
+        "<leader>fz",
+        "<cmd>Telescope zoxide list<cr>",
+        desc = "Buffers",
+      },
     },
     init = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
@@ -496,14 +640,42 @@ return {
       }
     end,
     -- change some options
-    opts = {
-      defaults = {
-        layout_strategy = "horizontal",
-        layout_config = { prompt_position = "top" },
-        sorting_strategy = "ascending",
-        winblend = 0,
-      },
-    },
+    opts = function(_, opts)
+      -- Useful for easily creating commands
+      local z_utils = require("telescope._extensions.zoxide.utils")
+
+      vim.tbl_deep_extend("keep", opts, {
+        extensions = {
+          zoxide = {
+            prompt_title = "[ Walking on the shoulders of TJ ]",
+            mappings = {
+              default = {
+                after_action = function(selection)
+                  print("Update to (" .. selection.z_score .. ") " .. selection.path)
+                end,
+              },
+              ["<C-s>"] = {
+                before_action = function(selection)
+                  print("before C-s")
+                end,
+                action = function(selection)
+                  vim.cmd.edit(selection.path)
+                end,
+              },
+              -- Opens the selected entry in a new split
+              ["<C-q>"] = { action = z_utils.create_basic_command("split") },
+            },
+          },
+        },
+      })
+
+      require("telescope").load_extension("zoxide")
+
+      -- layout_strategy = "horizontal",
+      -- layout_config = { prompt_position = "top" },
+      -- sorting_strategy = "ascending",
+      -- winblend = 0,
+    end,
   },
 
   -- Use <tab> for completion and snippets (supertab)
@@ -574,6 +746,17 @@ return {
       local cmp = require("cmp")
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
+        ["<CR>"] = cmp.mapping({
+          i = function(fallback)
+            if cmp.visible() and cmp.get_active_entry() then
+              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+            else
+              fallback()
+            end
+          end,
+          -- s = cmp.mapping.confirm({ select = true }),
+          -- c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+        }),
         ["<C-e>"] = function()
           if cmp.visible() then
             cmp.abort()
@@ -678,7 +861,6 @@ return {
       local remove_source = { "luasnip", "copilot", "codeium" }
       for i, source in ipairs(opts.sources) do
         if vim.tbl_contains(remove_source, source.name) then
-          vim.notify("remove " .. source.name)
           table.remove(opts.sources, i)
         end
       end
@@ -702,7 +884,6 @@ return {
 
       -- local a = vim.tbl_extend("force", opts.sources, {
       -- })
-      vim.notify(vim.inspect(a))
       -- table.insert(opts.sources, 1, {
       --   name = "copilot",
       --   group_index = 1,

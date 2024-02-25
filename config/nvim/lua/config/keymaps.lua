@@ -27,8 +27,9 @@ map(
   { desc = "Show git diff" }
 )
 
-local vscode_command = function(cmd, arg)
-  return map("<cmd>call VSCodeNotify('" .. cmd .. "')<cr>")
+local vscode_command = function(cmd)
+  -- return map("<cmd>call VSCodeNotify('" .. cmd .. "')<cr>")
+  return "<cmd>call VSCodeNotify('" .. cmd .. "')<cr>"
 end
 
 -- ////////////

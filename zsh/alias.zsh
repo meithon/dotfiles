@@ -29,6 +29,8 @@
 # abbrev-alias -g G="| rg --line-number"
 
 
+alias ta="tmux attach"
+alias vd="neovide"
 
 alias vi="nvim"
 alias vv="~/dotfiles/nvim-switcher/switcher.sh"
@@ -59,6 +61,15 @@ alias gtree="git tree"
 alias git_rebase_main="git switch main && git pull && git switch - && git rebase main"
 
 alias -g G="| rg --line-number"
+
+
+# ghqとfzfを使用してディレクトリを変更する関数を定義
+find-repository-and-move() {
+  cd ~/ghq/$(ghq list | fzf) && ls
+}
+
+# "repos"
+abbrev-alias -g rps='find-repository-and-move'
 
 
 # docker 
