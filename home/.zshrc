@@ -100,4 +100,4 @@ source /Users/mei/.config/broot/launcher/bash/br
 # . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 PATH=~/.console-ninja/.bin:$PATH
-eval "$(~/.local/bin/mise activate zsh)"
+eval "$(/opt/homebrew/bin/mise activate zsh)"

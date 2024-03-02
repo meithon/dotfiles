@@ -3,6 +3,109 @@ local map = vim.keymap.set
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 return {
+
+  {
+    "folke/twilight.nvim",
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      alpha = 0.8, -- amount of dimming
+    },
+    keys = { { "<leader>uh", "<cmd>Twilight<cr>", desc = "Highlight code" } },
+  },
+  {
+    "willothy/flatten.nvim",
+    opts = {
+      {
+        "willothy/flatten.nvim",
+        config = true,
+        -- or pass configuration with
+        -- opts = {  }
+        -- Ensure that it runs first to minimize delay when opening file from terminal
+        lazy = false,
+        priority = 1001,
+      },
+      --- ...
+    },
+    update = ":Rocks install flatten.nvim",
+  },
+  { -- diagnostic fixer
+    "piersolenski/wtf.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    opts = {},
+    keys = {
+      {
+        "gw",
+        mode = { "n", "x" },
+        function()
+          require("wtf").ai()
+        end,
+        desc = "Debug diagnostic with AI",
+      },
+      {
+        mode = { "n" },
+        "gW",
+        function()
+          require("wtf").search()
+        end,
+        desc = "Search diagnostic with Google",
+      },
+    },
+  },
+  {
+    "2kabhishek/termim.nvim",
+    cmd = { "Fterm", "FTerm", "Sterm", "STerm", "Vterm", "VTerm" },
+  },
+  -- {
+  --   "phaazon/hop.nvim",
+  --   branch = "v2", -- optional but strongly recommended
+  --   config = function()
+  --     -- you can configure Hop the way you like here; see :h hop-config
+  --     require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
+  --   end,
+  -- },
+  { -- auto 改行
+    "hrsh7th/nvim-insx",
+    config = function()
+      require("insx.preset.standard").setup()
+      local insx = require("insx")
+      -- Simple pair deletion recipe.
+      -- local function your_recipe(option)
+      --   return {
+      --     action = function(ctx)
+      --       if option.allow_space then
+      --         ctx.remove([[\s*\%#\s*]])
+      --       end
+      --       ctx.send("<BS><Right><BS>")
+      --     end,
+      --     enabled = function(ctx)
+      --       if option.allow_space then
+      --         return ctx.match([[(\s*\%#\s*)]])
+      --       end
+      --       return ctx.match([[(\%#)]])
+      --     end,
+      --   }
+      -- end
+      -- require("insx").add(
+      --   "<C-j>",
+      --   require("insx.recipe.fast_wrap")({
+      --     close = ")",
+      --   })
+      -- )
+
+      -- insx.add(
+      --   "<C-z>",
+      --   require("insx.recipe.fast_wrap")({
+      --     close = ")",
+      --   })
+      -- )
+      -- Simple pair deletion recipe.
+      --
+    end,
+  },
   { "akinsho/toggleterm.nvim", version = "*", config = true },
   {
     "nvim-telescope/telescope-frecency.nvim",
@@ -362,7 +465,17 @@ return {
     },
     cmd = "EyelinerEnable",
     dependencies = {
-      { "folke/flash.nvim", enabled = false }, -- Disable lazyvim plugin
+      {
+        "folke/flash.nvim",
+        opts = {
+          modes = {
+            char = {
+              enabled = false,
+              keys = {},
+            },
+          },
+        },
+      }, -- Disable lazyvim plugin
     },
   },
   { -- fold
@@ -636,29 +749,29 @@ return {
       { "<C-x>", mode = "i" },
     },
     event = { "InsertEnter", "CmdlineEnter" },
-    branch = "v0.6", --recomended as each new version will have breaking changes
-    opts = {
+    branch = "v0.6", --recommended as each new version will have breaking changes
+    opts = function()
+      local default = require("ultimate-autopair.default").conf
+      local internal_pairs = default.internal_pairs
 
-      fastwarp = { -- *ultimate-autopair-map-fastwarp-config*
-        multi = true,
-        -- {},
-        -- { faster = true, map = "<C-x>" },
-        -- enable=true,
-        -- enable_normal=true,
-        -- enable_reverse=true,
-        -- hopout=false,
-        --{(|)} > fastwarp > {(}|)
-        map = "<C-x>", --string or table
-        -- rmap='<A-E>', --string or table
-        -- cmap='<A-e>', --string or table
-        -- rcmap='<A-E>', --string or table
-      },
-      --Config goes here
+      -- table.insert(internal_pairs, {
+      --   "<", ">",
+      --   fly = true,
+      --   dosuround = true,
+      --   newline = true,
+      --   space = true,
+      --   cond = function(fn)
+      --     return not fn.in_node({ "arrow_function", "binary_expression", "augmented_assignment_expression" })
+      --   end,
+      -- })
+      table.insert(internal_pairs, { "<div>", "</div>", fly = true, dosuround = true, newline = true, space = true })
 
-      internal_pairs = {
-        { "<", ">", suround = false },
-      },
-    },
+      local configs = {
+        fastwarp = { map = "<C-x>" },
+        internal_pairs = internal_pairs,
+      }
+      return configs
+    end,
   },
 
   { -- zen mode
@@ -803,7 +916,7 @@ return {
     opt = {},
     config = function(_, opts)
       require("lspsaga").setup(opts)
-      -- disabe default keymaps
+      -- disable default keymaps
       vim.keymap.set("n", "<leader>l", function() end) -- Open lazy
     end,
     cmd = "Lspsaga",
