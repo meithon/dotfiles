@@ -29,47 +29,57 @@
 # abbrev-alias -g G="| rg --line-number"
 
 
-alias ta="tmux attach"
-alias vd="neovide"
+function fzf-print-k8s-secret() {
+  S=$(kubectl get secrets -o name | fzf) && echo $S && kubectl get $S -o json | jq '.data | map_values(@base64d)'
+}
 
-alias vi="nvim"
-alias vv="~/dotfiles/nvim-switcher/switcher.sh"
-alias lv="NVIM_APPNAME=LazyVim nvim"
+abbrev-alias ta="tmux attach"
+abbrev-alias vd="neovide"
 
+abbrev-alias vi="nvim"
+abbrev-alias vv="~/dotfiles/nvim-switcher/switcher.sh"
+abbrev-alias lv="NVIM_APPNAME=LazyVim nvim"
+abbrev-alias av="NVIM_APPNAME=AstroVim nvim"
+
+alias ksec=fzf-print-k8s-secret
 alias ll="lsd -l"
 alias la="lsd -l -a"
-alias ..="cd .."
-alias ...="cd ../../"
+abbrev-alias ..="cd .."
+abbrev-alias ...="cd ../../"
 
 # one word
-alias k="kubectl"
-alias j="just"
+abbrev-alias k="kubectl"
+abbrev-alias j="just"
 
 ## node
-alias pn="pnpm"
-alias pnr="pnpm run"
-alias pne="pnpm exec"
+abbrev-alias pn="pnpm"
+abbrev-alias pnr="pnpm run"
+abbrev-alias pne="pnpm exec"
 
 ## git
-alias ga="git add"
-alias gc="git commit"
-alias gs="git status"
-alias gsw="git switch"
-alias grb="git rebase"
-alias grs="git reset --soft HEAD^"
-alias gtree="git tree"
-alias git_rebase_main="git switch main && git pull && git switch - && git rebase main"
+abbrev-alias ga="git add"
+abbrev-alias gc="git commit"
+abbrev-alias gs="git status"
+abbrev-alias gsw="git switch"
+abbrev-alias grb="git rebase"
+abbrev-alias grs="git reset"
+abbrev-alias gitr="git tree"
 
-alias -g G="| rg --line-number"
+abbrev-alias git-pretty-log="git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=format:'%Y-%m-%d %H:%M'"
+abbrev-alias remain="git switch main && git pull && git switch - && git rebase main"
+
+abbrev-alias -g G="| rg --line-number"
 
 
 # ghqとfzfを使用してディレクトリを変更する関数を定義
 find-repository-and-move() {
-  cd ~/ghq/$(ghq list | fzf) && ls
+  local repo=$(ghq list | fzf)
+  cd ~/ghq/$repo
+  echo moved to \"$repo\"
 }
 
-# "repos"
-abbrev-alias -g rps='find-repository-and-move'
+alias repos=find-repository-and-move
+abbrev-alias -g rps='repos'
 
 
 # docker 
@@ -109,7 +119,7 @@ depends_on rg && alias rg="rg --hidden --no-ignore-vcs --no-ignore --no-ignore-p
 # Add a subcommand named tree to git
 git() {
     if [[ $@ == "tree" ]]; then
-        command git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+        command git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=format:"%Y-%m-%d %H:%M"
     else
         command git "$@"
     fi

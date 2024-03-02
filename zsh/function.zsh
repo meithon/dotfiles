@@ -17,13 +17,14 @@ bindkey '^r' fzf-history-search
 
 fzf-z-search() {
     # .lua
-    # local res=$(z | sort -rn | cut -c 12- | fzf)
+    # local dir=$(z | sort -rn | cut -c 12- | fzf)
     
-    # use zoxide
-    local path=$(zoxide query --interactive)
+    # use 
+    # zoxide
+    local dir=$(zoxide query --interactive)
 
-    if [ -n "$path" ]; then
-        BUFFER+="cd $path"
+    if [ -n "$dir" ]; then
+        BUFFER+="cd $dir"
         zle accept-line
     else
         return 1

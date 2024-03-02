@@ -27,6 +27,10 @@ map(
   { desc = "Show git diff" }
 )
 
+if vim.g.vscode then
+  return
+end
+
 local vscode_command = function(cmd)
   -- return map("<cmd>call VSCodeNotify('" .. cmd .. "')<cr>")
   return "<cmd>call VSCodeNotify('" .. cmd .. "')<cr>"
@@ -82,6 +86,8 @@ map("n", "gr", vscode_command("editor.action.goToReferences"))
 map("n", "gi", vscode_command("editor.action.goToImplementation"))
 map("n", "<Leader>lr", vscode_command("editor.action.rename"))
 map("n", "<Leader>gt", vscode_command(""))
+map("n", "K", vscode_command("editor.action.showHover"))
+
 -- ["n|gd"] = map_cr("call VSCodeNotify('editor.action.revealDefinition')"),
 -- ["n|gr"] = map_cr("call VSCodeNotify('editor.action.goToReferences')"),
 -- ["n|gi"] = map_cr("call VSCodeNotify('editor.action.goToImplementation')"),
