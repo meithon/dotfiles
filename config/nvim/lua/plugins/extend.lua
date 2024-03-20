@@ -21,8 +21,6 @@ local function find_node_modules(start_path)
 
   return "" -- node_modules not found
 end
-
----@param opts? {relative: "cwd"|"root", modified_hl: string?}
 local function pretty_path(opts)
   opts = vim.tbl_extend("force", {
     relative = "cwd",
@@ -87,6 +85,99 @@ end
 
 ---@type Plugin[]
 return {
+  {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = {
+        ["javascript"] = { "biome" },
+        ["javascriptreact"] = { "biome" },
+        ["typescript"] = { "biome" },
+        ["typescriptreact"] = { "biome" },
+        ["vue"] = { "biome" },
+        ["css"] = { "biome" },
+        ["scss"] = { "biome" },
+        ["json"] = { "biome" },
+        ["jsonc"] = { "biome" },
+        ["handlebars"] = { "biome" },
+      },
+    },
+  },
+  -- {
+  --   "folke/flash.nvim",
+  --   event = "VeryLazy",
+  --   vscode = true,
+  --   ---@type Flash.Config
+  --   opts = {},
+  --   config = function()
+  --     local enterMode = function(callback)
+  --       callback()
+  --       local s
+  --       while true do
+  --         s = vim.fn.getchar()
+  --         if type(s) == "number" then
+  --           local char = vim.fn.nr2char(s)
+  --           local keys = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+  --           if string.match(keys, char) then
+  --             vim.defer_fn(function()
+  --               vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(char, true, false, true), "n", false)
+  --             end, 0)
+  --             require("flash").jump()
+  --             return
+  --           else
+  --             vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(char, true, false, true), "n", false)
+  --             return
+  --           end
+  --         else
+  --           return
+  --         end
+  --       end
+  --     end
+  --
+  --     local scroll_half_page_down = function()
+  --       local win_height = vim.api.nvim_win_get_height(0)
+  --       local cursor_height = vim.api.nvim_win_get_cursor(0)[1]
+  --       local middle = math.floor(win_height / 2)
+  --       local scroll_amount = 0
+  --       if cursor_height < middle then
+  --         scroll_amount = 2 * middle - cursor_height
+  --       else
+  --         scroll_amount = cursor_height - middle
+  --       end
+  --       vim.cmd("normal " .. scroll_amount .. "j zz")
+  --     end
+  --
+  --     local scroll_half_page_up = function()
+  --       local win_height = vim.api.nvim_win_get_height(0)
+  --       local middle = math.floor(win_height / 2)
+  --       local cursor_height = vim.api.nvim_win_get_cursor(0)[1]
+  --       local scroll_amount = 0
+  --       if cursor_height < middle then
+  --         scroll_amount = 2 * middle - cursor_height
+  --       else
+  --         scroll_amount = cursor_height - middle
+  --       end
+  --       vim.cmd("normal " .. scroll_amount .. "k zz")
+  --     end
+  --
+  --     vim.keymap.set("n", "<C-u>", function()
+  --       enterMode(scroll_half_page_up)
+  --     end, { noremap = true, silent = true })
+  --
+  --     vim.keymap.set("n", "<C-d>", function()
+  --       enterMode(scroll_half_page_down)
+  --     end, { noremap = true, silent = true })
+  --   end,
+  --
+  --   -- stylua: ignore
+  --   -- keys = {
+  --   --   { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+  --   --   { "S", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+  --   --   { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+  --   --   { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+  --   --   { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+  --   -- },
+  -- },
   {
     "nvim-lualine/lualine.nvim",
 
@@ -240,12 +331,12 @@ return {
   { -- Add vitest runner
     "rcarriga/neotest",
     dependencies = {
-      "marilari88/neotest-vitest",
+      -- "marilari88/neotest-vitest",
       -- "rneithon/neotest-vitest",
       "thenbe/neotest-playwright",
     },
     opts = function(_, opts)
-      table.insert(opts.adapters, require("neotest-vitest"))
+      -- table.insert(opts.adapters, require("neotest-vitest"))
       table.insert(
         opts.adapters,
         require("neotest-playwright").adapter({
@@ -507,6 +598,7 @@ return {
   },
   {
     "ziontee113/syntax-tree-surfer",
+    vscode = true,
     dependencies = "nvim-treesitter/nvim-treesitter",
 
     keys = {
@@ -624,7 +716,7 @@ return {
       },
       {
         "<leader>fz",
-        "<cmd>Telescope zoxide list<cr>",
+        "<cmd>Telescope zoxide list<<cr>",
         desc = "Buffers",
       },
     },

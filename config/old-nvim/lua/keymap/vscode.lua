@@ -24,12 +24,12 @@ local map = {
   -- edit
   ["v|<C-n>"] = vscode_command("editor.action.addSelectionToNextFindMatch"),
   -- buffer
-  ["n|<Leader><tab>"] = map_cr("call VSCodeNotify('workbench.action.quickOpen')"),
-  ["n|<C-W>q"] = map_cr("call VSCodeNotify('workbench.action.closeOtherEditors')"),
-  ["n|<Leader>e"] = map_cr("call VSCodeNotify('workbench.explorer.fileView.focus')"),
-  ["n|<Leader>tt"] = map_cr("call VSCodeNotify('workbench.action.terminal.focusAccessibleBuffer')"),
-  ["n|QQ"] = map_cr("call VSCodeNotify('workbench.action.closeActiveEditor')"),
-
+  -- ["n|<Leader><tab>"] = map_cr("call VSCodeNotify('workbench.action.quickOpen')"),
+  -- ["n|<C-W>q"] = map_cr("call VSCodeNotify('workbench.action.closeOtherEditors')"),
+  -- ["n|<Leader>e"] = map_cr("call VSCodeNotify('workbench.explorer.fileView.focus')"),
+  -- ["n|<Leader>tt"] = map_cr("call VSCodeNotify('workbench.action.terminal.focusAccessibleBuffer')"),
+  -- ["n|QQ"] = map_cr("call VSCodeNotify('workbench.action.closeActiveEditor')"),
+  --
   -- Telescope
   ["n|<leader>ff"] = vscode_command("binocular.searchFile"),
   ["n|<Leader>fg"] = vscode_command_with_arg(

@@ -1,3 +1,11 @@
+### Added by Codeium. These lines cannot be automatically removed if modified
+if command -v termium > /dev/null 2>&1; then
+  eval "$(termium shell-hook show pre)"
+fi
+### End of Codeium integration
+
+
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -101,3 +109,13 @@ source /Users/mei/.config/broot/launcher/bash/br
 
 PATH=~/.console-ninja/.bin:$PATH
 eval "$(/opt/homebrew/bin/mise activate zsh)"
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+
+
+
+
+### Added by Codeium. These lines cannot be automatically removed if modified
+if command -v termium > /dev/null 2>&1; then
+  eval "$(termium shell-hook show post)"
+fi
+### End of Codeium integration

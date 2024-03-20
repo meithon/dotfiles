@@ -27,7 +27,7 @@ map(
   { desc = "Show git diff" }
 )
 
-if vim.g.vscode then
+if not vim.g.vscode then
   return
 end
 
@@ -74,7 +74,6 @@ map("n", "<C-W>y", vscode_command("workbench.action.increaseViewWidth"))
 map("n", "<C-W>o", vscode_command("workbench.action.decreaseViewWidth"))
 map("n", "<C-W>u", vscode_command("workbench.action.decreaseViewHeight"))
 map("n", "<C-W>i", vscode_command("workbench.action.increaseViewHeight"))
--- move
 
 -- diagnosti
 map("n", "<Leader>ca", vscode_command("editor.action.sourceAction"))
@@ -87,7 +86,16 @@ map("n", "gi", vscode_command("editor.action.goToImplementation"))
 map("n", "<Leader>lr", vscode_command("editor.action.rename"))
 map("n", "<Leader>gt", vscode_command(""))
 map("n", "K", vscode_command("editor.action.showHover"))
+map("n", "[d", vscode_command("editor.action.marker.prevInFiles"))
+map("n", "]d", vscode_command("editor.action.marker.nextInFiles"))
 
+-- move
+map("n", "<Leader>e", vscode_command("workbench.explorer.fileView.focus"))
+map("n", "<leader>bo", vscode_command("workbench.action.closeOtherEditors"))
+---- git
+--
+map("n", "]h", vscode_command("workbench.action.editor.nextChange"))
+map("n", "[h", vscode_command("workbench.action.editor.prevChange"))
 -- ["n|gd"] = map_cr("call VSCodeNotify('editor.action.revealDefinition')"),
 -- ["n|gr"] = map_cr("call VSCodeNotify('editor.action.goToReferences')"),
 -- ["n|gi"] = map_cr("call VSCodeNotify('editor.action.goToImplementation')"),
