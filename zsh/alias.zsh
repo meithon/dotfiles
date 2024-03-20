@@ -70,6 +70,39 @@ abbrev-alias remain="git switch main && git pull && git switch - && git rebase m
 
 abbrev-alias -g G="| rg --line-number"
 
+## mise
+abbrev-alias mir="mise run"
+alias mr="fzf-mise-run"
+alias mie="fzf-mise-tasks-edit"
+
+# pueue 
+alias pf=pueue-follow-fzf
+# 'pueue status --json | jq -r \'.tasks[] | " \(.id)  \(.command) "\' | fzf-tmux --preview \'echo {} | awk "{print \$1}" | xargs pueue follow\' | awk "{print \$1}"\'
+
+function pueue-follow-fzf() {
+  local tasks=$(pueue status --json | jq -r '.tasks[] | " \(.id)  \(.command) "')
+  local selectedLine=$(echo $tasks | fzf-tmux --preview 'echo {} | awk "{print \$1}" | xargs pueue follow')
+  local task_id=$(echo $selectedLine | awk '{print $1}')
+
+  if [ -z $task_id ]; then
+    return
+  fi
+  pueue follow $task_id
+}
+
+if command -v unbuffer >/dev/null 2>&1; then
+    alias pueueaddbuffer='pueue add -- unbuffer'
+fi
+
+
+function fzf-mise-run() {
+  TASK=$(mise tasks | fzf | awk '{print $1}') && echo -e Run tasks "\033[1;34m$TASK\033[0m" && mise run $TASK
+}
+
+
+function fzf-mise-tasks-edit() {
+  TASK=$(mise tasks | fzf | awk '{print $NF}') && echo -e Run tasks "\033[1;34m$TASK\033[0m" && $EDITOR $TASK
+}
 
 # ghqとfzfを使用してディレクトリを変更する関数を定義
 find-repository-and-move() {
@@ -94,8 +127,14 @@ abbrev-alias -g rps='repos'
 # # fzf
 # abbrev-alias -g f="\$(fzf)"
 # abbrev-alias -g s="\$("
+#
 
-
+# bun
+# alias br="fzf-bun-run"
+#
+# function fzf-bun-run(){
+#   SCRIPT=$(cat package.json | jq -r '.scripts | keys[]' |fzf)&& echo $SCRIPT && bun run $SCRIPT
+# }
 
 function depends_on () {
   for cmd in "$@"; do
@@ -125,4 +164,28 @@ git() {
     fi
 }
 
+
+
+# # コマンドにカスタムサブコマンドを追加する関数
+# add_custom_subcommand() {
+#     local command_name="$1" # コマンド名
+#     local subcommand_name="$2" # カスタムサブコマンド名
+#     shift 2 # 最初の2つの引数を削除
+#
+#     # 関数を定義し、既存のコマンドにフックする
+#     eval "
+#     $command_name() {
+#         if [[ \$1 == \"$subcommand_name\" ]]; then
+#             shift # カスタムサブコマンド名を引数から削除
+#             $@
+#         else
+#             command $command_name \"\$@\"
+#         fi
+#     }
+#     "
+# }
+# add_custom_subcommand git tree git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=format:"%Y-%m-%d %H:%M"
+
+# # 例: 'git' コマンドに 'tree' サブコマンドを追加
+# add_custom_subcommand pueue add pueue-add
 alias chrome='open /Applications/Google\ Chrome.app/'

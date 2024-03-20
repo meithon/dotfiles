@@ -3,7 +3,130 @@ local map = vim.keymap.set
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 return {
+  {
+    "akinsho/git-conflict.nvim",
+    version = "*",
+    config = true,
+    cmd = {
+      "GitConflictChooseOurs",
+      "GitConflictChooseTheirs",
+      "GitConflictChooseBoth",
+      "GitConflictChooseNone",
+      "GitConflictNextConflict",
+      "GitConflictPrevConflict",
+      "GitConflictListQf",
+    },
+  },
+  {
+    "jiaoshijie/undotree",
+    dependencies = "nvim-lua/plenary.nvim",
+    config = true,
+    keys = {
+      { "<leader>u", "<cmd>lua require('undotree').toggle()<cr>" },
+    },
+  },
+  { "dmmulroy/tsc.nvim", cmd = { "TSC" } },
+  { -- better typescript diagnostic
+    "dmmulroy/ts-error-translator.nvim",
+    auto_override_publish_diagnostics = true,
+  },
+  {
+    "zeioth/garbage-day.nvim",
+    dependencies = "neovim/nvim-lspconfig",
+    event = "VeryLazy",
+    opts = {
+      -- your options here
+    },
+  },
+  {
+    {
+      "CopilotC-Nvim/CopilotChat.nvim",
+      branch = "canary",
+      dependencies = {
+        { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+        { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+      },
+      opts = {
+        debug = true, -- Enable debugging
+      },
 
+      --     :CopilotChat <input>? - Open chat window with optional input
+      --     :CopilotChatOpen - Open chat window
+      --     :CopilotChatClose - Close chat window
+      --     :CopilotChatToggle - Toggle chat window
+      --     :CopilotChatReset - Reset chat window
+      --     :CopilotChatSave <name>? - Save chat history to file
+      --     :CopilotChatLoad <name>? - Load chat history from file
+      --     :CopilotChatDebugInfo - Show debug information
+      --
+      -- Commands coming from default prompts
+      --
+      --     :CopilotChatExplain - Explain how it works
+      --     :CopilotChatTests - Briefly explain how selected code works then generate unit tests
+      --     :CopilotChatFix - There is a problem in this code. Rewrite the code to show it with the bug fixed.
+      --     :CopilotChatOptimize - Optimize the selected code to improve performance and readablilty.
+      --     :CopilotChatDocs - Write documentation for the selected code. The reply should be a codeblock containing the original code with the documentation added as comments. Use the most appropriate documentation style for the programming language used (e.g. JSDoc for JavaScript, docstrings for Python etc.
+      --     :CopilotChatFixDiagnostic - Please assist with the following diagnostic issue in file
+      --     :CopilotChatCommit - Write commit message for the change with commitizen convention
+      --     :CopilotChatCommitStaged - Write commit message for the change with commitizen convention
+      cmd = {
+        "CopilotChat",
+        "CopilotChatOpen",
+        "CopilotChatClose",
+        "CopilotChatToggle",
+        "CopilotChatReset",
+        "CopilotChatSave",
+        "CopilotChatLoad",
+        "CopilotChatDebugInfo",
+        "CopilotChatExplain",
+        "CopilotChatTests",
+        "CopilotChatFix",
+        "CopilotChatOptimize",
+        "CopilotChatDocs",
+        "CopilotChatFixDiagnostic",
+        "CopilotChatCommit",
+        "CopilotChatCommitStaged",
+      },
+      -- See Commands section for default commands if you want to lazy load on them
+    },
+  },
+  -- use your favorite package manager to install, for example in lazy.nvim
+  --  Optionally, you can also install nvim-telescope/telescope.nvim to use some search functionality.
+  {
+    {
+      "sourcegraph/sg.nvim",
+      dependencies = {
+        "nvim-lua/plenary.nvim", --[[ "nvim-telescope/telescope.nvim ]]
+      },
+    },
+  },
+  {
+    "epwalsh/obsidian.nvim",
+    version = "*", -- recommended, use latest release instead of latest commit
+    lazy = true,
+    ft = "markdown",
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+    --   "BufReadPre path/to/my-vault/**.md",
+    --   "BufNewFile path/to/my-vault/**.md",
+    -- },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      workspaces = {
+        {
+          name = "personal",
+          path = "~/Documents/obsidian-vault",
+        },
+      },
+
+      -- see below for full list of options 👇
+    },
+  },
+  { "echasnovski/mini.nvim", version = "*" },
   {
     "folke/twilight.nvim",
     opts = {
@@ -292,33 +415,33 @@ return {
       require("octo").setup()
     end,
   },
-  {
-    "nanotee/sqls.nvim",
-    cmd = {
-      "SqlsExecuteQuery",
-      "SqlsExecuteQueryVertical",
-      "SqlsShowDatabases",
-      "SqlsShowSchemas",
-      "SqlsShowConnections",
-      "SqlsSwitchDatabase",
-      "SqlsSwitchConnection",
-    },
-    ft = { "sql", "mysql", "plsql" },
-    config = function()
-      require("lspconfig")["sqls"].setup({
-        on_attach = function(client, bufnr)
-          require("sqls").on_attach(client, bufnr)
-        end,
-      })
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "SqlsConnectionChoice",
-        callback = function(event)
-          vim.notify(event.data.choice)
-        end,
-      })
-    end,
-  },
+  -- { LSP client of SQL
+  --   "nanotee/sqls.nvim",
+  --   cmd = {
+  --     "SqlsExecuteQuery",
+  --     "SqlsExecuteQueryVertical",
+  --     "SqlsShowDatabases",
+  --     "SqlsShowSchemas",
+  --     "SqlsShowConnections",
+  --     "SqlsSwitchDatabase",
+  --     "SqlsSwitchConnection",
+  --   },
+  --   ft = { "sql", "mysql", "plsql" },
+  --   config = function()
+  --     require("lspconfig")["sqls"].setup({
+  --       on_attach = function(client, bufnr)
+  --         require("sqls").on_attach(client, bufnr)
+  --       end,
+  --     })
+  --
+  --     vim.api.nvim_create_autocmd("User", {
+  --       pattern = "SqlsConnectionChoice",
+  --       callback = function(event)
+  --         vim.notify(event.data.choice)
+  --       end,
+  --     })
+  --   end,
+  -- },
   {
     "someone-stole-my-name/yaml-companion.nvim",
     dependencies = {
@@ -624,7 +747,7 @@ return {
     "kristijanhusak/vim-dadbod-ui",
     dependencies = {
       { "tpope/vim-dadbod", lazy = true },
-      { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
+      -- { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "plsql" }, lazy = true },
     },
     cmd = {
       "DBUI",
@@ -982,12 +1105,12 @@ return {
     },
   },
 
-  { -- add symbols-outline
-    "simrat39/symbols-outline.nvim",
-    cmd = "SymbolsOutline",
-    keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
-    config = true,
-  },
+  -- { -- add symbols-outline
+  --   "simrat39/symbols-outline.nvim",
+  --   cmd = "SymbolsOutline",
+  --   keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
+  --   config = true,
+  -- },
   {
     "xiyaowong/transparent.nvim",
     config = function()
