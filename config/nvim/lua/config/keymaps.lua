@@ -16,14 +16,34 @@ map("n", "<Right>", "<C-w>>20")
 map("n", "<Left>", "<C-w><20")
 map("n", "<Up>", "<C-w>+16")
 map("n", "<Down>", "<C-w>-16")
+map("n", "<C-p>", "<cmd>Telescope find_files<Cr>")
+map("n", "<C-x>", "<cmd>quitall<Cr>")
+-- map("n", "<C-q>", "<cmd>quit<Cr>")
+map("n", "<D-.>", vim.lsp.buf.code_action)
 
+-- { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
+--{
+--   "<leader>cA",
+--   function()
+--     vim.lsp.buf.code_action({
+--       context = {
+--         only = {
+--           "source",
+--         },
+--         diagnostics = {},
+--       },
+--     })
+--   end,
+--   desc = "Source Action",
+--   has = "codeAction",
+-- }
 -- Terminal
 map("t", "<ESC>", "<C-\\><C-n>", { noremap = true })
 map("t", "<C-q>", "<C-:><C-n>:q<cr>", { noremap = true })
 map(
   "n",
-  "gh",
-  "<cmd>Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>:Gitsigns toggle_linehl<cr>",
+  "<leader>gd",
+  "<cmd>Gitsigns toggle_deleted<CR><cmd>Gitsigns toggle_numhl<CR><cmd>Gitsigns toggle_linehl<cr>",
   { desc = "Show git diff" }
 )
 
@@ -96,6 +116,11 @@ map("n", "<leader>bo", vscode_command("workbench.action.closeOtherEditors"))
 --
 map("n", "]h", vscode_command("workbench.action.editor.nextChange"))
 map("n", "[h", vscode_command("workbench.action.editor.prevChange"))
+map("n", "<leader>gs", vscode_command("workbench.view.scm"))
+
+----test
+map("n", "<leader>ts", vscode_command("workbench.view.testing.focus"))
+map("n", "<leader>tr", vscode_command("testing.runAtCursor"))
 -- ["n|gd"] = map_cr("call VSCodeNotify('editor.action.revealDefinition')"),
 -- ["n|gr"] = map_cr("call VSCodeNotify('editor.action.goToReferences')"),
 -- ["n|gi"] = map_cr("call VSCodeNotify('editor.action.goToImplementation')"),

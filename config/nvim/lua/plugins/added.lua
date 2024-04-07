@@ -4,6 +4,12 @@ local map = vim.keymap.set
 ---@type Plugins
 return {
   {
+    "stevearc/oil.nvim",
+    opts = {},
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
     "akinsho/git-conflict.nvim",
     version = "*",
     config = true,
@@ -230,19 +236,19 @@ return {
     end,
   },
   { "akinsho/toggleterm.nvim", version = "*", config = true },
-  {
-    "nvim-telescope/telescope-frecency.nvim",
-    config = function()
-      require("telescope").load_extension("frecency")
-    end,
-    keys = {
-      {
-        "<Leader><Leader>",
-        "<cmd>Telescope frecency<CR>",
-        "Telescope frequent",
-      },
-    },
-  },
+  -- {
+  --   "nvim-telescope/telescope-frecency.nvim",
+  --   config = function()
+  --     require("telescope").load_extension("frecency")
+  --   end,
+  --   keys = {
+  --     {
+  --       "<Leader><Leader>",
+  --       "<cmd>Telescope frecency<CR>",
+  --       "Telescope frequent",
+  --     },
+  --   },
+  -- },
   {
     "towolf/vim-helm",
   },
@@ -1161,10 +1167,10 @@ return {
     opts = {},
     config = function(opts)
       require("neogit").setup(opts)
-      map("n", "<space>gs", "<cmd>Neogit<cr>", { desc = "Open git tool interface" })
+      -- map("n", "gh", "<cmd>Neogit<cr>", { desc = "Open git tool interface" })
     end,
     keys = {
-      { "<leader>gs", "<cmd>Neogit<cr>", desc = "Open git tool interface" },
+      { "gh", "<cmd>Neogit<cr>", desc = "Open git tool interface" },
     },
   },
 }

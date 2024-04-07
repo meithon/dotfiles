@@ -1,4 +1,3 @@
-local map = vim.keymap.set
 local Util = require("lazyvim.util")
 local icons = require("lazyvim.config").icons
 
@@ -56,25 +55,25 @@ local function pretty_path(opts)
   end
 end
 
----@alias Mode "n"|"i"|"v"|"x"|"s"|"o"|"t"|"c"|"l"|"r"|"!"|"v"
+---@alias KeyMode "n"|"i"|"v"|"x"|"s"|"o"|"t"|"c"|"l"|"r"|"!"|"v"
 
----@alias Keymap fun(a: {[1]: string, [2]:string, mode:Mode[]|Mode, desc: string})
+-- @alias Keymap fun(a: {[1]: string, [2]:string, mode:KeyMode[]|KeyMode, desc: string})
 
 ---@alias Filetype "qf" | "javascript" |"javascriptreact"|"typescriptreact" | "typescript"
 ---@alias VimEvent "BufAdd"| "BufDelete"| "BufEnter"| "BufFilePost"| "BufFilePre"| "BufHidden"| "BufLeave"| "BufModifiedSeufNewFile"| "BufRead" |  "BufReadPost"| "BufReadCmd"| "BufReadPre"| "BufUnload"| "BufWinEnter"| "BufWinLeave"| "BufWipeout"| "BufWrite" | "BufWritePre"| "BufWriteCmd"| "BufWritePost"| "ChanInfo"| "ChanOpen"| "CmdUndefined"| "CmdlineChanged"| "CmdlineEnter"| "CmdlineLeave"| "CmdwinEnter"| "CmdwinLeave"| "ColorScheme"| "ColorSchemePre"| "CompleteChanged"| "CompleteDonePre"| "CompleteDone"| "CursorHold"| "CursorHoldI" | "CursorMoved" | "CursorMovedI" | "DiffUpdated" | "DirChanged" | "DirChangedPre" | "ExitPre" | "FileAppendCmd" | "FileAppendPost" | "FileAppendPre" | "FileChangedRO" | "FileChangedShell" | "FileChangedShellPost" | "FileReadCmd" | "FileReadPost" | "FileReadPre" | "FileType" | "FileWriteCmd" | "FileWritePost" | "FileWritePre" | "FilterReadPost" | "FilterReadPre" | "FilterWritePost" | "FilterWritePre" | "FocusGained" | "FocusLost" | "FuncUndefined" | "UIEnter" | "UILeave" | "InsertChange" | "InsertCharPre" | "InsertEnter" | "InsertLeavePre" | "InsertLeave" | "MenuPopup" | "ModeChanged" |  "ModeChanged"  | "ModeChanged" |  "WinEnter"|"Win" | "OptionSet" | "QuickFixCmdPre" | "QuickFixCmdPost" | "QuitPre" | "RemoteReply" | "SearchWrapped" | "RecordingEnter" | "RecordingLeave" | "SessionLoadPost" | "ShellCmdPost" | "Signal" | "ShellFilterPost" | "SourcePre" | "SourcePost" | "SourceCmd" | "SpellFileMissing" | "StdinReadPost" | "StdinReadPre" | "SwapExists" | "Syntax" | "TabEnter" | "TabLeave" | "TabNew" | "TabNewEntered" | "TabClosed" | "TermOpen" | "TermEnter" | "TermLeave" | "TermClose" | "TermResponse" | "TextChanged" | "TextChangedI" | "TextChangedP" | "TextChangedT" | "TextYankPost" | "User" | "UserGettingBored" | "VimEnter" | "VimLeave" | "VimLeavePre" | "VimResized" | "VimResume" | "VimSuspend" | "WinClosed" | "WinEnter" | "WinLeave" | "WinNew" | "WinScrolled" | "WinResized"
----@alias Event VimEvent|"VaryLazy"
+---@alias PluginEvent VimEvent|"VaryLazy"
 
 ---@class Key
 ---@field [1] string
 ---@field [2] string|function | false
----@field mode? Mode[]|Mode
+---@field mode? KeyMode[]|KeyMode
 ---@field desc? string
 
 ---@class OnePlugin
 ---@field [1] string
 ---@field opts? function | table
----@field keys? Key[]|Key|fun()
----@field event? Event[]|Event
+---@field keys? Key[]|Key|fun(): Key[]|Key
+---@field event? PluginEvent[]|PluginEvent
 ---@field config? function | true
 ---@field ft? Filetype[]|Filetype
 
@@ -210,19 +209,168 @@ return {
   {
     "L3MON4D3/LuaSnip",
     config = function()
+      ---@diagnostic disable: unused-local
       local ls = require("luasnip")
-      local sn = ls.snippet_node
       local s = ls.snippet
+      -- local sn = ls.snippet_node
+      local isn = ls.indent_snippet_node
       local t = ls.text_node
-      local f = ls.function_node
-      local d = ls.dynamic_node
       local i = ls.insert_node
+      local f = ls.function_node
+      local c = ls.choice_node
+      local d = ls.dynamic_node
+      local r = ls.restore_node
+      local events = require("luasnip.util.events")
+      local ai = require("luasnip.nodes.absolute_indexer")
+      local extras = require("luasnip.extras")
+      local l = extras.lambda
+      local rep = extras.rep
+      local p = extras.partial
+      local m = extras.match
+      local n = extras.nonempty
+      local dl = extras.dynamic_lambda
+      local fmt = require("luasnip.extras.fmt").fmt
+      local fmta = require("luasnip.extras.fmt").fmta
+      local conds = require("luasnip.extras.expand_conditions")
       local postfix = require("luasnip.extras.postfix").postfix
+      local types = require("luasnip.util.types")
+      local parse = require("luasnip.util.parser").parse_snippet
+      local ms = ls.multi_snippet
+      local k = require("luasnip.nodes.key_indexer").new_key
+      local ts_post = require("luasnip.extras.treesitter_postfix").treesitter_postfix
+      ---@diagnostic enable: unused-local
 
       local newline = ""
+      ---------
+      -- Lua
+      --
+
+      -- print()
+      --
+      -- function add(a, b)
+      --   return a + b
+      -- end.var
+
+      ls.add_snippets("lua", {
+
+        s("test", {
+          t({ 'test("' }),
+        }),
+        ts_post(
+          {
+            matchTSNode = {
+              query = [[
+    (function_declaration
+      name: (identifier) @fname
+      parameters: (parameters) @params
+      body: (block) @body
+    ) @prefix
+  ]],
+              query_lang = "lua",
+            },
+            trig = ".var",
+          },
+          fmt(
+            [[
+    local {} = function{}
+        {}
+    end
+  ]],
+            {
+              l(l.LS_TSCAPTURE_FNAME),
+              l(l.LS_TSCAPTURE_PARAMS),
+              l(l.LS_TSCAPTURE_BODY),
+            }
+          )
+        ),
+      })
+
+      -----------
+      -- Typescript
+      --
 
       ls.add_snippets("typescript", {
-        s("inSorceVitest", {
+
+        -- test("testTitle", async ({
+        --   前提条件,
+        --   仕向け機能,
+        --   モデル機能,
+        --   ソフトウェアマイルストーン機能,
+        --   部番機能,
+        --   リリースノート機能,
+        --   ソフトウェアイメージ機能,
+        --   Swallow機能,
+        --   サインインページ,
+        --   仕向け登録ページ,
+        --   仕向け編集ページ,
+        --   仕向け一覧ページ,
+        --   部番登録ページ,
+        --   部番一覧ページ,
+        --   部番詳細ページ,
+        --   部番編集ページ,
+        --   ソフトウェアイメージ追加ページ,
+        --   ソフトウェアイメージ編集ページ,
+        --   ソフトウェアイメージ一覧ページ,
+        --   ソフトウェアマイルストーン登録ページ,
+        --   ソフトウェアマイルストーン編集ページ,
+        --   検査詳細ページ,
+        --   系図ページ,
+        --   モデル登録ページ,
+        --   モデル編集ページ,
+        --   モデル一覧ページ,
+        --   ソフトウェアマイルストーン一覧ページ,
+        --   Gerritページ,
+        --   Nextcloud,
+        -- }) => {
+        --   await 前提条件(async () => {
+        --     //
+        --   });
+        -- });
+        s("test", {
+          t({ 'test("' }),
+          i(1),
+          t({ '"' }),
+          t({ ", async ({", newline }),
+          t({
+            "  前提条件,",
+            "  仕向け機能,",
+            "  モデル機能,",
+            "  ソフトウェアマイルストーン機能,",
+            "  部番機能,",
+            "  リリースノート機能,",
+            "  ソフトウェアイメージ機能,",
+            "  Swallow機能,",
+            "  検査機能,",
+            "  サインインページ,",
+            "  仕向け登録ページ,",
+            "  仕向け編集ページ,",
+            "  仕向け一覧ページ,",
+            "  部番登録ページ,",
+            "  部番一覧ページ,",
+            "  部番詳細ページ,",
+            "  部番編集ページ,",
+            "  ソフトウェアイメージ追加ページ,",
+            "  ソフトウェアイメージ編集ページ,",
+            "  ソフトウェアイメージ一覧ページ,",
+            "  ソフトウェアマイルストーン登録ページ,",
+            "  ソフトウェアマイルストーン編集ページ,",
+            "  検査詳細ページ,",
+            "  系図ページ,",
+            "  モデル登録ページ,",
+            "  モデル編集ページ,",
+            "  モデル一覧ページ,",
+            "  ソフトウェアマイルストーン一覧ページ,",
+            "  Gerritページ,",
+            "  Nextcloud,",
+            newline,
+          }),
+          t({ "}) => {", newline }),
+          t({ "  await 前提条件(async () => {", newline }),
+          t({ "	   //", newline }),
+          t({ "  });", newline }),
+          t({ "});", newline }),
+        }),
+        s("inSorcesVitest", {
           t({ "if (import.meta.vitest) {", "	const { it, expect } = import.meta.vitest;", [[	test("]] }),
           i(1),
           t({ '" () => {', "    " }),
@@ -234,6 +382,58 @@ return {
             return sn(nil, { t({ "console.log(" .. parent.env.POSTFIX_MATCH .. ")", newline }) })
           end),
         }),
+      })
+
+      -- local treesitter_postfix = require("luasnip.extras.treesitter_postfix").treesitter_postfix
+      --
+      -- treesitter_postfix({
+      --     trig = ".mv",
+      --     matchTSNode = {
+      --         query = [[
+      --             [
+      --               (call_expression)
+      --               (identifier)
+      --               (template_function)
+      --               (subscript_expression)
+      --               (field_expression)
+      --               (user_defined_literal)
+      --             ] @prefix
+      --         ]]
+      --         query_lang = "cpp"
+      --     },
+      -- },{
+      --     f(function(_, parent)
+      --         local node_content = table.concat(parent.snippet.env.LS_TSMATCH, '\n')
+      --         local replaced_content = ("std::move(%s)"):format(node_content)
+      --         return vim.split(ret_str, "\n", { trimempty = false })
+      --     end)
+      -- })
+
+      -- ls.add_snippets =
+      ls.add_snippets("all", {
+        postfix(".let", {
+          d(1, function(_, parent)
+            return sn(nil, { t("let " .. parent.env.POSTFIX_MATCH .. " = ") })
+          end),
+        }),
+        s("fn", {
+          t("}"),
+          ---@diagnostic disable-next-line: unused-local
+          f(function(args, parent, user_args)
+            return "() => {" .. args[1][1] .. user_args .. "}"
+          end, { 1 }, { user_args = "text" }),
+          t(") => {"),
+        }),
+        postfix(".const", {
+          d(1, function(_, parent)
+            return sn(nil, { t("const " .. parent.env.POSTFIX_MATCH .. " = ") })
+          end),
+        }),
+        --         if (import.meta.vitest) {
+        --   const { it, expect } = import.meta.vitest;
+        --   it("", () => {
+        --   });
+        -- }
         postfix(".dbg", {
           d(1, function(_, parent)
             return sn(nil, {
@@ -252,25 +452,6 @@ return {
             })
           end),
         }),
-      })
-
-      ls.add_snippets("all", {
-        postfix(".let", {
-          d(1, function(_, parent)
-            return sn(nil, { t("let " .. parent.env.POSTFIX_MATCH .. " = ") })
-          end),
-        }),
-
-        postfix(".const", {
-          d(1, function(_, parent)
-            return sn(nil, { t("const " .. parent.env.POSTFIX_MATCH .. " = ") })
-          end),
-        }),
-        --         if (import.meta.vitest) {
-        --   const { it, expect } = import.meta.vitest;
-        --   it("", () => {
-        --   });
-        -- }
       }, {
         key = "all",
       })
@@ -345,16 +526,17 @@ return {
 
             enable_dynamic_test_discovery = true,
 
-            preset = "none", -- "none" | "headed" | "debug"
+            preset = "debug", -- "none" | "headed" | "debug"
 
             get_playwright_binary = function()
               --   return vim.loop.cwd() + "/node_modules/.bin/playwright"
               return find_node_modules() .. "/.bin/playwright"
             end,
 
-            -- get_playwright_config = function()
-            --   return vim.loop.cwd() + "/playwright.config.ts"
-            -- end,
+            get_playwright_config = function()
+              -- return vim.loop.cwd() + "/packages/e2e-test/playwright.config.ts"
+              return "/Users/mei/workspace/work/tobari/packages/e2e-test/playwright.config.ts"
+            end,
 
             -- Controls the location of the spawned test process.
             -- Has no affect on neither the location of the binary nor the location of the config file.
@@ -365,7 +547,9 @@ return {
             -- env = { },
 
             -- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
-            extra_args = {},
+            extra_args = {
+              "--trace=retain-on-failure",
+            },
 
             -- Filter directories when searching for test files. Useful in large projects (see performance notes).
             -- filter_dir = function(name, rel_path, root)
@@ -373,11 +557,11 @@ return {
             -- end,
 
             ---Filter directories when searching for test files
-            ---@async
-            ---@param name string Name of directory
-            ---@param rel_path string Path to directory, relative to root
-            ---@param root string Root directory of project
-            ---@return boolean
+            -- @ async
+            -- @ param name string Name of directory
+            -- @ param rel_path string Path to directory, relative to root
+            -- @ param root string Root directory of project
+            -- @ return boolean
             -- filter_dir = function(name, rel_path, root)
             --   local full_path = root .. "/" .. rel_path
             --
@@ -596,22 +780,123 @@ return {
       })
     end,
   },
-  {
+  { -- Treesitter text object
     "ziontee113/syntax-tree-surfer",
     vscode = true,
     dependencies = "nvim-treesitter/nvim-treesitter",
+    keys = function()
+      local get_current_window_id = vim.api.nvim_get_current_win
+      local get_current_cursor_pos = vim.api.nvim_win_get_cursor
 
-    keys = {
-      { "vi", "<cmd>STSSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
-      { "va", "<cmd>STSSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
-      { "N", "<cmd>STSSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
-      { "P", "<cmd>STSSelectPrevSiblingNode<cr>", mode = "x", desc = "Select Previous Sibling Node" },
-      { "K", "<cmd>STSSelectParentNode<cr>", mode = "x", desc = "Select Parent Node" },
-      { "J", "<cmd>STSSelectChildNode<cr>", mode = "x", desc = "Select Child Node" },
-    },
-    config = function()
-      require("syntax-tree-surfer").setup()
+      local current_buffer = 0
+
+      ---@class RestorePosition
+      ---@field window_id number
+      ---@field buf number
+      ---@field pos number[]
+      ---@field ns_id integer
+      ---@field extmark_id number
+      local RestorePosition = {}
+      function RestorePosition.new()
+        local self = setmetatable({}, RestorePosition)
+        self.window_id = get_current_window_id()
+        self.buf = vim.api.nvim_get_current_buf()
+        self.pos = get_current_cursor_pos(self.window_id)
+        self.ns_id = vim.api.nvim_create_namespace("flash_text_object")
+        self.extmark_id = vim.api.nvim_buf_set_extmark(self.buf, self.ns_id, self.pos[1], self.pos[2], {})
+        self.restore = function()
+          vim.api.nvim_set_current_win(self.window_id)
+          local pos = vim.api.nvim_buf_get_extmark_by_id(self.buf, self.ns_id, self.extmark_id, {})
+          vim.api.nvim_win_set_cursor(self.window_id, pos)
+          vim.api.nvim_buf_del_extmark(self.buf, self.ns_id, self.extmark_id)
+        end
+        return self
+      end
+      -- function RestorePosition.restore(self)
+      --   vim.api.nvim_set_current_win(self.window_id)
+      --   vim.api.nvim_buf_get_extmark_by_id(self.buf, self.ns_id, self.extmark_id, {})
+      --   vim.api.nvim_buf_del_extmark(self.buf, self.ns_id, self.extmark_id)
+      -- end
+
+      ---@param cmd string
+      ---@param node_type "current"|"master"
+      ---@return nil
+      local function flash_text_object(cmd, node_type)
+        -- local restore_position = RestorePosition.new()
+        local saved_window_id = get_current_window_id()
+        local saved_buf = vim.api.nvim_get_current_buf()
+        local saved_pos = get_current_cursor_pos(saved_window_id)
+        local ns_id = vim.api.nvim_create_namespace("flash_text_object")
+        local saved_extmark_id = vim.api.nvim_buf_set_extmark(saved_buf, ns_id, saved_pos[1], saved_pos[2], {})
+
+        require("flash").jump()
+        -- if was not moved, not select current node
+        if saved_window_id == get_current_window_id() and saved_pos == vim.api.nvim_win_get_cursor(saved_window_id) then
+          vim.api.nvim_buf_del_extmark(saved_buf, ns_id, saved_extmark_id)
+          return nil
+        end
+
+        if node_type == "currenta" then
+          require("syntax-tree-surfer").select_current_node()
+        else
+          require("syntax-tree-surfer").select()
+        end
+        if cmd == "" then -- its means a in select mode
+          local augroup = vim.api.nvim_create_augroup("DetectModeChange", { clear = true })
+
+          vim.api.nvim_create_autocmd({ "ModeChanged" }, {
+            group = augroup,
+            pattern = "*:*",
+            callback = function()
+              if vim.api.nvim_get_mode().mode ~= "v" then
+                vim.api.nvim_clear_autocmds({ group = augroup })
+
+                -- restore_position.restore()
+                vim.api.nvim_set_current_win(saved_window_id)
+                local pos = vim.api.nvim_buf_get_extmark_by_id(saved_buf, ns_id, saved_extmark_id, {})
+                vim.api.nvim_win_set_cursor(saved_window_id, pos)
+                vim.api.nvim_buf_del_extmark(saved_buf, ns_id, saved_extmark_id)
+              end
+            end,
+          })
+        else
+          vim.cmd("normal! " .. cmd)
+          -- restore_position.restore()
+          vim.api.nvim_set_current_win(saved_window_id)
+          local pos = vim.api.nvim_buf_get_extmark_by_id(saved_buf, ns_id, saved_extmark_id, {})
+          vim.api.nvim_win_set_cursor(saved_window_id, pos)
+          vim.api.nvim_buf_del_extmark(saved_buf, ns_id, saved_extmark_id)
+        end
+      end
+
+      --- Define keymap
+      ---@param cmd string
+      ---@param node_type "current"|"master
+      ---@return function
+      local function df(cmd, node_type)
+        return function()
+          flash_text_object(cmd, node_type)
+        end
+      end
+
+      ---@type Key[]
+      return {
+        { "vs", df("", "master"), mode = "n", desc = "Flash then Select" },
+        { "Vs", df("", "current"), mode = "n", desc = "Flash then Select" },
+        { "Ds", df("d", "master"), mode = "n", desc = "Select Master Node then Delete" },
+        { "ys", df("y", "master"), mode = "n", desc = "Select Master Node then Yank" },
+        { "Xs", df("x", "current"), mode = "n", desc = "Select Node then Dlete (not yank)" },
+        { "ds", df("d", "current"), mode = "n", desc = "Select Node then Delete" },
+        { "Ys", df("y", "current"), mode = "n", desc = "Select Node then Yank" },
+        { "vi", "<cmd>STSSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
+        { "va", "<cmd>STSSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
+        { "N", "<cmd>STSSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
+        { "P", "<cmd>STSSelectPrevSiblingNode<cr>", mode = "x", desc = "Select Previous Sibling Node" },
+        { "K", "<cmd>STSSelectParentNode<cr>", mode = "x", desc = "Select Parent Node" },
+        { "J", "<cmd>STSSelectChildNode<cr>", mode = "x", desc = "Select Child Node" },
+      }
     end,
+    opts = {},
   },
   {
     "kiyoon/treesitter-indent-object.nvim",
@@ -769,23 +1054,21 @@ return {
       -- winblend = 0,
     end,
   },
-
-  -- Use <tab> for completion and snippets (supertab)
-  -- first: disable default <tab> and <s-tab> behavior in LuaSnip
+  -- then: setup supertab in cmp
   {
-    "L3MON4D3/LuaSnip",
-    keys = function() end,
-  },
-  { -- setup cmp-cmdline
-    "hrsh7th/cmp-cmdline",
+    "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
     dependencies = {
       "hrsh7th/nvim-cmp",
       "hrsh7th/cmp-nvim-lsp-document-symbol",
+      "hrsh7th/cmp-emoji",
+      "hrsh7th/cmp-cmdline",
     },
-    config = function()
+
+    opts = function(_, opts)
+      local luasnip = require("luasnip")
       local cmp = require("cmp")
-      -- `:` cmdline setup.
+
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline({
           ["<Tab>"] = cmp.mapping({
@@ -826,16 +1109,6 @@ return {
           { name = "buffer" },
         }),
       })
-    end,
-  },
-  -- then: setup supertab in cmp
-  {
-    "hrsh7th/nvim-cmp",
-    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
-
-    opts = function(_, opts)
-      local luasnip = require("luasnip")
-      local cmp = require("cmp")
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<CR>"] = cmp.mapping({
@@ -909,100 +1182,141 @@ return {
           end,
         }),
       })
+
+      table.insert(opts.sources, {
+        name = "emoji",
+      })
+      table.insert(opts.sources, {
+        name = "luasnip",
+      })
+
+      --
+      --   local compare = require("cmp.config.compare")
+      --
+      --   local remove_source = { "luasnip", "copilot", "codeium" }
+      --   for i, source in ipairs(opts.sources) do
+      --     if vim.tbl_contains(remove_source, source.name) then
+      --       table.remove(opts.sources, i)
+      --     end
+      --   end
+      --
+      --   table.insert(opts.sources, {
+      --     name = "codeium",
+      --     -- group_index = 1,
+      --     -- priority = 100,
+      --   })
+      --
+      --   table.insert(opts.sources, {
+      --     name = "copilot",
+      --     group_index = nil,
+      --     --   -- priority = 100,
+      --   })
+      --   table.insert(opts.sources, {
+      --     name = "luasnip",
+      --     -- group_index = 1,
+      --     -- priority = 120,
+      --   })
+      --   table.insert(opts.sources, { name = "emoji" })
+      --
+      --   -- local a = vim.tbl_extend("force", opts.sources, {
+      --   -- })
+      --   -- table.insert(opts.sources, 1, {
+      --   --   name = "copilot",
+      --   --   group_index = 1,
+      --   --   priority = 100,
+      --   -- })
+      --   --
+      --   -- table.insert(opts.sources, {
+      --   --   name = "luasnip",
+      --   --   group_index = 1,
+      --   --   priority = 120,
+      --   -- })
+      --
+      --   opts.sorting = {
+      --     priority_weight = 1,
+      --     comparators = {
+      --       compare.length,
+      --       compare.offset,
+      --       compare.exact,
+      --       -- compare.scopes,
+      --       compare.score,
+      --       compare.recently_used,
+      --       compare.locality,
+      --       compare.kind,
+      --       -- compare.sort_text,
+      --       compare.order,
+      --     },
+      --   }
     end,
   },
-  { -- override nvim-cmp and add cmp-emoji
-    "hrsh7th/nvim-cmp",
-    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
-    dependencies = { "hrsh7th/cmp-emoji" },
-    opts = function(_, opts)
-      table.insert(opts.sources, { name = "emoji" })
-    end,
-  },
-  { -- change completion settings
-    "hrsh7th/nvim-cmp",
-    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
-    version = false, -- last release is way too old
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip",
+  {
+    "echasnovski/mini.bufremove",
+    keys = {
       {
-        "Exafunction/codeium.nvim",
-        cmd = "Codeium",
-        build = ":Codeium Auth",
-        opts = {},
+        "<C-Q>",
+        function()
+          require("mini.bufremove").delete(0, true)
+        end,
+        desc = "Delete Buffer (Force)",
       },
     },
   },
   {
-    event = { "InsertEnter", "CmdwinEnter", "CmdlineEnter" },
-    "nvim-cmp",
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      local compare = require("cmp.config.compare")
-      local cmp = require("cmp")
+    "lewis6991/gitsigns.nvim",
+    keys = {
+      {
+        "]g",
+        function()
+          require("gitsigns").next_hunk()
+        end,
+        desc = "Next Git Hunk",
+      },
 
-      -- table.insert(opts.sources, 1, {
-      --   name = "copilot",
-      --   group_index = 1,
-      --   priority = 100,
-      -- })
-
-      local remove_source = { "luasnip", "copilot", "codeium" }
-      for i, source in ipairs(opts.sources) do
-        if vim.tbl_contains(remove_source, source.name) then
-          table.remove(opts.sources, i)
-        end
-      end
-
-      table.insert(opts.sources, {
-        name = "codeium",
-        -- group_index = 1,
-        -- priority = 100,
-      })
-
-      table.insert(opts.sources, {
-        name = "copilot",
-        group_index = nil,
-        --   -- priority = 100,
-      })
-      table.insert(opts.sources, {
-        name = "luasnip",
-        -- group_index = 1,
-        -- priority = 120,
-      })
-
-      -- local a = vim.tbl_extend("force", opts.sources, {
-      -- })
-      -- table.insert(opts.sources, 1, {
-      --   name = "copilot",
-      --   group_index = 1,
-      --   priority = 100,
-      -- })
-      --
-      -- table.insert(opts.sources, {
-      --   name = "luasnip",
-      --   group_index = 1,
-      --   priority = 120,
-      -- })
-
-      opts.sorting = {
-        priority_weight = 1,
-        comparators = {
-          compare.length,
-          compare.offset,
-          compare.exact,
-          -- compare.scopes,
-          compare.score,
-          compare.recently_used,
-          compare.locality,
-          compare.kind,
-          -- compare.sort_text,
-          compare.order,
-        },
-      }
-    end,
+      {
+        "[g",
+        function()
+          require("gitsigns").prev_hunk()
+        end,
+        desc = "Next Git Hunk",
+      },
+      {
+        "<leader>gA",
+        function()
+          require("gitsigns").stage_buffer()
+        end,
+        desc = "Stage Buffer",
+      },
+      {
+        "<leader>ga",
+        function()
+          require("gitsigns").stage_hunk()
+        end,
+        desc = "Stage Hunk",
+        mode = { "n", "v" },
+      },
+      {
+        "<leader>gr",
+        function()
+          require("gitsigns").reset_hunk()
+        end,
+        desc = "Reset Hunk",
+        mode = "v",
+      },
+      {
+        "<leader>ghb",
+        function()
+          require("gitsigns").blame_line({ full = true })
+        end,
+        desc = "Blame Line",
+      },
+      -- map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
+      {
+        "vgh",
+        function()
+          require("gitsigns").select_hunk()
+        end,
+        desc = "Select Hunk",
+      },
+    },
   },
 }
