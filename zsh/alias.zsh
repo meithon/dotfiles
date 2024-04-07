@@ -8,7 +8,7 @@
 # abbrev-alias -g la="lsd -l -a"
 # abbrev-alias -g ..="cd .."
 # abbrev-alias -g ...="cd ../../"
-#
+#s
 # abbrev-alias -g k="kubectl"
 #
 # ## node
@@ -33,45 +33,45 @@ function fzf-print-k8s-secret() {
   S=$(kubectl get secrets -o name | fzf) && echo $S && kubectl get $S -o json | jq '.data | map_values(@base64d)'
 }
 
-abbrev-alias ta="tmux attach"
-abbrev-alias vd="neovide"
+alias ta="tmux attach"
+alias vd="neovide"
 
-abbrev-alias vi="nvim"
-abbrev-alias vv="~/dotfiles/nvim-switcher/switcher.sh"
-abbrev-alias lv="NVIM_APPNAME=LazyVim nvim"
-abbrev-alias av="NVIM_APPNAME=AstroVim nvim"
+alias vi="nvim"
+alias vv="~/dotfiles/nvim-switcher/switcher.sh"
+alias lv="NVIM_APPNAME=LazyVim nvim"
+alias av="NVIM_APPNAME=AstroVim nvim"
 
 alias ksec=fzf-print-k8s-secret
 alias ll="lsd -l"
 alias la="lsd -l -a"
-abbrev-alias ..="cd .."
-abbrev-alias ...="cd ../../"
+alias ..="cd .."
+alias ...="cd ../../"
 
 # one word
-abbrev-alias k="kubectl"
-abbrev-alias j="just"
+alias k="kubectl"
+alias j="just"
 
 ## node
-abbrev-alias pn="pnpm"
-abbrev-alias pnr="pnpm run"
-abbrev-alias pne="pnpm exec"
+alias pn="pnpm"
+alias pnr="pnpm run"
+alias pne="pnpm exec"
 
 ## git
-abbrev-alias ga="git add"
-abbrev-alias gc="git commit"
-abbrev-alias gs="git status"
-abbrev-alias gsw="git switch"
-abbrev-alias grb="git rebase"
-abbrev-alias grs="git reset"
-abbrev-alias gitr="git tree"
+alias ga="git add"
+alias gc="git commit"
+alias gs="git status"
+alias gsw="git switch"
+alias grb="git rebase"
+alias grs="git reset"
+alias gitr="git tree"
 
-abbrev-alias git-pretty-log="git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=format:'%Y-%m-%d %H:%M'"
-abbrev-alias remain="git switch main && git pull && git switch - && git rebase main"
+alias git-pretty-log="git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --commit --date=format:'%Y-%m-%d %H:%M'"
+alias remain="git switch main && git pull && git switch - && git rebase main"
 
-abbrev-alias -g G="| rg --line-number"
+alias -g G="| rg --line-number"
 
 ## mise
-abbrev-alias mir="mise run"
+alias mir="mise run"
 alias mr="fzf-mise-run"
 alias mie="fzf-mise-tasks-edit"
 
@@ -112,7 +112,7 @@ find-repository-and-move() {
 }
 
 alias repos=find-repository-and-move
-abbrev-alias -g rps='repos'
+alias -g rps='repos'
 
 
 # docker 
