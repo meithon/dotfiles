@@ -98,14 +98,14 @@ return {
   },
   -- use your favorite package manager to install, for example in lazy.nvim
   --  Optionally, you can also install nvim-telescope/telescope.nvim to use some search functionality.
-  {
-    {
-      "sourcegraph/sg.nvim",
-      dependencies = {
-        "nvim-lua/plenary.nvim", --[[ "nvim-telescope/telescope.nvim ]]
-      },
-    },
-  },
+  -- {
+  --   {
+  --     "sourcegraph/sg.nvim",
+  --     dependencies = {
+  --       "nvim-lua/plenary.nvim", --[[ "nvim-telescope/telescope.nvim ]]
+  --     },
+  --   },
+  -- },
   {
     "epwalsh/obsidian.nvim",
     version = "*", -- recommended, use latest release instead of latest commit
@@ -252,28 +252,28 @@ return {
   {
     "towolf/vim-helm",
   },
-  {
-    "kawre/leetcode.nvim",
-    build = ":TSUpdate html",
-    dependencies = {
-      "nvim-telescope/telescope.nvim",
-      "nvim-lua/plenary.nvim", -- required by telescope
-      "MunifTanjim/nui.nvim",
-
-      -- optional
-      "nvim-treesitter/nvim-treesitter",
-      "rcarriga/nvim-notify",
-      "nvim-tree/nvim-web-devicons",
-    },
-    opts = {
-      -- getenv
-      storage = {
-        home = os.getenv("HOME") .. "/workspace/leetcode",
-      },
-      -- configuration goes here
-      lang = "typescript",
-    },
-  },
+  -- {
+  --   "kawre/leetcode.nvim",
+  --   build = ":TSUpdate html",
+  --   dependencies = {
+  --     "nvim-telescope/telescope.nvim",
+  --     "nvim-lua/plenary.nvim", -- required by telescope
+  --     "MunifTanjim/nui.nvim",
+  --
+  --     -- optional
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "rcarriga/nvim-notify",
+  --     "nvim-tree/nvim-web-devicons",
+  --   },
+  --   opts = {
+  --     -- getenv
+  --     storage = {
+  --       home = os.getenv("HOME") .. "/workspace/leetcode",
+  --     },
+  --     -- configuration goes here
+  --     lang = "typescript",
+  --   },
+  -- },
   -- Using packer
   {
     "LeonHeidelbach/trailblazer.nvim",
@@ -1144,17 +1144,51 @@ return {
     enabled = not vim.g.vscode,
   },
 
-  { -- more useful text object
-    "chaoren/vim-wordmotion",
+  {
+    "chrisgrieser/nvim-spider",
+    lazy = true,
+    dependencies = {
+      "theHamsta/nvim_rocks",
+      build = "pip3 install --user hererocks && python3 -mhererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
+      config = function()
+        require("nvim_rocks").ensure_installed("luautf8")
+      end,
+    },
     keys = {
-      { "w", mode = { "n", "v" } },
-      { "e", mode = { "n", "v" } },
-      { "b", mode = { "n", "v" } },
-      { "W", mode = { "n", "v" } },
-      { "E", mode = { "n", "v" } },
-      { "B", mode = { "n", "v" } },
+      {
+        "e",
+        "<cmd>lua require('spider').motion('e')<CR>",
+        mode = { "n", "o", "x" },
+      },
+      {
+        "w",
+        "<cmd>lua require('spider').motion('w')<CR>",
+        mode = { "n", "o", "x" },
+      },
+      {
+        "E",
+        "<cmd>lua require('spider').motion('E')<CR>",
+        mode = { "n", "o", "x" },
+      },
+      {
+        "W",
+        "<cmd>lua require('spider').motion('W')<CR>",
+        mode = { "n", "o", "x" },
+      },
+      -- ...
     },
   },
+  -- { -- more useful text object
+  --   "chaoren/vim-wordmotion",
+  --   keys = {
+  --     { "w", mode = { "n", "v" } },
+  --     { "e", mode = { "n", "v" } },
+  --     { "b", mode = { "n", "v" } },
+  --     { "W", mode = { "n", "v" } },
+  --     { "E", mode = { "n", "v" } },
+  --     { "B", mode = { "n", "v" } },
+  --   },
+  -- },
 
   { -- git client
     "NeogitOrg/neogit",

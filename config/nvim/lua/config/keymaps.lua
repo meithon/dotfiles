@@ -101,6 +101,7 @@ map("n", "<Leader>n", vscode_command("editor.action.marker.next"))
 map("n", "<Leader>p", vscode_command("editor.action.marker.prev"))
 -- lsp
 map("n", "gd", vscode_command("editor.action.revealDefinition"))
+map("n", "gy", vscode_command("editor.action.goToTypeDefinition"))
 map("n", "gr", vscode_command("editor.action.goToReferences"))
 map("n", "gi", vscode_command("editor.action.goToImplementation"))
 map("n", "<Leader>lr", vscode_command("editor.action.rename"))
@@ -108,6 +109,7 @@ map("n", "<Leader>gt", vscode_command(""))
 map("n", "K", vscode_command("editor.action.showHover"))
 map("n", "[d", vscode_command("editor.action.marker.prevInFiles"))
 map("n", "]d", vscode_command("editor.action.marker.nextInFiles"))
+map("n", "cr", vscode_command("editor.action.rename"))
 
 -- move
 map("n", "<Leader>e", vscode_command("workbench.explorer.fileView.focus"))
