@@ -1,3 +1,4 @@
+export PATH=/opt/homebrew/bin:$PATH
 # must load before zsh config
 eval "$(sheldon source)"
 
@@ -31,7 +32,7 @@ fi
 
 
 # eval "$(starship init zsh)"
-# eval $(thefuck --alias)
+eval $(thefuck --alias fk)
 eval "$(direnv hook zsh)"
 eval "$(zoxide init zsh)"
 
@@ -66,8 +67,6 @@ fi
 
 
 # . /opt/homebrew/opt/asdf/libexec/asdf.sh
-
-[ -f ~/.inshellisense/key-bindings.zsh ] && source ~/.inshellisense/key-bindings.zsh
 
 source /Users/mei/.config/broot/launcher/bash/br
 
