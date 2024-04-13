@@ -1,71 +1,71 @@
- shell = "zsh"
+shell = "zsh"
 
- # set environment variables
-
-
- [templates]
- defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
-
- # apply = ["defer"]
-
- [plugins.zsh-defer]
- github = "romkatv/zsh-defer"
-
- [plugins.zsh-async]
- github = "mafredri/zsh-async"
- apply = ["defer"]
-
- [plugins.zsh-vi-mode]
- github = "jeffreytse/zsh-vi-mode"
- apply = ["defer"]
-
- [plugins.powerlevel10k]
- github = "romkatv/powerlevel10k"
-
- # [plugins."z.lua"]
- # github = "skywind3000/z.lua"
-
- # [plugins.zsh-z]
- # github = "agkozak/zsh-z"
- # apply = ["defer"]
- #
- [plugins.zsh-autosuggestions]
- github = "zsh-users/zsh-autosuggestions"
- apply = ["defer"]
- #
- # [plugins.zsh-256color]
- # github = "chrissicool/zsh-256color"
-
- # [plugins.zsh-syntax-highlighting]
- # github = "zsh-users/zsh-syntax-highlighting"
- #
- [plugins.ripgrep]
- github = "BurntSushi/ripgrep"
- apply = ["defer"]
-
- [plugins.fzf]
- github = "junegunn/fzf"
- apply = ["defer"]
-
- [plugins.fzf-tab]
- github = "Aloxaf/fzf-tab"
- apply = ["defer"]
- # apply = ["wait0", "lucid", "light-mode"]
-
- [plugins.fast-syntax-highlighting]
- github = "zdharma-continuum/fast-syntax-highlighting"
- apply = ["defer"]
-
- [plugins.cod]
- github = "dim-an/cod"
- apply = ["defer"]
-
- [plugins.per-directory-history]
- github = "jimhester/per-directory-history"
- [plugins.per-directory-history.hooks]
- pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
- post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+# set environment variables
 
 
- [plugins.zsh-abbrev-alias]
- github = "momo-lab/zsh-abbrev-alias"
+[templates]
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+
+# apply = ["defer"]
+
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+[plugins.zsh-async]
+github = "mafredri/zsh-async"
+apply = ["defer"]
+
+[plugins.zsh-vi-mode]
+github = "jeffreytse/zsh-vi-mode"
+apply = ["defer"]
+
+[plugins.powerlevel10k]
+github = "romkatv/powerlevel10k"
+
+# [plugins."z.lua"]
+# github = "skywind3000/z.lua"
+
+# [plugins.zsh-z]
+# github = "agkozak/zsh-z"
+# apply = ["defer"]
+#
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
+#
+# [plugins.zsh-256color]
+# github = "chrissicool/zsh-256color"
+
+# [plugins.zsh-syntax-highlighting]
+# github = "zsh-users/zsh-syntax-highlighting"
+#
+[plugins.ripgrep]
+github = "BurntSushi/ripgrep"
+apply = ["defer"]
+
+[plugins.fzf]
+github = "junegunn/fzf"
+apply = ["defer"]
+
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+apply = ["defer"]
+# apply = ["wait0", "lucid", "light-mode"]
+
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+apply = ["defer"]
+
+[plugins.cod]
+github = "dim-an/cod"
+apply = ["defer"]
+
+[plugins.per-directory-history]
+github = "jimhester/per-directory-history"
+[plugins.per-directory-history.hooks]
+pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+
+
+[plugins.zsh-abbrev-alias]
+github = "momo-lab/zsh-abbrev-alias"
