@@ -6,7 +6,7 @@ local map = vim.keymap.set
 map({ "n", "v" }, "x", '"_x', { noremap = true })
 
 map("n", "<CR>", "i<CR><ESC>", { noremap = true })
-map("n", "<TAB>", "<C-^>", { noremap = true })
+-- map("n", "<TAB>", "<C-^>", { noremap = true })
 
 map("i", "<C-f>", "<Right>", { noremap = true })
 map("i", "<C-b>", "<Left>", { noremap = true })
@@ -114,6 +114,13 @@ map("n", "cr", vscode_command("editor.action.rename"))
 -- move
 map("n", "<Leader>e", vscode_command("workbench.explorer.fileView.focus"))
 map("n", "<leader>bo", vscode_command("workbench.action.closeOtherEditors"))
+map(
+  "n",
+  "<leader>bz",
+  vscode_command("workbench.action.closeEditorsInOtherGroups")
+    .. ";"
+    .. vscode_command("workbench.action.closeOtherEditors")
+)
 ---- git
 --
 map("n", "]h", vscode_command("workbench.action.editor.nextChange"))

@@ -2,10 +2,10 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 local alpha = function()
-  return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
+  return string.format("%x", math.floor(255 * (vim.g.transparency or 0.8)))
 end
 
-vim.g.neovide_transparency = 0.7
+vim.g.neovide_transparency = 0.8
 vim.g.transparency = 0.3
 -- vim.g.neovide_background_color = "#0f1117" .. alpha()
 vim.g.neovide_window_blurred = true
@@ -38,4 +38,12 @@ if vim.g.neovide then
   vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
   vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
   vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
+
+  vim.defer_fn(function()
+    vim.cmd("NeovideFocus")
+  end, 100)
 end
+
+--
+-- -- * a function with signature `function(buf) -> string|string[]`
+-- vim.g.root_spec = {}

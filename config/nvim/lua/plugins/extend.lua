@@ -26,14 +26,15 @@ local function pretty_path(opts)
     modified_hl = "Constant",
   }, opts or {})
 
-  return function()
-    local path = vim.fn.expand("%:p") --[[@as string]]
+  local path = vim.fn.expand("%:p") --[[@as string]]
+  local root = Util.root.get({ normalize = true })
+  local cwd = Util.root.cwd()
+  local sep = package.config:sub(1, 1)
 
+  return function()
     if path == "" then
       return ""
     end
-    local root = Util.root.get({ normalize = true })
-    local cwd = Util.root.cwd()
 
     if opts.relative == "cwd" and path:find(cwd, 1, true) == 1 then
       path = path:sub(#cwd + 2)
@@ -41,7 +42,6 @@ local function pretty_path(opts)
       path = path:sub(#root + 2)
     end
 
-    local sep = package.config:sub(1, 1)
     local parts = vim.split(path, "[\\/]")
     -- if #parts > 4 then
     --   parts = { parts[1], "…", parts[#parts - 1], parts[#parts] }
@@ -228,23 +228,39 @@ return {
   --   --   { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
   --   -- },
   -- },
-  {
-    "nvim-lualine/lualine.nvim",
-
-    opts = function(_, opts)
-      opts.inactive_winbar = {
-        lualine_c = {
-          pretty_path({ relative = "cwd" }),
-        },
-      }
-      opts.winbar = {
-
-        lualine_c = {
-          pretty_path({ relative = "cwd" }),
-        },
-      }
-    end,
-  },
+  -- {
+  --   "nvim-lualine/lualine.nvim",
+  --   opts = function(_, opts)
+  --     opts.sections.lualine_c = {
+  --       {
+  --         "diagnostics",
+  --         symbols = {
+  --           error = icons.diagnostics.Error,
+  --           warn = icons.diagnostics.Warn,
+  --           info = icons.diagnostics.Info,
+  --           hint = icons.diagnostics.Hint,
+  --         },
+  --       },
+  --       { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+  --       {
+  --         function()
+  --           return Util.root.cwd()
+  --         end,
+  --       },
+  --     }
+  --     opts.inactive_winbar = {
+  --       lualine_c = {
+  --         pretty_path({ relative = "cwd" }),
+  --       },
+  --     }
+  --     opts.winbar = {
+  --
+  --       lualine_c = {
+  --         pretty_path({ relative = "cwd" }),
+  --       },
+  --     }
+  --   end,
+  -- },
   -- word highlight
   {
     "RRethy/vim-illuminate",
@@ -524,28 +540,6 @@ return {
     -- },
   },
   {
-    "nvim-lualine/lualine.nvim",
-    opts = function(_, opts)
-      opts.sections.lualine_c = {
-        {
-          "diagnostics",
-          symbols = {
-            error = icons.diagnostics.Error,
-            warn = icons.diagnostics.Warn,
-            info = icons.diagnostics.Info,
-            hint = icons.diagnostics.Hint,
-          },
-        },
-        { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-        {
-          function()
-            return Util.root.cwd()
-          end,
-        },
-      }
-    end,
-  },
-  {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       "David-Kunz/markid",
@@ -563,12 +557,12 @@ return {
   { -- Add vitest runner
     "rcarriga/neotest",
     dependencies = {
-      -- "marilari88/neotest-vitest",
+      "marilari88/neotest-vitest",
       -- "rneithon/neotest-vitest",
       "thenbe/neotest-playwright",
     },
     opts = function(_, opts)
-      -- table.insert(opts.adapters, require("neotest-vitest"))
+      table.insert(opts.adapters, require("neotest-vitest"))
       table.insert(
         opts.adapters,
         require("neotest-playwright").adapter({
@@ -955,13 +949,13 @@ return {
 
       ---@type Key[]
       return {
-        { "vs", df("", "master"), mode = "n", desc = "Flash then Select" },
-        { "Vs", df("", "current"), mode = "n", desc = "Flash then Select" },
-        { "Ds", df("d", "master"), mode = "n", desc = "Select Master Node then Delete" },
-        { "ys", df("y", "master"), mode = "n", desc = "Select Master Node then Yank" },
-        { "Xs", df("x", "current"), mode = "n", desc = "Select Node then Dlete (not yank)" },
-        { "ds", df("d", "current"), mode = "n", desc = "Select Node then Delete" },
-        { "Ys", df("y", "current"), mode = "n", desc = "Select Node then Yank" },
+        -- { "vs", df("", "master"), mode = "n", desc = "Flash then Select" },
+        -- { "Vs", df("", "current"), mode = "n", desc = "Flash then Select" },
+        -- { "Ds", df("d", "master"), mode = "n", desc = "Select Master Node then Delete" },
+        -- { "ys", df("y", "master"), mode = "n", desc = "Select Master Node then Yank" },
+        -- { "Xs", df("x", "current"), mode = "n", desc = "Select Node then Dlete (not yank)" },
+        -- { "ds", df("d", "current"), mode = "n", desc = "Select Node then Delete" },
+        -- { "Ys", df("y", "current"), mode = "n", desc = "Select Node then Yank" },
         { "vi", "<cmd>STSSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
         { "va", "<cmd>STSSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
         { "N", "<cmd>STSSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
