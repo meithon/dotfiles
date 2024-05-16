@@ -4,6 +4,197 @@ local map = vim.keymap.set
 ---@type Plugins
 return {
   {
+    "bennypowers/nvim-regexplainer",
+    config = function()
+      require("regexplainer").setup({
+        auto = false,
+        mapping = {
+          toggle = "gR",
+        },
+      })
+    end,
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "MunifTanjim/nui.nvim",
+    },
+  },
+  {
+    "tiagovla/tokyodark.nvim",
+    opts = {
+      -- custom options here
+    },
+    config = function(_, opts)
+      require("tokyodark").setup(opts) -- calling setup is optional
+      vim.cmd([[colorscheme tokyodark]])
+    end,
+  },
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = {
+      "nvim-telescope/telescope-ghq.nvim",
+    },
+    keys = {
+      {
+        "<leader>ghq",
+        "<cmd>Telescope ghq list<cr>",
+        desc = "List ghq repositories",
+      },
+    },
+    config = function()
+      require("telescope").load_extension("ghq")
+    end,
+  },
+  {
+    "stevearc/aerial.nvim",
+    opts = {},
+    -- Optional dependencies
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons",
+    },
+  },
+  {
+    "ziontee113/neo-minimap",
+    config = function()
+      -- for shorthand usage
+      local nm = require("neo-minimap")
+
+      nm.setup_defaults({
+        height = 30,
+        width = 80,
+        height_toggle = { 30, 55 },
+      })
+
+      nm.set({ "zi", "zo", "zu" }, "*.lua", {
+        events = { "BufEnter" },
+
+        query = {
+          [[
+    ;; query
+    ;; ((function_declaration name: ((identifier) @name (#eq? @name "{cursorword}"))) @cap)
+    ;; ((function_call name: ((identifier) @name (#eq? @name "{cursorword}"))) @cap)
+    ;; ((dot_index_expression field: ((identifier) @name (#eq? @name "{cursorword}"))) @cap)
+    ((function_declaration) @cap)
+    ((assignment_statement(expression_list((function_definition) @cap))))
+    ]],
+          1,
+          --       [[
+          -- ;; query
+          -- ((function_declaration) @cap)
+          -- ((assignment_statement(expression_list((function_definition) @cap))))
+          -- ((field (identifier) @cap) (#eq? @cap "keymaps"))
+          -- ]],
+          --       [[
+          -- ;; query
+          -- ((for_statement) @cap)
+          -- ((function_declaration) @cap)
+          -- ((assignment_statement(expression_list((function_definition) @cap))))
+          --
+          -- ((function_call (identifier)) @cap (#vim-match? @cap "^__*" ))
+          -- ((function_call (dot_index_expression) @field (#eq? @field "vim.keymap.set")) @cap)
+          -- ]],
+          --       [[
+          -- ;; query
+          -- ((for_statement) @cap)
+          -- ((function_declaration) @cap)
+          -- ((assignment_statement(expression_list((function_definition) @cap))))
+          -- ]],
+        },
+
+        regex = {
+          {},
+          { [[^\s*---*\s\+\w\+]], [[--\s*=]] },
+          { [[^\s*---*\s\+\w\+]], [[--\s*=]] },
+          {},
+        },
+
+        search_patterns = {
+          { "function", "<C-j>", true },
+          { "function", "<C-k>", false },
+          { "keymap", "<A-j>", true },
+          { "keymap", "<A-k>", false },
+        },
+
+        -- auto_jump = false,
+        -- open_win_opts = { border = "double" },
+        win_opts = { scrolloff = 1 },
+        disable_indentaion = true,
+      })
+      nm.set("zi", "typescriptreact", { -- press `zi` to open the minimap, in `typescriptreact` files
+        query = [[
+;; query
+((function_declaration) @cap) ;; matches function declarations
+((arrow_function) @cap) ;; matches arrow functions
+((identifier) @cap (#vim-match? @cap "^use.*")) ;; matches hooks (useState, useEffect, use***, etc...)
+  ]],
+      })
+    end,
+  },
+  -- Plug 'wfxr/minimap.vim', {'do': ':!cargo install --locked code-minimap'}
+  {
+    "wfxr/minimap.vim",
+    build = ":!cargo install --locked code-minimap",
+    cmd = {
+      "Minimap",
+      "MinimapClose",
+      "MinimapToggle",
+      "MinimapRefresh",
+      "MinimapUpdateHighlight",
+      "MinimapRescan",
+    },
+  },
+  {
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    cmd = {
+      "PeekOpen",
+      "PeekClose",
+    },
+    config = function()
+      require("peek").setup()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
+  },
+  {
+    "MeanderingProgrammer/markdown.nvim",
+    name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("render-markdown").setup({})
+    end,
+  },
+  {
+    "archibate/genius.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("genius").setup({
+        completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
+        -- This plugin supports many backends, openai backend is the default:
+        default_bot = "openai",
+        -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
+        -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
+        --
+        config_openai = {
+          api_key = os.getenv("OPENAI_API_KEY"),
+          infill_options = {
+            max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
+            model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
+            temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
+          },
+        },
+        -- Otherwise, you may run DeepSeek-Coder locally instead:
+        -- default_bot = 'deepseek',
+        -- See sections below for detailed instructions on setting up this model.
+      })
+    end,
+  },
+  { "wakatime/vim-wakatime", lazy = false },
+  {
     "stevearc/oil.nvim",
     opts = {},
     -- Optional dependencies
@@ -618,13 +809,13 @@ return {
       { "zC", "<cmd>lua require('fold-cycle').close_all()<cr>", desc = "Fold-cycle: close all folds" },
     },
   },
-  {
-    "andersevenrud/nvim_context_vt",
-    event = "BufReadPost",
-    config = function()
-      require("nvim_context_vt").setup()
-    end,
-  },
+  -- {
+  --   "andersevenrud/nvim_context_vt",
+  --   event = "BufReadPost",
+  --   config = function()
+  --     require("nvim_context_vt").setup()
+  --   end,
+  -- },
   {
     "Aasim-A/scrollEOF.nvim",
     event = "CursorMoved",
@@ -769,7 +960,10 @@ return {
   { -- align text
     "godlygeek/tabular",
     cmd = "Tabularize",
-    keys = { { "a ", mode = "v" }, { "a=", mode = "v" }, { "a:", mode = "v" } },
+    keys = {
+      { "<leader>a", ":Tabularize /", desc = "Align text", mode = "v" },
+    },
+    -- keys = { { "<leader>a ", mode = "v" }, { "<leader>a=", mode = "v" }, { "<leader>a:", mode = "v" } },
   },
   { -- translate
     "voldikss/vim-translator",
