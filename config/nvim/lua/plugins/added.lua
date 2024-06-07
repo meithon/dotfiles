@@ -2,7 +2,667 @@ local map = vim.keymap.set
 
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
+---
 return {
+  {
+    "anuvyklack/windows.nvim",
+    dependencies = {
+      "anuvyklack/middleclass",
+      -- "anuvyklack/animation.nvim",
+    },
+    config = function()
+      vim.o.winwidth = 50
+      vim.o.winminwidth = 4
+      vim.o.equalalways = false
+      require("windows").setup()
+    end,
+  },
+  {
+    "Wansmer/langmapper.nvim",
+    lazy = false,
+    priority = 1, -- High priority is needed if you will use `autoremap()`
+    config = function()
+      require("langmapper").setup({--[[ your config ]]
+      })
+    end,
+  },
+  { -- scroll bar
+    "lewis6991/satellite.nvim",
+    opts = {
+      current_only = true,
+    },
+  },
+  { -- macro manager
+    "ecthelionvi/NeoComposer.nvim",
+    dependencies = { "kkharji/sqlite.lua" },
+    opts = {},
+  },
+  {
+    "kiran94/edit-markdown-table.nvim",
+    config = true,
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = "EditMarkdownTable",
+  },
+  {
+    "topaxi/gh-actions.nvim",
+    cmd = "GhActions",
+    keys = {
+      { "<leader>gh", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
+    },
+    -- optional, you can also install and use `yq` instead.
+    build = "make",
+    dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
+    opts = {},
+    config = function(_, opts)
+      require("gh-actions").setup(opts)
+    end,
+  },
+  { -- session manager
+    "RutaTang/spectacle.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    opts = {
+      -- "/path/of/dir/where/you/want/to/save/all/sessions"
+      session_dir = vim.fn.stdpath("data") .. "/sessions",
+    },
+  },
+  {
+    "KaitlynEthylia/TreePin",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = function()
+      require("treepin").setup()
+    end,
+  },
+  {
+    "serenevoid/kiwi.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  { -- floating window manager
+    "tamton-aquib/flirt.nvim",
+    opts = {
+      speed = 100, -- animation speed
+    },
+  },
+  { "tamton-aquib/zone.nvim" },
+  { -- Replace text in quickfix list
+    "gabrielpoca/replacer.nvim",
+    config = function()
+      require("replacer").setup()
+      -- TODO: integrate with telescope
+    end,
+  },
+  { -- Show all tailwind CSS value  of component
+    "MaximilianLloyd/tw-values.nvim",
+    keys = {
+      { "<leader>sv", "<cmd>TWValues<cr>", desc = "Show tailwind CSS values" },
+    },
+    opts = {
+      border = "rounded", -- Valid window border style,
+      show_unknown_classes = true, -- Shows the unknown classes popup
+      focus_preview = true, -- Sets the preview as the current window
+      copy_register = "", -- The register to copy values to,
+      keymaps = {
+        copy = "<C-y>", -- Normal mode keymap to copy the CSS values between {}
+      },
+    },
+  },
+  { -- TODO: disable which-key
+    "Cassin01/wf.nvim",
+    version = "*",
+    opts = {},
+  },
+  { -- smart window manager
+    "mrjones2014/smart-splits.nvim",
+    -- TODO: keymap
+  },
+  {
+    "roobert/activate.nvim",
+    -- keys = {
+    --   {
+    --     "<leader>P",
+    --     '<CMD>lua require("activate").list_plugins()<CR>',
+    --     desc = "Plugins",
+    --   },
+    -- },
+    dependencies = {
+      { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+    },
+  },
+  { -- Show Symbol and reference of LSP
+    "Wansmer/symbol-usage.nvim",
+    event = "BufReadPre", -- need run before LspAttach if you use nvim 0.9. On 0.10 use 'LspAttach'
+    config = function()
+      require("symbol-usage").setup()
+    end,
+  },
+  {
+    "chrisgrieser/nvim-tinygit",
+    ft = { "git_rebase", "gitcommit" }, -- so ftplugins are loaded
+    dependencies = {
+      "stevearc/dressing.nvim",
+      "nvim-telescope/telescope.nvim", -- either telescope or fzf-lua
+      -- "ibhagwan/fzf-lua",
+      "rcarriga/nvim-notify", -- optional, but will lack some features without it
+    },
+  },
+  { -- Show LSP action
+    "luckasRanarison/clear-action.nvim",
+    opts = {},
+  },
+  { -- Show LSP action
+    "roobert/action-hints.nvim",
+    config = function()
+      require("action-hints").setup()
+    end,
+  },
+  { -- project switcher
+    "SalOrak/whaler",
+    config = function()
+      -- Telescope setup()
+      local telescope = require("telescope")
+      telescope.setup({
+        -- Your telescope setup here...
+        extensions = {
+          whaler = {
+            -- Whaler configuration
+            directories = { "path/to/dir", "path/to/another/dir", { path = "path/to/yet/another/dir", alias = "yet" } },
+            -- You may also add directories that will not be searched for subdirectories
+            oneoff_directories = {
+              "path/to/project/folder",
+              { path = "path/to/another/project", alias = "Project Z" },
+            },
+          },
+        },
+      })
+      -- More config here
+      telescope.load_extension("whaler")
+      --
+
+      -- Open whaler using <leader>fw
+      -- vim.keymap.set("n", "<leader>fw", function()
+      --     local w = telescope.extensions.whaler.whaler
+      --     w({
+      --         -- Settings can also be called here.
+      --         -- These would use but not change the setup configuration.
+      --     })
+      --  end,)
+
+      -- Or directly
+      vim.keymap.set("n", "<leader>fw", telescope.extensions.whaler.whaler)
+    end,
+  },
+  -- { -- LSP manager
+  --   "hinell/lsp-timeout.nvim",
+  --   dependencies = { "neovim/nvim-lspconfig" },
+  -- },
+  -- { -- FIXME:
+  --   "edluffy/hologram.nvim",
+  --   config = function()
+  --     require("hologram").setup({
+  --       auto_display = true, -- WIP automatic markdown image display, may be prone to breaking
+  --     })
+  --   end,
+  -- },
+  { "miversen33/sunglasses.nvim", config = true },
+  {
+    "hedyhli/outline.nvim",
+    opts = {},
+  },
+  { "IndianBoy42/tree-sitter-just" },
+  {
+    "cshuaimin/ssr.nvim",
+    module = "ssr",
+    -- Calling setup is optional.
+    config = function()
+      require("ssr").setup({
+        border = "rounded",
+        min_width = 50,
+        min_height = 5,
+        max_width = 120,
+        max_height = 25,
+        adjust_window = true,
+        keymaps = {
+          close = "q",
+          next_match = "n",
+          prev_match = "N",
+          replace_confirm = "<cr>",
+          replace_all = "<leader><cr>",
+        },
+      })
+    end,
+  },
+  {
+    "chomosuke/typst-preview.nvim",
+    lazy = false, -- or ft = 'typst'
+    version = "0.3.*",
+    build = function()
+      require("typst-preview").update()
+    end,
+  },
+  {
+    "rasulomaroff/reactive.nvim",
+    config = function()
+      require("reactive").setup({
+        builtin = {
+          cursorline = true,
+          cursor = true,
+          modemsg = true,
+        },
+      })
+    end,
+  },
+  { -- A Neovim plugin designed to enhance your Markdown navigation experience.
+    "daenikon/marknav.nvim",
+    ft = { "markdown", "md" },
+    opts = {},
+  },
+  -- { -- AI client FIXME: error occurs
+  --   "gsuuon/model.nvim",
+  --   -- Don't need these if lazy = false
+  --   cmd = { "M", "Model", "Mchat" },
+  --   init = function()
+  --     vim.filetype.add({
+  --       extension = {
+  --         mchat = "mchat",
+  --       },
+  --     })
+  --   end,
+  --   ft = "mchat",
+  --
+  --   keys = {
+  --     { "<C-m>d", ":Mdelete<cr>", mode = "n" },
+  --     { "<C-m>s", ":Mselect<cr>", mode = "n" },
+  --     { "<C-m><space>", ":Mchat<cr>", mode = "n" },
+  --   },
+  -- },
+  { -- database client
+    "kndndrj/nvim-dbee",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    build = function()
+      -- Install tries to automatically detect the install method.
+      -- if it fails, try calling it with one of these parameters:
+      --    "curl", "wget", "bitsadmin", "go"
+      require("dbee").install()
+    end,
+    opts = {},
+  },
+  {
+    "mcauley-penney/visual-whitespace.nvim",
+    config = true,
+  },
+  { -- lazy load docs
+    "phanen/lazy-help.nvim",
+    ft = "lazy",
+  },
+  -- {
+  --   "fnune/recall.nvim",
+  --   opts = {},
+  -- },
+  -- -- {
+  -- --   "Rentib/cliff.nvim",
+  -- --   keys = {
+  -- --     {
+  -- --       "<c-j>",
+  -- --       mode = { "n", "v", "o" },
+  -- --       function()
+  -- --         require("cliff").go_down()
+  -- --       end,
+  -- --     },
+  -- --     {
+  -- --       "<c-k>",
+  -- --       mode = { "n", "v", "o" },
+  -- --       function()
+  -- --         require("cliff").go_up()
+  -- --       end,
+  -- --     },
+  -- --   },
+  -- -- },
+  -- {
+  --   "mvllow/modes.nvim",
+  --   tag = "v0.2.0",
+  --   config = function()
+  --     require("modes").setup({
+  --       line_opacity = 0.45,
+  --     })
+  --   end,
+  -- },
+  {
+    "rasulomaroff/telepath.nvim",
+    dependencies = "ggandor/leap.nvim",
+    -- there's no sense in using lazy loading since telepath won't load the main module
+    -- until you actually use mappings
+    lazy = false,
+    config = function()
+      require("telepath").use_default_mappings()
+    end,
+  },
+  {
+    "icholy/lsplinks.nvim",
+    config = function()
+      local lsplinks = require("lsplinks")
+      lsplinks.setup()
+      -- vim.keymap.set("n", "gx", lsplinks.gx)
+    end,
+  },
+  {
+    "snehlsen/pomo.nvim",
+    config = true,
+  },
+  {
+    "2kabhishek/termim.nvim",
+    cmd = { "Fterm", "FTerm", "Sterm", "STerm", "Vterm", "VTerm" },
+  },
+  -- {
+  --   "marilari88/twoslash-queries.nvim",
+  --   config = function()
+  --     require("twoslash-queries").setup({
+  --       multi_line = true, -- to print types in multi line mode
+  --       is_enabled = false, -- to keep disabled at startup and enable it on request with the TwoslashQueriesEnable
+  --       highlight = "Type", -- to set up a highlight group for the virtual text
+  --     })
+  --   end,
+  --   -- NOTE: これが必要かも
+  --   --     require("lspconfig")["tsserver"].setup({
+  --   --     on_attach = function(client, bufnr)
+  --   --        require("twoslash-queries").attach(client, bufnr)
+  --   --     end,
+  --   -- })
+  -- },
+  -- {
+  --   "dlvhdr/gh-addressed.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --     "folke/trouble.nvim",
+  --   },
+  --   cmd = "GhReviewComments",
+  --   keys = {
+  --     { "<leader>gc", "<cmd>GhReviewComments<cr>", desc = "GitHub Review Comments" },
+  --   },
+  -- },
+  -- {
+  --   "dlvhdr/gh-blame.nvim",
+  --   dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
+  --   keys = {
+  --     { "<leader>gg", "<cmd>GhBlameCurrentLine<cr>", desc = "GitHub Blame Current Line" },
+  --   },
+  -- },
+  { -- File git history inspector
+    "fredeeb/tardis.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = true,
+  },
+  { -- File git history inspector
+    "niuiic/git-log.nvim",
+    dependencies = {
+      { "niuiic/core.nvim" },
+    },
+    config = function()
+      require("git-log").setup()
+    end,
+  },
+  { -- Automatically update mappings when they are changed in a file.
+    --   "numToStr/ReplaceWithRegister.nvim",
+    --
+  },
+  { -- hilgiht select line when command mode
+    "moyiz/command-and-cursor.nvim",
+    event = "VeryLazy",
+    opts = {},
+  },
+  -- { -- indent hilgiht
+  --   "Mr-LLLLL/cool-chunk.nvim",
+  --   event = { "CursorHold", "CursorHoldI" },
+  --   dependencies = {
+  --     "nvem-treesitter/nvim-treesitter",
+  --   },
+  --   opts = {},
+  -- },
+  { "yashguptaz/calvera-dark.nvim" },
+  -- {
+  --   "Pocco81/auto-save.nvim",
+  --   config = function()
+  --     require("auto-save").setup({
+  --       -- your config goes here
+  --       -- or just leave it empty :)
+  --     })
+  --   end,
+  -- },
+  { "dmmulroy/ts-error-translator.nvim" },
+  -- {
+  --   "ObserverOfTime/notifications.nvim",
+  --   opts = {
+  --     override_notify = true,
+  --     hist_command = "Notifications",
+  --     -- or set `icons = false` to disable all icons
+  --     icons = {
+  --       TRACE = "", -- '🔍',
+  --       DEBUG = "󰠭", -- '🐞',
+  --       INFO = "", -- '📣',
+  --       WARN = "", -- '⚠️ ',
+  --       ERROR = "", -- '🚨',
+  --       OFF = "", -- '⛔',
+  --     },
+  --     hl_groups = {
+  --       TRACE = "DiagnosticFloatingHint",
+  --       DEBUG = "DiagnosticFloatingHint",
+  --       INFO = "DiagnosticFloatingInfo",
+  --       WARN = "DiagnosticFloatingWarn",
+  --       ERROR = "DiagnosticFloatingError",
+  --       OFF = "DiagnosticFloatingOk",
+  --     },
+  --   },
+  --   -- to use OSC 777/99/9:
+  --   --[[
+  -- config = function(_, opts)
+  --   vim.g.notifications_use_osc = '777'
+  --   require('notifications').setup(opts)
+  -- end
+  -- --]]
+  -- },
+  { -- colorschema
+    "dgox16/oldworld.nvim",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "jellydn/quick-code-runner.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    opts = {
+      debug = true,
+    },
+    cmd = { "QuickCodeRunner", "QuickCodePad" },
+    keys = {
+      {
+        "<leader>cr",
+        ":QuickCodeRunner<CR>",
+        desc = "Quick Code Runner",
+        mode = "v",
+      },
+      {
+        "<leader>cp",
+        ":QuickCodePad<CR>",
+        desc = "Quick Code Pad",
+      },
+    },
+  },
+  {
+    "jellydn/typecheck.nvim",
+    dependencies = { "folke/trouble.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
+    ft = { "javascript", "javascriptreact", "json", "jsonc", "typescript", "typescriptreact" },
+    opts = {
+      debug = true,
+      mode = "trouble", -- "quickfix" | "trouble"
+    },
+    keys = {
+      {
+        "<leader>ck",
+        "<cmd>Typecheck<cr>",
+        desc = "Run Type Check",
+      },
+    },
+  },
+  {
+    "voxelprismatic/rabbit.nvim",
+    opts = {},
+  },
+  -- {
+  --   "SergioRibera/codeshot.nvim",
+  --   config = function()
+  --     require("codeshot").setup({})
+  --   end,
+  -- },
+  -- TODO: Add your plugins here
+  -- SergioRibera/cmp-dotenv
+  -- cmpletion from envrioment variables
+  {
+    "Aaronik/GPTModels.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+  },
+  {
+    "lewis6991/hover.nvim",
+    config = function()
+      require("hover").setup({
+        init = function()
+          -- Require providers
+          require("hover.providers.lsp")
+          -- require('hover.providers.gh')
+          -- require('hover.providers.gh_user')
+          -- require('hover.providers.jira')
+          -- require('hover.providers.dap')
+          -- require('hover.providers.diagnostic')
+          -- require('hover.providers.man')
+          -- require('hover.providers.dictionary')
+        end,
+        preview_opts = {
+          border = "single",
+        },
+        -- Whether the contents of a currently open hover window should be moved
+        -- to a :h preview-window when pressing the hover keymap.
+        preview_window = false,
+        title = true,
+        mouse_providers = {
+          "LSP",
+        },
+        mouse_delay = 1000,
+      })
+
+      -- Setup keymaps
+      vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+      vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+      vim.keymap.set("n", "<C-p>", function()
+        require("hover").hover_switch("previous")
+      end, { desc = "hover.nvim (previous source)" })
+      vim.keymap.set("n", "<C-n>", function()
+        require("hover").hover_switch("next")
+      end, { desc = "hover.nvim (next source)" })
+
+      -- Mouse support
+      vim.keymap.set("n", "<MouseMove>", require("hover").hover_mouse, { desc = "hover.nvim (mouse)" })
+      vim.o.mousemoveevent = true
+    end,
+  },
+  -- Lazy
+  {
+    "piersolenski/telescope-import.nvim",
+    dependencies = "nvim-telescope/telescope.nvim",
+    config = function()
+      require("telescope").load_extension("import")
+    end,
+  },
+  -- {
+  --   "atusy/treemonkey.nvim",
+  --   init = function()
+  --     vim.keymap.set({ "x", "o" }, "m", function()
+  --       require("treemonkey").select({ ignore_injections = false })
+  --     end)
+  --   end,
+  -- },
+  {
+    "jdrupal-dev/code-refactor.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    keys = {
+      { "<leader>cc", "<cmd>CodeActions all<CR>", desc = "Show code-refactor.nvim (not LSP code actions)" },
+    },
+    config = function()
+      require("code-refactor").setup({
+        -- Configuration here, or leave empty to use defaults.
+      })
+    end,
+  },
+  {
+    "Fildo7525/pretty_hover",
+    event = "LspAttach",
+    opts = {},
+  },
+  {
+    "NStefan002/donut.nvim",
+    version = "*",
+    lazy = false,
+    opts = {
+      timeout = 240,
+    },
+  },
+  {
+    "luckasRanarison/tailwind-tools.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    opts = {}, -- your configuration
+  },
+  {
+    -- CSV
+    "emmanueltouzery/decisive.nvim",
+  },
+  {
+    "ramilito/kubectl.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      {
+        "<leader>k",
+        function()
+          require("kubectl").open()
+        end,
+        desc = "Kubectl",
+      },
+    },
+    config = function()
+      require("kubectl").setup()
+    end,
+  },
+  {
+    "SuperBo/fugit2.nvim",
+    opts = {
+      width = 70,
+    },
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "nvim-lua/plenary.nvim",
+      {
+        "chrisgrieser/nvim-tinygit", -- optional: for Github PR view
+        dependencies = { "stevearc/dressing.nvim" },
+      },
+    },
+    cmd = { "Fugit2", "Fugit2Diff", "Fugit2Graph" },
+    -- keys = {
+    --   { "<leader>F", mode = "n", "<cmd>Fugit2<cr>" },
+    -- },
+  },
+  {
+    "AckslD/muren.nvim",
+    config = true,
+  },
+  -- {
+  --   "lewis6991/whatthejump.nvim",
+  --   config = true,
+  --   -- opts = {},
+  -- },
   {
     "bennypowers/nvim-regexplainer",
     config = function()
@@ -18,16 +678,16 @@ return {
       "MunifTanjim/nui.nvim",
     },
   },
-  {
-    "tiagovla/tokyodark.nvim",
-    opts = {
-      -- custom options here
-    },
-    config = function(_, opts)
-      require("tokyodark").setup(opts) -- calling setup is optional
-      vim.cmd([[colorscheme tokyodark]])
-    end,
-  },
+  -- {
+  --   "tiagovla/tokyodark.nvim",
+  --   opts = {
+  --     -- custom options here
+  --   },
+  --   config = function(_, opts)
+  --     require("tokyodark").setup(opts) -- calling setup is optional
+  --     vim.cmd([[colorscheme tokyodark]])
+  --   end,
+  -- },
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
@@ -324,16 +984,16 @@ return {
     },
   },
   { "echasnovski/mini.nvim", version = "*" },
-  {
-    "folke/twilight.nvim",
-    opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-      alpha = 0.8, -- amount of dimming
-    },
-    keys = { { "<leader>uh", "<cmd>Twilight<cr>", desc = "Highlight code" } },
-  },
+  -- {
+  --   "folke/twilight.nvim",
+  --   opts = {
+  --     -- your configuration comes here
+  --     -- or leave it empty to use the default settings
+  --     -- refer to the configuration section below
+  --     alpha = 0.8, -- amount of dimming
+  --   },
+  --   keys = { { "<leader>ul", "<cmd>Twilight<cr>", desc = "Highlight code" } },
+  -- },
   {
     "willothy/flatten.nvim",
     opts = {
@@ -579,17 +1239,6 @@ return {
       logo = string.rep("\n", 8) .. logo .. "\n\n"
       opts.config.header = vim.split(logo, "\n")
     end,
-    --
-    --     -- local opts = {
-    --     --  theme = "doom",
-    --     --  hide = {
-    --     --    -- this is taken care of by lualine
-    --     --    -- enabling this messes up the actual laststatus setting after loading a file
-    --     --    statusline = false,
-    --     --  },
-    --     --  config = {
-    --     --    header = vim.split(logo, "\n"),
-    --    end,
   },
   {
     "ecthelionvi/NeoComposer.nvim",

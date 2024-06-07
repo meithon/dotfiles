@@ -7,6 +7,7 @@
     "lazyvim.plugins.extras.editor.mini-files",
     "lazyvim.plugins.extras.editor.navic",
     "lazyvim.plugins.extras.editor.outline",
+    "lazyvim.plugins.extras.editor.refactoring",
     "lazyvim.plugins.extras.formatting.black",
     "lazyvim.plugins.extras.formatting.prettier",
     "lazyvim.plugins.extras.lang.docker",
@@ -19,6 +20,7 @@
     "lazyvim.plugins.extras.lang.tailwind",
     "lazyvim.plugins.extras.lang.terraform",
     "lazyvim.plugins.extras.lang.tex",
+    "lazyvim.plugins.extras.lang.toml",
     "lazyvim.plugins.extras.lang.typescript",
     "lazyvim.plugins.extras.lang.yaml",
     "lazyvim.plugins.extras.linting.eslint",
@@ -30,7 +32,7 @@
     "lazyvim.plugins.extras.vscode"
   ],
   "news": {
-    "NEWS.md": "3314"
+    "NEWS.md": "5204"
   },
-  "version": 3
+  "version": 6
 }
