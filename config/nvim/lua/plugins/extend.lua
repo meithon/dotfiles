@@ -85,6 +85,12 @@ end
 ---@type Plugin[]
 return {
   {
+    "williamboman/mason.nvim",
+    opts = function(_, opts)
+      table.insert(opts.ensure_installed, "typos-lsp")
+    end,
+  },
+  {
     "folke/noice.nvim",
     lazy = false,
     config = function()
@@ -530,11 +536,15 @@ return {
 
     ---@param opts table
     opts = function(_, opts)
-      opts.ring.history_length = 10
+      opts = vim.tbl_extend("keep", opts, {
+        ring = {
+          history_length = 10,
+        },
+      })
     end,
-    setup = function()
-      require("yanky").setup({})
-    end,
+    -- setup = function()
+    --   require("yanky").setup({})
+    -- end,
     --   highlight = { timer = 250 },
     --   ring = { storage = jit.os:find("Windows") and "shada" or "sqlite" },
     -- },
@@ -734,7 +744,20 @@ return {
   --       })
   --     )
   --   end,
+  --
   -- },
+  { -- better typescript error
+    "neovim/nvim-lspconfig",
+    opts = {
+      inlay_hints = {
+        enabled = false,
+      },
+    },
+    -- opts = function(_, opts)
+    --
+    --   -- table.insert(opts.inlay_hints, { enabled = false })
+    -- end,
+  },
   { -- better typescript error
     "neovim/nvim-lspconfig",
     dependencies = "davidosomething/format-ts-errors.nvim",
@@ -745,29 +768,6 @@ return {
         [[<cmd>require("telescope.builtin").lsp_definitions({ reuse_win = false })<cr>]],
         mode = "n",
         desc = "Goto Definition",
-      },
-      {
-        "<leader>fd",
-        function()
-          require("telescope.builtin").git_files(require("telescope.themes").get_dropdown({
-            color_devicons = true,
-            cwd = "~/.config/nvim",
-            previewer = false,
-            prompt_title = "Ecovim Dotfiles",
-            sorting_strategy = "ascending",
-            winblend = 4,
-            layout_config = {
-              horizontal = {
-                mirror = false,
-              },
-              vertical = {
-                mirror = false,
-              },
-              prompt_position = "top",
-            },
-          }))
-        end,
-        desc = "Find Dotfiles",
       },
     },
     opts = function(_, opts)
@@ -1003,11 +1003,6 @@ return {
       },
     },
   },
-  -- Disable code context
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    enabled = false,
-  },
   -- Disable indent line
   -- {
   --   "echasnovski/mini.indentscope",
@@ -1071,6 +1066,29 @@ return {
         "<leader>fz",
         "<cmd>Telescope zoxide list<<cr>",
         desc = "Buffers",
+      },
+      {
+        "<leader>fd",
+        function()
+          require("telescope.builtin").git_files(require("telescope.themes").get_dropdown({
+            color_devicons = true,
+            cwd = "~/.config/nvim",
+            previewer = false,
+            prompt_title = "Ecovim Dotfiles",
+            sorting_strategy = "ascending",
+            winblend = 4,
+            layout_config = {
+              horizontal = {
+                mirror = false,
+              },
+              vertical = {
+                mirror = false,
+              },
+              prompt_position = "top",
+            },
+          }))
+        end,
+        desc = "Find Dotfiles",
       },
     },
     init = function()
