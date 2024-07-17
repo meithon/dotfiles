@@ -66,12 +66,12 @@ fi
 
 
 
-# . /opt/homebrew/opt/asdf/libexec/asdf.sh
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 source /Users/mei/.config/broot/launcher/bash/br
 
 PATH=~/.console-ninja/.bin:$PATH
-eval "$(/opt/homebrew/bin/mise activate zsh)"
+# eval "$(/opt/homebrew/bin/mise activate zsh)"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
 

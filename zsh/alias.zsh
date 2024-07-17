@@ -77,9 +77,17 @@ alias mir="mise run"
 alias mr="fzf-mise-run"
 alias mie="fzf-mise-tasks-edit"
 
+alias ka="kubectl-attach"
+
 # pueue 
 alias pf=pueue-follow-fzf
 # 'pueue status --json | jq -r \'.tasks[] | " \(.id)  \(.command) "\' | fzf-tmux --preview \'echo {} | awk "{print \$1}" | xargs pueue follow\' | awk "{print \$1}"\'
+#
+
+function kubectl-attach() {
+  pod=$(kubectl get pod -o name | fzf)
+  kubectl exec $pod -it -- bash
+}
 
 function pueue-follow-fzf() {
   local tasks=$(pueue status --json | jq -r '.tasks[] | " \(.id)  \(.command) "')
