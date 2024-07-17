@@ -66,12 +66,12 @@ fi
 
 
 
-# . /opt/homebrew/opt/asdf/libexec/asdf.sh
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 source /Users/mei/.config/broot/launcher/bash/br
 
 PATH=~/.console-ninja/.bin:$PATH
-eval "$(/opt/homebrew/bin/mise activate zsh)"
+# eval "$(/opt/homebrew/bin/mise activate zsh)"
 export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
 
 
@@ -82,3 +82,11 @@ if command -v termium > /dev/null 2>&1; then
   eval "$(termium shell-hook show post)"
 fi
 ### End of Codeium integration
+#
+
+source <(argo completion zsh)
+export ARGO_SERVER='build-workflows.neovpc.hnd-staging.com:443' 
+export ARGO_HTTP1=true  
+export ARGO_SECURE=true
+export ARGO_BASE_HREF=
+export ARGO_NAMESPACE=build-workflows

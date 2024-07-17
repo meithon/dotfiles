@@ -76,6 +76,7 @@ end
 ---@field event? PluginEvent[]|PluginEvent
 ---@field config? function | true
 ---@field ft? Filetype[]|Filetype
+---@field enabled? false
 
 ---@class Plugin : OnePlugin
 ---@field dependencies? OnePlugin[]|OnePlugin |string[]|string
@@ -657,6 +658,12 @@ return {
               require("neo-tree.ui.renderer").focus_node(state, node:get_child_ids()[1])
             end
           end
+        end,
+        -- run command
+        ["i"] = function(state)
+          local node = state.tree:get_node()
+          local path = node:get_id()
+          vim.api.nvim_input(": " .. path .. "<Home>")
         end,
         -- ["h"] = function(state)
         --   local node = state.tree:get_node()

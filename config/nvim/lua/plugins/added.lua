@@ -1,5 +1,227 @@
 local map = vim.keymap.set
 
+-- Clean (4)
+--   ○ baleia.nvim
+--   ○ image.nvim
+--   ○ mini.pairs
+--   ○ nvim-jdtls
+--
+-- Not Installed (11)
+--   ○ action-hints.nvim
+--   ○ clear-action.nvim
+--   ○ donut.nvim
+--   ○ flirt.nvim
+--   ○ fugit2.nvim
+--   ○ gh-actions.nvim
+--   ○ hover.nvim
+--   ○ langmapper.nvim
+--   ○ quick-code-runner.nvim
+--   ○ render-markdown
+--   ○ spectacle.nvim
+--
+-- Loaded (81)
+--   ● bufferline.nvim 4.12ms  VeryLazy
+--   ● clangd_extensions.nvim 0.56ms 󰢱 clangd_extensions  nvim-lspconfig
+--   ● cmp-buffer 12.02ms  nvim-cmp
+--   ● cmp-cmdline 1.09ms  nvim-cmp
+--   ● cmp-emoji 1.01ms  nvim-cmp
+--   ● cmp-nvim-lsp 1.56ms 󰢱 cmp_nvim_lsp  nvim-lspconfig
+--   ● cmp-nvim-lsp-document-symbol 1.08ms  nvim-cmp
+--   ● cmp-path 0.92ms  nvim-cmp
+--   ● conform.nvim 3.93ms 󰢱 conform  LazyVim
+--   ● copilot-cmp 4.36ms  nvim-cmp
+--   ● copilot.lua 3.63ms  copilot-cmp
+--   ● crates.nvim 5.28ms  nvim-cmp
+--   ● dashboard-nvim 1.28ms  start
+--   ● dressing.nvim 16.93ms  Lazy load
+--   ● flash.nvim 1.16ms  VeryLazy
+--   ● format-ts-errors.nvim 0.5ms  nvim-lspconfig
+--   ● friendly-snippets 0.51ms  nvim-snippets
+--   ● gitsigns.nvim 8.39ms  LazyFile
+--   ● headlines.nvim 0.21ms  markdown
+--   ● indent-blankline.nvim 4.28ms  LazyFile
+--   ● lazy-help.nvim 0.86ms  lazy
+--   ● lazy.nvim 32.79ms  init.lua
+--   ● lazyflex.nvim 0.06ms  start
+--   ● LazyVim 4.21ms  start
+--   ● lspkind-nvim 0.05ms  nvim-cmp
+--   ● lualine.nvim 12.46ms  VeryLazy
+--   ● LuaSnip 13.6ms  start
+--   ● markid 1.01ms  nvim-treesitter
+--   ● mason-lspconfig.nvim 0.07ms  nvim-lspconfig
+--   ● mason-nvim-dap.nvim 0.1ms 󰢱 mason-nvim-dap  nvim-dap
+--   ● mason.nvim 18.16ms  nvim-lspconfig
+--   ● mini.ai 0.68ms  VeryLazy
+--   ● mini.bufremove 1.89ms  <C-Q>
+--   ● mini.hipatterns 0.53ms  LazyFile
+--   ● mini.icons 2.06ms 󰢱 mini.icons  LazyVim
+--   ● neo-tree.nvim 21.69ms  <leader>e
+--   ● neotest 67.12ms  <leader>tr
+--   ● neotest-playwright 2.53ms  neotest
+--   ● neotest-python 2.62ms  neotest
+--   ● neotest-vitest 2.48ms  neotest
+--   ● noice.nvim 2.63ms  start
+--   ● nui.nvim 0.21ms  nvim-regexplainer
+--   ● nvim-cmp 32.13ms 󰢱 cmp  obsidian.nvim
+--   ● nvim-dap 19.11ms 󰢱 dap  nvim-lspconfig
+--   ● nvim-dap-go 1.11ms  nvim-dap
+--   ● nvim-dap-python 0.73ms  nvim-dap
+--   ● nvim-dap-ui 11.12ms  nvim-dap
+--   ● nvim-dap-virtual-text 0.74ms  nvim-dap
+--   ● nvim-lint 1.48ms  LazyFile
+--   ● nvim-lspconfig 65.63ms  garbage-day.nvim
+--   ● nvim-metals 0.15ms 󰢱 metals  nvim-lspconfig
+--   ● nvim-navic 2.3ms 󰢱 nvim-navic  LazyVim
+--   ● nvim-nio 0.4ms  nvim-dap-ui
+--   ● nvim-notify 2.11ms 󰢱 notify  noice.nvim
+--   ● nvim-snippets 3.6ms  nvim-cmp
+--   ● nvim-treesitter 9.93ms  aerial.nvim
+--   ● nvim-treesitter-textobjects 2.36ms  VeryLazy
+--   ● nvim-ts-autotag 3.15ms  nvim-treesitter
+--   ● nvim-window-picker 2.49ms  neo-tree.nvim
+--   ● one-small-step-for-vimkind 0.05ms  nvim-dap
+--   ● persistence.nvim 2.18ms  BufReadPre
+--   ● plenary.nvim 0.57ms 󰢱 plenary.log  telescope-fzf-native.nvim
+--   ● project.nvim 1.36ms  VeryLazy
+--   ● refactoring.nvim 15.72ms  BufReadPre
+--   ● rustaceanvim 2.2ms 󰢱 rustaceanvim.neotest  neotest
+--   ● SchemaStore.nvim 0.12ms 󰢱 schemastore  LazyVim
+--   ● sqlite.lua 0.63ms  yanky.nvim
+--   ● syntax-tree-surfer 6.27ms  va
+--   ● tailwindcss-colorizer-cmp.nvim 0.77ms  nvim-cmp
+--   ● telescope-fzf-native.nvim 6.23ms  telescope.nvim
+--   ● telescope-terraform-doc.nvim 24.63ms  telescope.nvim
+--   ● telescope-terraform.nvim 9.56ms  telescope.nvim
+--   ● telescope-zoxide 0.15ms  telescope.nvim
+--   ● todo-comments.nvim 2.1ms  LazyFile
+--   ● tokyonight.nvim 0.73ms 󰢱 tokyonight  LazyVim
+--   ● trouble.nvim 2.41ms 󰢱 trouble  lualine.nvim
+--   ● ts-comments.nvim 0.77ms  VeryLazy
+--   ● vim-illuminate 1.63ms  start
+--   ● vimtex 1.14ms  start
+--   ● which-key.nvim 1.79ms 󰢱 which-key  nvim-regexplainer
+--   ● yanky.nvim 28.84ms  LazyFile
+--
+-- Not Loaded (115)
+--   ○ activate.nvim
+--   ○ advanced-git-search.nvim
+--   ○ aerial.nvim
+--   ○ calvera-dark.nvim
+--   ○ catppuccin
+--   ○ ccc.nvim
+--   ○ ChatGPT.nvim
+--   ○ close-buffers.nvim
+--   ○ code-refactor.nvim
+--   ○ command-and-cursor.nvim
+--   ○ CopilotChat.nvim
+--   ○ core.nvim  git-log.nvim
+--   ○ decisive.nvim
+--   ○ diffview.nvim  neogit
+--   ○ edit-markdown-table.nvim
+--   ○ eyeliner.nvim
+--   ○ flatten.nvim
+--   ○ fold-cycle.nvim
+--   ○ fzf  nvim-bqf
+--   ○ fzf-lua  neogit
+--   ○ garbage-day.nvim
+--   ○ genius.nvim
+--   ○ git-conflict.nvim
+--   ○ git-log.nvim
+--   ○ gp.nvim
+--   ○ GPTModels.nvim
+--   ○ kiwi.nvim
+--   ○ kubectl.nvim
+--   ○ lazydev.nvim  lua  LazyDev
+--   ○ leap.nvim  telepath.nvim
+--   ○ lsplinks.nvim
+--   ○ lspsaga.nvim
+--   ○ luvit-meta
+--   ○ markdown-preview.nvim  <leader>cp  MarkdownPreviewStop  MarkdownPreviewToggle  MarkdownPreview
+--   ○ marknav.nvim
+--   ○ middleclass  windows.nvim
+--   ○ mini.files  <leader>fM  <leader>fm
+--   ○ mini.nvim
+--   ○ minimap.vim
+--   ○ muren.nvim
+--   ○ neo-minimap
+--   ○ neoai.nvim
+--   ○ NeoComposer.nvim
+--   ○ neogit
+--   ○ nvim-bqf
+--   ○ nvim-dbee
+--   ○ nvim-insx
+--   ○ nvim-lightbulb
+--   ○ nvim-regexplainer
+--   ○ nvim-spectre  <leader>sr  Spectre
+--   ○ nvim-spider
+--   ○ nvim-tinygit  fugit2.nvim
+--   ○ nvim-web-devicons  oil.nvim  lspsaga.nvim  fugit2.nvim  aerial.nvim  octo.nvim  trouble.nvim
+--   ○ nvim_rocks  nvim-spider
+--   ○ obsidian.nvim
+--   ○ octo.nvim
+--   ○ oil.nvim
+--   ○ oldworld.nvim
+--   ○ outline.nvim  <leader>cs  Outline
+--   ○ peek.nvim
+--   ○ playground  TSPlaygroundToggle
+--   ○ pomo.nvim
+--   ○ pretty_hover
+--   ○ rabbit.nvim
+--   ○ reactive.nvim
+--   ○ replacer.nvim
+--   ○ satellite.nvim
+--   ○ scope.nvim
+--   ○ scrollEOF.nvim
+--   ○ sentiment.nvim
+--   ○ smart-splits.nvim
+--   ○ ssr.nvim
+--   ○ sunglasses.nvim
+--   ○ symbol-usage.nvim
+--   ○ tabout.nvim
+--   ○ tabular
+--   ○ tailwind-tools.nvim
+--   ○ tardis.nvim
+--   ○ telepath.nvim
+--   ○ telescope-ghq.nvim  telescope.nvim
+--   ○ telescope-import.nvim
+--   ○ telescope-undo.nvim  telescope.nvim
+--   ○ termim.nvim
+--   ○ toggleterm.nvim
+--   ○ trailblazer.nvim
+--   ○ transparent.nvim
+--   ○ tree-sitter-just
+--   ○ TreePin
+--   ○ treesitter-indent-object.nvim  ai (o)  aI (x)  aI (o)  ii (x)  ii (o)  iI (x)  iI (o)  ai (x)
+--   ○ true-zen.nvim
+--   ○ ts-error-translator.nvim
+--   ○ ts-node-action
+--   ○ tsc.nvim
+--   ○ tw-values.nvim
+--   ○ typecheck.nvim
+--   ○ typst-preview.nvim
+--   ○ ultimate-autopair.nvim
+--   ○ undotree
+--   ○ venv-selector.nvim  <leader>cv  python  VenvSelect
+--   ○ vim-dadbod  vim-dadbod-ui
+--   ○ vim-dadbod-ui
+--   ○ vim-fugitive  advanced-git-search.nvim
+--   ○ vim-helm  helm
+--   ○ vim-rhubarb  advanced-git-search.nvim
+--   ○ vim-translator
+--   ○ vim-visual-multi
+--   ○ vim-wakatime
+--   ○ visual-whitespace.nvim
+--   ○ wf.nvim
+--   ○ whaler
+--   ○ windows.nvim
+--   ○ winshift.nvim
+--   ○ wtf.nvim
+--   ○ yaml-companion.nvim
+--   ○ zone.nvim
+--
+-- Disabled (1)
+--   ○ mini.pairs
+--
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 ---
@@ -17,15 +239,15 @@ return {
       require("windows").setup()
     end,
   },
-  {
-    "Wansmer/langmapper.nvim",
-    lazy = false,
-    priority = 1, -- High priority is needed if you will use `autoremap()`
-    config = function()
-      require("langmapper").setup({--[[ your config ]]
-      })
-    end,
-  },
+  -- {
+  --   "Wansmer/langmapper.nvim",
+  --   lazy = false,
+  --   priority = 1, -- High priority is needed if you will use `autoremap()`
+  --   config = function()
+  --     require("langmapper").setup({--[[ your config ]]
+  --     })
+  --   end,
+  -- },
   { -- scroll bar
     "lewis6991/satellite.nvim",
     opts = {
@@ -43,31 +265,31 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     cmd = "EditMarkdownTable",
   },
-  {
-    "topaxi/gh-actions.nvim",
-    cmd = "GhActions",
-    keys = {
-      { "<leader>gh", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
-    },
-    -- optional, you can also install and use `yq` instead.
-    build = "make",
-    dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
-    opts = {},
-    config = function(_, opts)
-      require("gh-actions").setup(opts)
-    end,
-  },
-  { -- session manager
-    "RutaTang/spectacle.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-    opts = {
-      -- "/path/of/dir/where/you/want/to/save/all/sessions"
-      session_dir = vim.fn.stdpath("data") .. "/sessions",
-    },
-  },
+  -- {
+  --   "topaxi/gh-actions.nvim",
+  --   cmd = "GhActions",
+  --   keys = {
+  --     { "<leader>gh", "<cmd>GhActions<cr>", desc = "Open Github Actions" },
+  --   },
+  --   -- optional, you can also install and use `yq` instead.
+  --   build = "make",
+  --   dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim" },
+  --   opts = {},
+  --   config = function(_, opts)
+  --     require("gh-actions").setup(opts)
+  --   end,
+  -- },
+  -- { -- session manager
+  --   "RutaTang/spectacle.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-telescope/telescope.nvim",
+  --   },
+  --   opts = {
+  --     -- "/path/of/dir/where/you/want/to/save/all/sessions"
+  --     session_dir = vim.fn.stdpath("data") .. "/sessions",
+  --   },
+  -- },
   {
     "KaitlynEthylia/TreePin",
     dependencies = "nvim-treesitter/nvim-treesitter",
@@ -79,12 +301,12 @@ return {
     "serenevoid/kiwi.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
   },
-  { -- floating window manager
-    "tamton-aquib/flirt.nvim",
-    opts = {
-      speed = 100, -- animation speed
-    },
-  },
+  -- { -- floating window manager
+  --   "tamton-aquib/flirt.nvim",
+  --   opts = {
+  --     speed = 100, -- animation speed
+  --   },
+  -- },
   { "tamton-aquib/zone.nvim" },
   { -- Replace text in quickfix list
     "gabrielpoca/replacer.nvim",
@@ -147,16 +369,16 @@ return {
       "rcarriga/nvim-notify", -- optional, but will lack some features without it
     },
   },
-  { -- Show LSP action
-    "luckasRanarison/clear-action.nvim",
-    opts = {},
-  },
-  { -- Show LSP action
-    "roobert/action-hints.nvim",
-    config = function()
-      require("action-hints").setup()
-    end,
-  },
+  -- { -- Show LSP action
+  --   "luckasRanarison/clear-action.nvim",
+  --   opts = {},
+  -- },
+  -- { -- Show LSP action
+  --   "roobert/action-hints.nvim",
+  --   config = function()
+  --     require("action-hints").setup()
+  --   end,
+  -- },
   { -- project switcher
     "SalOrak/whaler",
     config = function()
@@ -469,27 +691,27 @@ return {
     lazy = false,
     priority = 1000,
   },
-  {
-    "jellydn/quick-code-runner.nvim",
-    dependencies = { "MunifTanjim/nui.nvim" },
-    opts = {
-      debug = true,
-    },
-    cmd = { "QuickCodeRunner", "QuickCodePad" },
-    keys = {
-      {
-        "<leader>cr",
-        ":QuickCodeRunner<CR>",
-        desc = "Quick Code Runner",
-        mode = "v",
-      },
-      {
-        "<leader>cp",
-        ":QuickCodePad<CR>",
-        desc = "Quick Code Pad",
-      },
-    },
-  },
+  -- {
+  --   "jellydn/quick-code-runner.nvim",
+  --   dependencies = { "MunifTanjim/nui.nvim" },
+  --   opts = {
+  --     debug = true,
+  --   },
+  --   cmd = { "QuickCodeRunner", "QuickCodePad" },
+  --   keys = {
+  --     {
+  --       "<leader>cr",
+  --       ":QuickCodeRunner<CR>",
+  --       desc = "Quick Code Runner",
+  --       mode = "v",
+  --     },
+  --     {
+  --       "<leader>cp",
+  --       ":QuickCodePad<CR>",
+  --       desc = "Quick Code Pad",
+  --     },
+  --   },
+  -- },
   {
     "jellydn/typecheck.nvim",
     dependencies = { "folke/trouble.nvim", dependencies = { "nvim-tree/nvim-web-devicons" } },
@@ -526,49 +748,49 @@ return {
       "nvim-telescope/telescope.nvim",
     },
   },
-  {
-    "lewis6991/hover.nvim",
-    config = function()
-      require("hover").setup({
-        init = function()
-          -- Require providers
-          require("hover.providers.lsp")
-          -- require('hover.providers.gh')
-          -- require('hover.providers.gh_user')
-          -- require('hover.providers.jira')
-          -- require('hover.providers.dap')
-          -- require('hover.providers.diagnostic')
-          -- require('hover.providers.man')
-          -- require('hover.providers.dictionary')
-        end,
-        preview_opts = {
-          border = "single",
-        },
-        -- Whether the contents of a currently open hover window should be moved
-        -- to a :h preview-window when pressing the hover keymap.
-        preview_window = false,
-        title = true,
-        mouse_providers = {
-          "LSP",
-        },
-        mouse_delay = 1000,
-      })
-
-      -- Setup keymaps
-      vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
-      vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
-      vim.keymap.set("n", "<C-p>", function()
-        require("hover").hover_switch("previous")
-      end, { desc = "hover.nvim (previous source)" })
-      vim.keymap.set("n", "<C-n>", function()
-        require("hover").hover_switch("next")
-      end, { desc = "hover.nvim (next source)" })
-
-      -- Mouse support
-      vim.keymap.set("n", "<MouseMove>", require("hover").hover_mouse, { desc = "hover.nvim (mouse)" })
-      vim.o.mousemoveevent = true
-    end,
-  },
+  -- {
+  --   "lewis6991/hover.nvim",
+  --   config = function()
+  --     require("hover").setup({
+  --       init = function()
+  --         -- Require providers
+  --         require("hover.providers.lsp")
+  --         -- require('hover.providers.gh')
+  --         -- require('hover.providers.gh_user')
+  --         -- require('hover.providers.jira')
+  --         -- require('hover.providers.dap')
+  --         -- require('hover.providers.diagnostic')
+  --         -- require('hover.providers.man')
+  --         -- require('hover.providers.dictionary')
+  --       end,
+  --       preview_opts = {
+  --         border = "single",
+  --       },
+  --       -- Whether the contents of a currently open hover window should be moved
+  --       -- to a :h preview-window when pressing the hover keymap.
+  --       preview_window = false,
+  --       title = true,
+  --       mouse_providers = {
+  --         "LSP",
+  --       },
+  --       mouse_delay = 1000,
+  --     })
+  --
+  --     -- Setup keymaps
+  --     vim.keymap.set("n", "K", require("hover").hover, { desc = "hover.nvim" })
+  --     vim.keymap.set("n", "gK", require("hover").hover_select, { desc = "hover.nvim (select)" })
+  --     vim.keymap.set("n", "<C-p>", function()
+  --       require("hover").hover_switch("previous")
+  --     end, { desc = "hover.nvim (previous source)" })
+  --     vim.keymap.set("n", "<C-n>", function()
+  --       require("hover").hover_switch("next")
+  --     end, { desc = "hover.nvim (next source)" })
+  --
+  --     -- Mouse support
+  --     vim.keymap.set("n", "<MouseMove>", require("hover").hover_mouse, { desc = "hover.nvim (mouse)" })
+  --     vim.o.mousemoveevent = true
+  --   end,
+  -- },
   -- Lazy
   {
     "piersolenski/telescope-import.nvim",
@@ -602,14 +824,14 @@ return {
     event = "LspAttach",
     opts = {},
   },
-  {
-    "NStefan002/donut.nvim",
-    version = "*",
-    lazy = false,
-    opts = {
-      timeout = 240,
-    },
-  },
+  -- {
+  --   "NStefan002/donut.nvim",
+  --   version = "*",
+  --   lazy = false,
+  --   opts = {
+  --     timeout = 240,
+  --   },
+  -- },
   {
     "luckasRanarison/tailwind-tools.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
@@ -635,25 +857,25 @@ return {
       require("kubectl").setup()
     end,
   },
-  {
-    "SuperBo/fugit2.nvim",
-    opts = {
-      width = 70,
-    },
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "nvim-lua/plenary.nvim",
-      {
-        "chrisgrieser/nvim-tinygit", -- optional: for Github PR view
-        dependencies = { "stevearc/dressing.nvim" },
-      },
-    },
-    cmd = { "Fugit2", "Fugit2Diff", "Fugit2Graph" },
-    -- keys = {
-    --   { "<leader>F", mode = "n", "<cmd>Fugit2<cr>" },
-    -- },
-  },
+  -- {
+  --   "SuperBo/fugit2.nvim",
+  --   opts = {
+  --     width = 70,
+  --   },
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "nvim-tree/nvim-web-devicons",
+  --     "nvim-lua/plenary.nvim",
+  --     {
+  --       "chrisgrieser/nvim-tinygit", -- optional: for Github PR view
+  --       dependencies = { "stevearc/dressing.nvim" },
+  --     },
+  --   },
+  --   cmd = { "Fugit2", "Fugit2Diff", "Fugit2Graph" },
+  --   -- keys = {
+  --   --   { "<leader>F", mode = "n", "<cmd>Fugit2<cr>" },
+  --   -- },
+  -- },
   {
     "AckslD/muren.nvim",
     config = true,
@@ -817,14 +1039,14 @@ return {
       vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
     end,
   },
-  {
-    "MeanderingProgrammer/markdown.nvim",
-    name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("render-markdown").setup({})
-    end,
-  },
+  -- {
+  --   "MeanderingProgrammer/markdown.nvim",
+  --   name = "render-markdown", -- Only needed if you have another plugin named markdown.nvim
+  --   dependencies = { "nvim-treesitter/nvim-treesitter" },
+  --   config = function()
+  --     require("render-markdown").setup({})
+  --   end,
+  -- },
   {
     "archibate/genius.nvim",
     requires = {

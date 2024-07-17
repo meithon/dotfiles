@@ -5,6 +5,9 @@ local alpha = function()
   return string.format("%x", math.floor(255 * (vim.g.transparency or 0.8)))
 end
 
+local opt = vim.opt
+opt.splitkeep = "cursor"
+
 vim.g.neovide_transparency = 0.8
 vim.g.transparency = 0.3
 -- vim.g.neovide_background_color = "#0f1117" .. alpha()
