@@ -1,233 +1,74 @@
 local map = vim.keymap.set
 
--- Clean (4)
---   ○ baleia.nvim
---   ○ image.nvim
---   ○ mini.pairs
---   ○ nvim-jdtls
---
--- Not Installed (11)
---   ○ action-hints.nvim
---   ○ clear-action.nvim
---   ○ donut.nvim
---   ○ flirt.nvim
---   ○ fugit2.nvim
---   ○ gh-actions.nvim
---   ○ hover.nvim
---   ○ langmapper.nvim
---   ○ quick-code-runner.nvim
---   ○ render-markdown
---   ○ spectacle.nvim
---
--- Loaded (81)
---   ● bufferline.nvim 4.12ms  VeryLazy
---   ● clangd_extensions.nvim 0.56ms 󰢱 clangd_extensions  nvim-lspconfig
---   ● cmp-buffer 12.02ms  nvim-cmp
---   ● cmp-cmdline 1.09ms  nvim-cmp
---   ● cmp-emoji 1.01ms  nvim-cmp
---   ● cmp-nvim-lsp 1.56ms 󰢱 cmp_nvim_lsp  nvim-lspconfig
---   ● cmp-nvim-lsp-document-symbol 1.08ms  nvim-cmp
---   ● cmp-path 0.92ms  nvim-cmp
---   ● conform.nvim 3.93ms 󰢱 conform  LazyVim
---   ● copilot-cmp 4.36ms  nvim-cmp
---   ● copilot.lua 3.63ms  copilot-cmp
---   ● crates.nvim 5.28ms  nvim-cmp
---   ● dashboard-nvim 1.28ms  start
---   ● dressing.nvim 16.93ms  Lazy load
---   ● flash.nvim 1.16ms  VeryLazy
---   ● format-ts-errors.nvim 0.5ms  nvim-lspconfig
---   ● friendly-snippets 0.51ms  nvim-snippets
---   ● gitsigns.nvim 8.39ms  LazyFile
---   ● headlines.nvim 0.21ms  markdown
---   ● indent-blankline.nvim 4.28ms  LazyFile
---   ● lazy-help.nvim 0.86ms  lazy
---   ● lazy.nvim 32.79ms  init.lua
---   ● lazyflex.nvim 0.06ms  start
---   ● LazyVim 4.21ms  start
---   ● lspkind-nvim 0.05ms  nvim-cmp
---   ● lualine.nvim 12.46ms  VeryLazy
---   ● LuaSnip 13.6ms  start
---   ● markid 1.01ms  nvim-treesitter
---   ● mason-lspconfig.nvim 0.07ms  nvim-lspconfig
---   ● mason-nvim-dap.nvim 0.1ms 󰢱 mason-nvim-dap  nvim-dap
---   ● mason.nvim 18.16ms  nvim-lspconfig
---   ● mini.ai 0.68ms  VeryLazy
---   ● mini.bufremove 1.89ms  <C-Q>
---   ● mini.hipatterns 0.53ms  LazyFile
---   ● mini.icons 2.06ms 󰢱 mini.icons  LazyVim
---   ● neo-tree.nvim 21.69ms  <leader>e
---   ● neotest 67.12ms  <leader>tr
---   ● neotest-playwright 2.53ms  neotest
---   ● neotest-python 2.62ms  neotest
---   ● neotest-vitest 2.48ms  neotest
---   ● noice.nvim 2.63ms  start
---   ● nui.nvim 0.21ms  nvim-regexplainer
---   ● nvim-cmp 32.13ms 󰢱 cmp  obsidian.nvim
---   ● nvim-dap 19.11ms 󰢱 dap  nvim-lspconfig
---   ● nvim-dap-go 1.11ms  nvim-dap
---   ● nvim-dap-python 0.73ms  nvim-dap
---   ● nvim-dap-ui 11.12ms  nvim-dap
---   ● nvim-dap-virtual-text 0.74ms  nvim-dap
---   ● nvim-lint 1.48ms  LazyFile
---   ● nvim-lspconfig 65.63ms  garbage-day.nvim
---   ● nvim-metals 0.15ms 󰢱 metals  nvim-lspconfig
---   ● nvim-navic 2.3ms 󰢱 nvim-navic  LazyVim
---   ● nvim-nio 0.4ms  nvim-dap-ui
---   ● nvim-notify 2.11ms 󰢱 notify  noice.nvim
---   ● nvim-snippets 3.6ms  nvim-cmp
---   ● nvim-treesitter 9.93ms  aerial.nvim
---   ● nvim-treesitter-textobjects 2.36ms  VeryLazy
---   ● nvim-ts-autotag 3.15ms  nvim-treesitter
---   ● nvim-window-picker 2.49ms  neo-tree.nvim
---   ● one-small-step-for-vimkind 0.05ms  nvim-dap
---   ● persistence.nvim 2.18ms  BufReadPre
---   ● plenary.nvim 0.57ms 󰢱 plenary.log  telescope-fzf-native.nvim
---   ● project.nvim 1.36ms  VeryLazy
---   ● refactoring.nvim 15.72ms  BufReadPre
---   ● rustaceanvim 2.2ms 󰢱 rustaceanvim.neotest  neotest
---   ● SchemaStore.nvim 0.12ms 󰢱 schemastore  LazyVim
---   ● sqlite.lua 0.63ms  yanky.nvim
---   ● syntax-tree-surfer 6.27ms  va
---   ● tailwindcss-colorizer-cmp.nvim 0.77ms  nvim-cmp
---   ● telescope-fzf-native.nvim 6.23ms  telescope.nvim
---   ● telescope-terraform-doc.nvim 24.63ms  telescope.nvim
---   ● telescope-terraform.nvim 9.56ms  telescope.nvim
---   ● telescope-zoxide 0.15ms  telescope.nvim
---   ● todo-comments.nvim 2.1ms  LazyFile
---   ● tokyonight.nvim 0.73ms 󰢱 tokyonight  LazyVim
---   ● trouble.nvim 2.41ms 󰢱 trouble  lualine.nvim
---   ● ts-comments.nvim 0.77ms  VeryLazy
---   ● vim-illuminate 1.63ms  start
---   ● vimtex 1.14ms  start
---   ● which-key.nvim 1.79ms 󰢱 which-key  nvim-regexplainer
---   ● yanky.nvim 28.84ms  LazyFile
---
--- Not Loaded (115)
---   ○ activate.nvim
---   ○ advanced-git-search.nvim
---   ○ aerial.nvim
---   ○ calvera-dark.nvim
---   ○ catppuccin
---   ○ ccc.nvim
---   ○ ChatGPT.nvim
---   ○ close-buffers.nvim
---   ○ code-refactor.nvim
---   ○ command-and-cursor.nvim
---   ○ CopilotChat.nvim
---   ○ core.nvim  git-log.nvim
---   ○ decisive.nvim
---   ○ diffview.nvim  neogit
---   ○ edit-markdown-table.nvim
---   ○ eyeliner.nvim
---   ○ flatten.nvim
---   ○ fold-cycle.nvim
---   ○ fzf  nvim-bqf
---   ○ fzf-lua  neogit
---   ○ garbage-day.nvim
---   ○ genius.nvim
---   ○ git-conflict.nvim
---   ○ git-log.nvim
---   ○ gp.nvim
---   ○ GPTModels.nvim
---   ○ kiwi.nvim
---   ○ kubectl.nvim
---   ○ lazydev.nvim  lua  LazyDev
---   ○ leap.nvim  telepath.nvim
---   ○ lsplinks.nvim
---   ○ lspsaga.nvim
---   ○ luvit-meta
---   ○ markdown-preview.nvim  <leader>cp  MarkdownPreviewStop  MarkdownPreviewToggle  MarkdownPreview
---   ○ marknav.nvim
---   ○ middleclass  windows.nvim
---   ○ mini.files  <leader>fM  <leader>fm
---   ○ mini.nvim
---   ○ minimap.vim
---   ○ muren.nvim
---   ○ neo-minimap
---   ○ neoai.nvim
---   ○ NeoComposer.nvim
---   ○ neogit
---   ○ nvim-bqf
---   ○ nvim-dbee
---   ○ nvim-insx
---   ○ nvim-lightbulb
---   ○ nvim-regexplainer
---   ○ nvim-spectre  <leader>sr  Spectre
---   ○ nvim-spider
---   ○ nvim-tinygit  fugit2.nvim
---   ○ nvim-web-devicons  oil.nvim  lspsaga.nvim  fugit2.nvim  aerial.nvim  octo.nvim  trouble.nvim
---   ○ nvim_rocks  nvim-spider
---   ○ obsidian.nvim
---   ○ octo.nvim
---   ○ oil.nvim
---   ○ oldworld.nvim
---   ○ outline.nvim  <leader>cs  Outline
---   ○ peek.nvim
---   ○ playground  TSPlaygroundToggle
---   ○ pomo.nvim
---   ○ pretty_hover
---   ○ rabbit.nvim
---   ○ reactive.nvim
---   ○ replacer.nvim
---   ○ satellite.nvim
---   ○ scope.nvim
---   ○ scrollEOF.nvim
---   ○ sentiment.nvim
---   ○ smart-splits.nvim
---   ○ ssr.nvim
---   ○ sunglasses.nvim
---   ○ symbol-usage.nvim
---   ○ tabout.nvim
---   ○ tabular
---   ○ tailwind-tools.nvim
---   ○ tardis.nvim
---   ○ telepath.nvim
---   ○ telescope-ghq.nvim  telescope.nvim
---   ○ telescope-import.nvim
---   ○ telescope-undo.nvim  telescope.nvim
---   ○ termim.nvim
---   ○ toggleterm.nvim
---   ○ trailblazer.nvim
---   ○ transparent.nvim
---   ○ tree-sitter-just
---   ○ TreePin
---   ○ treesitter-indent-object.nvim  ai (o)  aI (x)  aI (o)  ii (x)  ii (o)  iI (x)  iI (o)  ai (x)
---   ○ true-zen.nvim
---   ○ ts-error-translator.nvim
---   ○ ts-node-action
---   ○ tsc.nvim
---   ○ tw-values.nvim
---   ○ typecheck.nvim
---   ○ typst-preview.nvim
---   ○ ultimate-autopair.nvim
---   ○ undotree
---   ○ venv-selector.nvim  <leader>cv  python  VenvSelect
---   ○ vim-dadbod  vim-dadbod-ui
---   ○ vim-dadbod-ui
---   ○ vim-fugitive  advanced-git-search.nvim
---   ○ vim-helm  helm
---   ○ vim-rhubarb  advanced-git-search.nvim
---   ○ vim-translator
---   ○ vim-visual-multi
---   ○ vim-wakatime
---   ○ visual-whitespace.nvim
---   ○ wf.nvim
---   ○ whaler
---   ○ windows.nvim
---   ○ winshift.nvim
---   ○ wtf.nvim
---   ○ yaml-companion.nvim
---   ○ zone.nvim
---
--- Disabled (1)
---   ○ mini.pairs
---
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 ---
 return {
+  { -- ⭐ Powerful AI interface
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-telescope/telescope.nvim", -- Optional
+      {
+        "stevearc/dressing.nvim", -- Optional: Improves the default Neovim UI
+        opts = {},
+      },
+      cmd = {
+        "cc",
+        "CodeCompanion",
+        "CodeCompanionAdd",
+        "CodeCompanionChat",
+        "CodeCompanionActions",
+        "CodeCompanionToggle",
+      },
+      -- keys = {
+      --   {
+      --     "<C-a>",
+      --     "<cmd>CodeCompanionActions<cr>",
+      --   },
+      --
+      --   {
+      --     "<C-a>",
+      --     "<cmd>CodeCompanionActions<cr>",
+      --     desc = "Show code actions",
+      --   },
+      --   {
+      --     "<Leader>a",
+      --     "<cmd>CodeCompanionToggle<cr>",
+      --     desc = "Toggle CodeCompanion",
+      --   },
+      --   {
+      --     "ga",
+      --     "<cmd>CodeCompanionAdd<cr>",
+      --     desc = "Add context to CodeCompanion",
+      --     mode = "v",
+      --     { noremap = true, silent = true },
+      --   },
+      -- },
+    },
+    config = function()
+      -- Expand 'cc' into 'CodeCompanion' in the command line
+      vim.cmd([[cab cc CodeCompanion]])
+
+      vim.api.nvim_set_keymap("n", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Leader>a", "<cmd>CodeCompanionToggle<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Leader>a", "<cmd>CodeCompanionToggle<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionAdd<cr>", { noremap = true, silent = true })
+
+      require("codecompanion").setup()
+    end,
+  },
+  { -- colorschma
+    "0xstepit/flow.nvim",
+    lazy = false,
+    priority = 1001,
+    opts = {},
+  },
   {
     "anuvyklack/windows.nvim",
+    event = "WinEnter",
     dependencies = {
       "anuvyklack/middleclass",
       -- "anuvyklack/animation.nvim",
@@ -250,12 +91,14 @@ return {
   -- },
   { -- scroll bar
     "lewis6991/satellite.nvim",
+    event = "BufReadPost",
     opts = {
       current_only = true,
     },
   },
   { -- macro manager
     "ecthelionvi/NeoComposer.nvim",
+    cmd = { "EditMacros" },
     dependencies = { "kkharji/sqlite.lua" },
     opts = {},
   },
@@ -290,15 +133,16 @@ return {
   --     session_dir = vim.fn.stdpath("data") .. "/sessions",
   --   },
   -- },
-  {
-    "KaitlynEthylia/TreePin",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    config = function()
-      require("treepin").setup()
-    end,
-  },
+  -- {
+  --   "KaitlynEthylia/TreePin",
+  --   dependencies = "nvim-treesitter/nvim-treesitter",
+  --   config = function()
+  --     require("treepin").setup()
+  --   end,
+  -- },
   {
     "serenevoid/kiwi.nvim",
+    ft = { "markdown" },
     dependencies = { "nvim-lua/plenary.nvim" },
   },
   -- { -- floating window manager
@@ -307,19 +151,23 @@ return {
   --     speed = 100, -- animation speed
   --   },
   -- },
-  { "tamton-aquib/zone.nvim" },
-  { -- Replace text in quickfix list
-    "gabrielpoca/replacer.nvim",
-    config = function()
-      require("replacer").setup()
-      -- TODO: integrate with telescope
-    end,
+  { --screan saver
+    "tamton-aquib/zone.nvim",
+    cmd = { "Zone" },
   },
+  -- { -- Replace text in quickfix list
+  --   "gabrielpoca/replacer.nvim",
+  --   config = function()
+  --     require("replacer").setup()
+  --     -- TODO: integrate with telescope
+  --   end,
+  -- },
   { -- Show all tailwind CSS value  of component
     "MaximilianLloyd/tw-values.nvim",
     keys = {
       { "<leader>sv", "<cmd>TWValues<cr>", desc = "Show tailwind CSS values" },
     },
+    ft = { "typescriptreact", "javascriptreact", "html" },
     opts = {
       border = "rounded", -- Valid window border style,
       show_unknown_classes = true, -- Shows the unknown classes popup
@@ -330,28 +178,28 @@ return {
       },
     },
   },
-  { -- TODO: disable which-key
-    "Cassin01/wf.nvim",
-    version = "*",
-    opts = {},
-  },
-  { -- smart window manager
-    "mrjones2014/smart-splits.nvim",
-    -- TODO: keymap
-  },
-  {
-    "roobert/activate.nvim",
-    -- keys = {
-    --   {
-    --     "<leader>P",
-    --     '<CMD>lua require("activate").list_plugins()<CR>',
-    --     desc = "Plugins",
-    --   },
-    -- },
-    dependencies = {
-      { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
-    },
-  },
+  -- { -- TODO: disable which-key
+  --   "Cassin01/wf.nvim",
+  --   version = "*",
+  --   opts = {},
+  -- },
+  -- { -- smart window manager
+  --   "mrjones2014/smart-splits.nvim",
+  --   -- TODO: keymap
+  -- },
+  -- { -- plugin installer
+  --   "roobert/activate.nvim",
+  --   -- keys = {
+  --   --   {
+  --   --     "<leader>P",
+  --   --     '<CMD>lua require("activate").list_plugins()<CR>',
+  --   --     desc = "Plugins",
+  --   --   },
+  --   -- },
+  --   dependencies = {
+  --     { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
+  --   },
+  -- },
   { -- Show Symbol and reference of LSP
     "Wansmer/symbol-usage.nvim",
     event = "BufReadPre", -- need run before LspAttach if you use nvim 0.9. On 0.10 use 'LspAttach'
@@ -359,16 +207,16 @@ return {
       require("symbol-usage").setup()
     end,
   },
-  {
-    "chrisgrieser/nvim-tinygit",
-    ft = { "git_rebase", "gitcommit" }, -- so ftplugins are loaded
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "nvim-telescope/telescope.nvim", -- either telescope or fzf-lua
-      -- "ibhagwan/fzf-lua",
-      "rcarriga/nvim-notify", -- optional, but will lack some features without it
-    },
-  },
+  -- {
+  --   "chrisgrieser/nvim-tinygit",
+  --   ft = { "git_rebase", "gitcommit" }, -- so ftplugins are loaded
+  --   dependencies = {
+  --     "stevearc/dressing.nvim",
+  --     "nvim-telescope/telescope.nvim", -- either telescope or fzf-lua
+  --     -- "ibhagwan/fzf-lua",
+  --     "rcarriga/nvim-notify", -- optional, but will lack some features without it
+  --   },
+  -- },
   -- { -- Show LSP action
   --   "luckasRanarison/clear-action.nvim",
   --   opts = {},
@@ -379,42 +227,42 @@ return {
   --     require("action-hints").setup()
   --   end,
   -- },
-  { -- project switcher
-    "SalOrak/whaler",
-    config = function()
-      -- Telescope setup()
-      local telescope = require("telescope")
-      telescope.setup({
-        -- Your telescope setup here...
-        extensions = {
-          whaler = {
-            -- Whaler configuration
-            directories = { "path/to/dir", "path/to/another/dir", { path = "path/to/yet/another/dir", alias = "yet" } },
-            -- You may also add directories that will not be searched for subdirectories
-            oneoff_directories = {
-              "path/to/project/folder",
-              { path = "path/to/another/project", alias = "Project Z" },
-            },
-          },
-        },
-      })
-      -- More config here
-      telescope.load_extension("whaler")
-      --
-
-      -- Open whaler using <leader>fw
-      -- vim.keymap.set("n", "<leader>fw", function()
-      --     local w = telescope.extensions.whaler.whaler
-      --     w({
-      --         -- Settings can also be called here.
-      --         -- These would use but not change the setup configuration.
-      --     })
-      --  end,)
-
-      -- Or directly
-      vim.keymap.set("n", "<leader>fw", telescope.extensions.whaler.whaler)
-    end,
-  },
+  -- { -- project switcher
+  --   "SalOrak/whaler",
+  --   config = function()
+  --     -- Telescope setup()
+  --     local telescope = require("telescope")
+  --     telescope.setup({
+  --       -- Your telescope setup here...
+  --       extensions = {
+  --         whaler = {
+  --           -- Whaler configuration
+  --           directories = { "path/to/dir", "path/to/another/dir", { path = "path/to/yet/another/dir", alias = "yet" } },
+  --           -- You may also add directories that will not be searched for subdirectories
+  --           oneoff_directories = {
+  --             "path/to/project/folder",
+  --             { path = "path/to/another/project", alias = "Project Z" },
+  --           },
+  --         },
+  --       },
+  --     })
+  --     -- More config here
+  --     telescope.load_extension("whaler")
+  --     --
+  --
+  --     -- Open whaler using <leader>fw
+  --     -- vim.keymap.set("n", "<leader>fw", function()
+  --     --     local w = telescope.extensions.whaler.whaler
+  --     --     w({
+  --     --         -- Settings can also be called here.
+  --     --         -- These would use but not change the setup configuration.
+  --     --     })
+  --     --  end,)
+  --
+  --     -- Or directly
+  --     vim.keymap.set("n", "<leader>fw", telescope.extensions.whaler.whaler)
+  --   end,
+  -- },
   -- { -- LSP manager
   --   "hinell/lsp-timeout.nvim",
   --   dependencies = { "neovim/nvim-lspconfig" },
@@ -427,34 +275,35 @@ return {
   --     })
   --   end,
   -- },
-  { "miversen33/sunglasses.nvim", config = true },
+  -- { "miversen33/sunglasses.nvim", config = true },
   {
     "hedyhli/outline.nvim",
+    cmd = "Outline",
     opts = {},
   },
-  { "IndianBoy42/tree-sitter-just" },
-  {
-    "cshuaimin/ssr.nvim",
-    module = "ssr",
-    -- Calling setup is optional.
-    config = function()
-      require("ssr").setup({
-        border = "rounded",
-        min_width = 50,
-        min_height = 5,
-        max_width = 120,
-        max_height = 25,
-        adjust_window = true,
-        keymaps = {
-          close = "q",
-          next_match = "n",
-          prev_match = "N",
-          replace_confirm = "<cr>",
-          replace_all = "<leader><cr>",
-        },
-      })
-    end,
-  },
+  { "IndianBoy42/tree-sitter-just", ft = { "just" } },
+  -- {
+  --   "cshuaimin/ssr.nvim",
+  --   module = "ssr",
+  --   -- Calling setup is optional.
+  --   config = function()
+  --     require("ssr").setup({
+  --       border = "rounded",
+  --       min_width = 50,
+  --       min_height = 5,
+  --       max_width = 120,
+  --       max_height = 25,
+  --       adjust_window = true,
+  --       keymaps = {
+  --         close = "q",
+  --         next_match = "n",
+  --         prev_match = "N",
+  --         replace_confirm = "<cr>",
+  --         replace_all = "<leader><cr>",
+  --       },
+  --     })
+  --   end,
+  -- },
   {
     "chomosuke/typst-preview.nvim",
     lazy = false, -- or ft = 'typst'
@@ -1348,65 +1197,65 @@ return {
   --   },
   -- },
   -- Using packer
-  {
-    "LeonHeidelbach/trailblazer.nvim",
-    config = function()
-      require("trailblazer").setup({})
-    end,
-    -- :TrailBlazerNewTrailMark 	<window? number>
-    -- <buffer? string | number>
-    -- <cursor_pos_row? number>
-    -- <cursor_pos_col? number> 	Create a new / toggle existing trail mark at the current cursor position or at the specified window / buffer / position.
-    -- :TrailBlazerTrackBack 	<buffer? string | number> 	Move to the last global trail mark or the last one within the specified buffer and remove it from the trail mark stack.
-    -- :TrailBlazerPeekMovePreviousUp 	<buffer? string | number 	Move to the previous global trail mark or the previous one within the specified buffer leading up to the oldest one without removing it from the trail mark stack. In chronologically sorted trail mark modes this will move the trail mark cursor up.
-    -- :TrailBlazerPeekMoveNextDown 	<buffer? string | number> 	Move to the next global trail mark or the next one within the specified buffer leading up to the newest one without removing it from the trail mark stack. In chronologically sorted trail mark modes this will move the trail mark cursor down.
-    -- :TrailBlazerMoveToNearest 	<buffer? string | number>
-    -- <directive? string>
-    -- <dist_type? string> 	Move to the nearest trail mark in the current or the nearest trail mark within the specified buffer. This calculates either the minimum Manhattan Distance or the minimum linear character distance between the current cursor position and the qualifying trail marks depending on dist_type => ("man_dist", "lin_char_dist"). Passing one of the available motion directives to this command will change the behavior of this motion.
-    -- :TrailBlazerMoveToTrailMarkCursor 		Move to the trail mark cursor in the current stack.
-    -- :TrailBlazerDeleteAllTrailMarks 	<buffer? string | number> 	Delete all trail marks globally or within the specified buffer.
-    -- :TrailBlazerPasteAtLastTrailMark 	<buffer? string | number> 	Paste the contents of any selected register at the last global trail mark or the last one within the specified buffer and remove it from the trail mark stack.
-    -- :TrailBlazerPasteAtAllTrailMarks 	<buffer? string | number> 	Paste the contents of any selected register at all global trail marks or at all trail marks within the specified buffer.
-    -- :TrailBlazerTrailMarkSelectMode 	<mode? string> 	Cycle through or set the current trail mark selection mode.
-    -- :TrailBlazerToggleTrailMarkList 	<type? string>
-    -- <buffer? string | number> 	Toggle a global list of all trail marks or a subset within the given buffer. If no arguments are specified the current trail mark selection mode will be used to populate the list with either a subset or all trail marks in the mode specific order.
-    -- :TrailBlazerOpenTrailMarkList 	<type? string>
-    -- <buffer? string | number> 	Open a global list of all trail marks or a subset within the given buffer. If no arguments are specified the current trail mark selection mode will be used to populate the list with either a subset or all trail marks in the mode specific order.
-    -- :TrailBlazerCloseTrailMarkList 	<type? string> 	Close the specified trail mark list. If no arguments are specified all lists will be closed.
-    -- :TrailBlazerSwitchTrailMarkStack 	<stack_name? string> 	Switch to the specified trail mark stack. If no stack under the specified name exists, it will be created. If no arguments are specified the default stack will be selected.
-    -- :TrailBlazerAddTrailMarkStack 	<stack_name? string> 	Add a new trail mark stack. If no arguments are specified the default stack will be added to the list of trail mark stacks.
-    -- :TrailBlazerDeleteTrailMarkStacks 	<stack_name? string>
-    -- ... 	Delete the specified trail mark stacks. If no arguments are specified the current trail mark stack will be deleted.
-    -- :TrailBlazerDeleteAllTrailMarkStacks 		Delete all trail mark stacks.
-    -- :TrailBlazerSwitchNextTrailMarkStack 	<sort_mode? string> 	Switch to the next trail mark stack using the specified sorting mode. If no arguments are specified the current default sort mode will be used.
-    -- :TrailBlazerSwitchPreviousTrailMarkStack 	<sort_mode? string> 	Switch to the previous trail mark stack using the specified sorting mode. If no arguments are specified the current default sort mode will be used.
-    -- :TrailBlazerSetTrailMarkStackSortMode 	<sort_mode? string> 	Cycle through or set the current trail mark stack sort mode.
-    -- :TrailBlazerSaveSession 	<session_path? string> 	Save all trail mark stacks and and the current configuration to a session file. If no arguments are specified the session will be saved in the default session directory. You will find more information here.
-    -- :TrailBlazerLoadSession 	<session_path? string> 	Load a previous session from a session file. If no arguments are specified the session will be loaded from the default session directory. You will find more information here.
-    -- :TrailBlazerDeleteSession 	<session_path? string> 	Delete any valid session file. If no arguments are specified the session will be deleted from the default session directory. You will find more information here.
-    keys = {
-      {
-        "<leader>j",
-        "<cmd>TrailBlazerNewTrailMark<cr>",
-      },
-      {
-        "<C-j>",
-        "<cmd>TrailBlazerTrackBack<cr>",
-      },
-      {
-        "<C-h>",
-        "<cmd>TrailBlazerPeekMovePreviousUp<cr>",
-      },
-      {
-        "<C-l>",
-        "<cmd>TrailBlazerPeekMoveNextDown<cr>",
-      },
-      {
-        "<C-l>",
-        "<cmd>TrailBlazerPeekMoveNextDown<cr>",
-      },
-    },
-  },
+  -- {
+  --   "LeonHeidelbach/trailblazer.nvim",
+  --   config = function()
+  --     require("trailblazer").setup({})
+  --   end,
+  --   -- :TrailBlazerNewTrailMark 	<window? number>
+  --   -- <buffer? string | number>
+  --   -- <cursor_pos_row? number>
+  --   -- <cursor_pos_col? number> 	Create a new / toggle existing trail mark at the current cursor position or at the specified window / buffer / position.
+  --   -- :TrailBlazerTrackBack 	<buffer? string | number> 	Move to the last global trail mark or the last one within the specified buffer and remove it from the trail mark stack.
+  --   -- :TrailBlazerPeekMovePreviousUp 	<buffer? string | number 	Move to the previous global trail mark or the previous one within the specified buffer leading up to the oldest one without removing it from the trail mark stack. In chronologically sorted trail mark modes this will move the trail mark cursor up.
+  --   -- :TrailBlazerPeekMoveNextDown 	<buffer? string | number> 	Move to the next global trail mark or the next one within the specified buffer leading up to the newest one without removing it from the trail mark stack. In chronologically sorted trail mark modes this will move the trail mark cursor down.
+  --   -- :TrailBlazerMoveToNearest 	<buffer? string | number>
+  --   -- <directive? string>
+  --   -- <dist_type? string> 	Move to the nearest trail mark in the current or the nearest trail mark within the specified buffer. This calculates either the minimum Manhattan Distance or the minimum linear character distance between the current cursor position and the qualifying trail marks depending on dist_type => ("man_dist", "lin_char_dist"). Passing one of the available motion directives to this command will change the behavior of this motion.
+  --   -- :TrailBlazerMoveToTrailMarkCursor 		Move to the trail mark cursor in the current stack.
+  --   -- :TrailBlazerDeleteAllTrailMarks 	<buffer? string | number> 	Delete all trail marks globally or within the specified buffer.
+  --   -- :TrailBlazerPasteAtLastTrailMark 	<buffer? string | number> 	Paste the contents of any selected register at the last global trail mark or the last one within the specified buffer and remove it from the trail mark stack.
+  --   -- :TrailBlazerPasteAtAllTrailMarks 	<buffer? string | number> 	Paste the contents of any selected register at all global trail marks or at all trail marks within the specified buffer.
+  --   -- :TrailBlazerTrailMarkSelectMode 	<mode? string> 	Cycle through or set the current trail mark selection mode.
+  --   -- :TrailBlazerToggleTrailMarkList 	<type? string>
+  --   -- <buffer? string | number> 	Toggle a global list of all trail marks or a subset within the given buffer. If no arguments are specified the current trail mark selection mode will be used to populate the list with either a subset or all trail marks in the mode specific order.
+  --   -- :TrailBlazerOpenTrailMarkList 	<type? string>
+  --   -- <buffer? string | number> 	Open a global list of all trail marks or a subset within the given buffer. If no arguments are specified the current trail mark selection mode will be used to populate the list with either a subset or all trail marks in the mode specific order.
+  --   -- :TrailBlazerCloseTrailMarkList 	<type? string> 	Close the specified trail mark list. If no arguments are specified all lists will be closed.
+  --   -- :TrailBlazerSwitchTrailMarkStack 	<stack_name? string> 	Switch to the specified trail mark stack. If no stack under the specified name exists, it will be created. If no arguments are specified the default stack will be selected.
+  --   -- :TrailBlazerAddTrailMarkStack 	<stack_name? string> 	Add a new trail mark stack. If no arguments are specified the default stack will be added to the list of trail mark stacks.
+  --   -- :TrailBlazerDeleteTrailMarkStacks 	<stack_name? string>
+  --   -- ... 	Delete the specified trail mark stacks. If no arguments are specified the current trail mark stack will be deleted.
+  --   -- :TrailBlazerDeleteAllTrailMarkStacks 		Delete all trail mark stacks.
+  --   -- :TrailBlazerSwitchNextTrailMarkStack 	<sort_mode? string> 	Switch to the next trail mark stack using the specified sorting mode. If no arguments are specified the current default sort mode will be used.
+  --   -- :TrailBlazerSwitchPreviousTrailMarkStack 	<sort_mode? string> 	Switch to the previous trail mark stack using the specified sorting mode. If no arguments are specified the current default sort mode will be used.
+  --   -- :TrailBlazerSetTrailMarkStackSortMode 	<sort_mode? string> 	Cycle through or set the current trail mark stack sort mode.
+  --   -- :TrailBlazerSaveSession 	<session_path? string> 	Save all trail mark stacks and and the current configuration to a session file. If no arguments are specified the session will be saved in the default session directory. You will find more information here.
+  --   -- :TrailBlazerLoadSession 	<session_path? string> 	Load a previous session from a session file. If no arguments are specified the session will be loaded from the default session directory. You will find more information here.
+  --   -- :TrailBlazerDeleteSession 	<session_path? string> 	Delete any valid session file. If no arguments are specified the session will be deleted from the default session directory. You will find more information here.
+  --   keys = {
+  --     {
+  --       "<leader>j",
+  --       "<cmd>TrailBlazerNewTrailMark<cr>",
+  --     },
+  --     {
+  --       "<C-j>",
+  --       "<cmd>TrailBlazerTrackBack<cr>",
+  --     },
+  --     {
+  --       "<C-h>",
+  --       "<cmd>TrailBlazerPeekMovePreviousUp<cr>",
+  --     },
+  --     {
+  --       "<C-l>",
+  --       "<cmd>TrailBlazerPeekMoveNextDown<cr>",
+  --     },
+  --     {
+  --       "<C-l>",
+  --       "<cmd>TrailBlazerPeekMoveNextDown<cr>",
+  --     },
+  --   },
+  -- },
   -- lazy.nvim
   {
     "robitx/gp.nvim",

@@ -3,6 +3,12 @@
 -- Add any additional keymaps here
 local map = vim.keymap.set
 
+-- Disable default keymaps
+-- vim.keymap.del("n", "<C-h>")
+-- vim.keymap.del("n", "<C-j>")
+-- vim.keymap.del("n", "<C-k>")
+-- vim.keymap.del("n", "<C-l>")
+
 map({ "n", "v" }, "x", '"_x', { noremap = true })
 
 map("n", "<CR>", "i<CR><ESC>", { noremap = true })
