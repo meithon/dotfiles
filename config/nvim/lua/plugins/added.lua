@@ -4,6 +4,59 @@ local map = vim.keymap.set
 ---@type Plugins
 ---
 return {
+  {
+    "jvgrootveld/telescope-zoxide",
+    dependencies = {
+      "nvim-lua/popup.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      local t = require("telescope")
+      t.load_extension("zoxide")
+      vim.keymap.set("n", "<C-g>", t.extensions.zoxide.list)
+      vim.keymap.set("n", "<leader>z", t.extensions.zoxide.list)
+      -- require("telescope").extensions.zoxide.list({mappings ={ after_action = function(selection) vim.cmd("Oil " .. selection.path) vim.api.nvim_feedkeys("_", "", false) end }})
+
+      -- default = {
+      --             -- telescope-zoxide will change directory.
+      --             -- But I'm only using it to get selection.path from telescope UI.
+      --             after_action = function(selection)
+      --                vim.cmd("Oil " .. selection.path)
+      --                vim.api.nvim_feedkeys("_", "", false)
+      --             end,
+      --           }
+      t.setup({
+        extensions = {
+          zoxide = {
+            prompt_title = "[ Oil Up! ]", -- Any title you like
+            mappings = {
+              default = {
+                -- telescope-zoxide will change directory.
+                -- But I'm only using it to get selection.path from telescope UI.
+                after_action = function(selection)
+                  vim.cmd("Oil " .. selection.path)
+                  vim.api.nvim_feedkeys("_", "", false)
+                end,
+              },
+            },
+          },
+        },
+      })
+      vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+        pattern = { "oil://*" },
+        callback = function()
+          vim.keymap.set("n", "<leader>z", t.extensions.zoxide.list, { desc = "Jump!", buffer = 0 })
+        end,
+      })
+    end,
+    -- cmd = {
+    --   {
+    --     "<C-g>",
+    --     "<cmd>Telescope zoxide list<cr>",
+    --   },
+    -- },
+  },
   { -- ⭐ Powerful AI interface
     "olimorris/codecompanion.nvim",
     dependencies = {
@@ -896,34 +949,34 @@ return {
   --     require("render-markdown").setup({})
   --   end,
   -- },
-  {
-    "archibate/genius.nvim",
-    requires = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-    },
-    config = function()
-      require("genius").setup({
-        completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
-        -- This plugin supports many backends, openai backend is the default:
-        default_bot = "openai",
-        -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
-        -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
-        --
-        config_openai = {
-          api_key = os.getenv("OPENAI_API_KEY"),
-          infill_options = {
-            max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
-            model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
-            temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
-          },
-        },
-        -- Otherwise, you may run DeepSeek-Coder locally instead:
-        -- default_bot = 'deepseek',
-        -- See sections below for detailed instructions on setting up this model.
-      })
-    end,
-  },
+  -- { -- AI Completion
+  --   "archibate/genius.nvim",
+  --   requires = {
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   config = function()
+  --     require("genius").setup({
+  --       completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
+  --       -- This plugin supports many backends, openai backend is the default:
+  --       default_bot = "openai",
+  --       -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
+  --       -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
+  --       --
+  --       config_openai = {
+  --         api_key = os.getenv("OPENAI_API_KEY"),
+  --         infill_options = {
+  --           max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
+  --           model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
+  --           temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
+  --         },
+  --       },
+  --       -- Otherwise, you may run DeepSeek-Coder locally instead:
+  --       -- default_bot = 'deepseek',
+  --       -- See sections below for detailed instructions on setting up this model.
+  --     })
+  --   end,
+  -- },
   { "wakatime/vim-wakatime", lazy = false },
   {
     "stevearc/oil.nvim",
@@ -1749,36 +1802,36 @@ return {
     end,
   },
 
-  { -- jump to bracker in insert mode
-    "abecodes/tabout.nvim",
-    config = function()
-      require("tabout").setup({
-        tabkey = "<Tab>", -- key to trigger tabout, set to an empty string to disable
-        backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
-        act_as_tab = true, -- shift content if tab out is not possible
-        act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-        default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-        default_shift_tab = "<C-d>", -- reverse shift default action,
-        enable_backwards = true, -- well ...
-        completion = true, -- if the tabkey is used in a completion pum
-        tabouts = {
-          { open = "'", close = "'" },
-          { open = '"', close = '"' },
-          { open = "`", close = "`" },
-          { open = "(", close = ")" },
-          { open = "[", close = "]" },
-          { open = "{", close = "}" },
-        },
-        ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
-        exclude = {}, -- tabout will ignore these filetypes
-      })
-    end,
-    keys = {
-      { "<Tab>", mode = { "i", "s" } },
-      { "<S-Tab>", mode = { "i", "s" } },
-    },
-    dependencies = { "nvim-treesitter", "nvim-cmp" }, -- or require if not used so far
-  },
+  -- { -- jump to bracker in insert mode
+  --   "abecodes/tabout.nvim",
+  --   config = function()
+  --     require("tabout").setup({
+  --       tabkey = "<Tab>", -- key to trigger tabout, set to an empty string to disable
+  --       backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
+  --       act_as_tab = true, -- shift content if tab out is not possible
+  --       act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+  --       default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+  --       default_shift_tab = "<C-d>", -- reverse shift default action,
+  --       enable_backwards = true, -- well ...
+  --       completion = true, -- if the tabkey is used in a completion pum
+  --       tabouts = {
+  --         { open = "'", close = "'" },
+  --         { open = '"', close = '"' },
+  --         { open = "`", close = "`" },
+  --         { open = "(", close = ")" },
+  --         { open = "[", close = "]" },
+  --         { open = "{", close = "}" },
+  --       },
+  --       ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+  --       exclude = {}, -- tabout will ignore these filetypes
+  --     })
+  --   end,
+  --   keys = {
+  --     { "<Tab>", mode = { "i", "s" } },
+  --     { "<S-Tab>", mode = { "i", "s" } },
+  --   },
+  --   dependencies = { "nvim-treesitter", "nvim-cmp" }, -- or require if not used so far
+  -- },
 
   { -- move bracket in Insert mode
     "altermo/ultimate-autopair.nvim",
