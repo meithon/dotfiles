@@ -285,9 +285,6 @@ M.setup = function()
     postfix(".debug", {
       l("console.log(JSON.stringify(" .. l.POSTFIX_MATCH .. ", null, 2))"),
     }),
-    ---------------------------------
-    --        Array control        --
-    ---------------------------------
     postfix(".last", {
       l(l.POSTFIX_MATCH .. ".slice(-1)[0]"),
     }),
@@ -347,6 +344,7 @@ M.setup = function()
       i(3),
       t({ "", "fi" }),
     }),
+
     s("isNumNotEqual", {
       t({ "if [ " }),
       i(1),
@@ -368,7 +366,7 @@ M.setup = function()
       i(3),
       t({ "", "fi" }),
     }),
-    t("isExist", {
+    s("isExist", {
       t({ "# is exist", "" }),
       t({ "if [ -e " }),
       i(1),
@@ -377,7 +375,7 @@ M.setup = function()
       i(2),
       t({ "", "fi" }),
     }),
-    t("isUndefined", {
+    s("isUndefined", {
       t({ "# is undefined", "" }),
       t({ "if [ -z " }),
       i(1),
@@ -386,8 +384,8 @@ M.setup = function()
       i(2),
       t({ "", "fi" }),
     }),
-    t({ "# if num1 > num2", "" }),
     s("isNumGreaterThan", {
+      t({ "# if num1 > num2", "" }),
       t({ "if [ " }),
       i(1),
       t({ " -gt " }),
@@ -444,81 +442,67 @@ M.setup = function()
       l("${#" .. l.POSTFIX_MATCH .. "[@]} # length of " .. l.POSTFIX_MATCH),
     }),
 
-    -- case $variable in
-    --     pattern1)
-    --         # pattern1 にマッチした際に実行されるコード
-    --         echo "Pattern 1 matched!"
-    --         ;;
-    --     pattern2)
-    --         # pattern2 にマッチした際に実行されるコード
-    --         echo "Pattern 2 matched!"
-    --         ;;
-    --     *)
-    --         # どのパターンにもマッチしなかった際に実行されるコード
-    --         echo "No pattern matched!"
-    --         ;;
-    -- esac
-    s("switch", {
-      t({ "case $" }),
-      i(1),
-      t({ " in" }),
-      t({ "", "  pattern1)" }),
-      t({ "", "    echo pattern1 matched!" }),
-      i(2),
-      t({ "", "    ;;" }),
-      t({ "", "  *)" }),
-      t({ "", "    echo No pattern matched!" }),
-      t({ "", "    ;;" }),
-      t({ "", "esac" }),
-    }),
-
-    -- FIXME:
-    -- ...local/share/nvim/lazy/LuaSnip/lua/luasnip/extras/fmt.lua:144: Found unescaped { inside placeholder; format[12:180]="{
-    --   local jobs=("$@")  # Accept a list of jobs as arguments
-    --   local pids=()      # Array to keep track of background job PIDs
-    --   # Start background jobs
-    --   for job in "${"
-    -- s(
-    --   "run_jobs",
-    --   fmt([[
-    --   run_jobs() {
-    --     local jobs=("$@")  # Accept a list of jobs as arguments
-    --     local pids=()      # Array to keep track of background job PIDs
+    -- s("switch", {
+    --   t({ "case $" }),
+    --   i(1),
+    --   t({ " in" }),
+    --   t({ "", "  pattern1)" }),
+    --   t({ "", "    echo pattern1 matched!" }),
+    --   i(2),
+    --   t({ "", "    ;;" }),
+    --   t({ "", "  *)" }),
+    --   t({ "", "    echo No pattern matched!" }),
+    --   t({ "", "    ;;" }),
+    --   t({ "", "esac" }),
+    -- }),
     --
-    --     # Start background jobs
-    --     for job in "${jobs[@]}"; do
-    --       bash -c "$job" &
-    --       pids+=($!)
-    --     done
-    --
-    --     # Wait for all background jobs to complete
-    --     for pid in "${pids[@]}"; do
-    --       wait $pid
-    --       local exit_status=$?
-    --       if [ $exit_status -ne 0 ]; then
-    --         echo "Job $pid failed with exit status $exit_status"
-    --         return 1
-    --       fi
-    --     done
-    --
-    --     echo "All jobs completed successfully."
-    --     return 0
-    --   }
-    --
-    --   # Define jobs as a list
-    --   jobs=(
-    --     "sleep 2"
-    --     "sleep 3 && false"  # Simulate an error
-    --     "sleep 1"
-    --   )
-    --
-    --   # Run the jobs
-    --   run_jobs "${jobs[@]}"
-    -- ]])
-    -- ),
-    postfix(".debug", {
-      l('echo -e "\\033[0;32m  DEBUG: ' .. l.POSTFIX_MATCH .. '=\\"${!' .. l.POSTFIX_MATCH .. '}\\033[0m"'),
-    }),
+    -- -- FIXME:
+    -- -- ...local/share/nvim/lazy/LuaSnip/lua/luasnip/extras/fmt.lua:144: Found unescaped { inside placeholder; format[12:180]="{
+    -- --   local jobs=("$@")  # Accept a list of jobs as arguments
+    -- --   local pids=()      # Array to keep track of background job PIDs
+    -- --   # Start background jobs
+    -- --   for job in "${"
+    -- -- s(
+    -- --   "run_jobs",
+    -- --   fmt([[
+    -- --   run_jobs() {
+    -- --     local jobs=("$@")  # Accept a list of jobs as arguments
+    -- --     local pids=()      # Array to keep track of background job PIDs
+    -- --
+    -- --     # Start background jobs
+    -- --     for job in "${jobs[@]}"; do
+    -- --       bash -c "$job" &
+    -- --       pids+=($!)
+    -- --     done
+    -- --
+    -- --     # Wait for all background jobs to complete
+    -- --     for pid in "${pids[@]}"; do
+    -- --       wait $pid
+    -- --       local exit_status=$?
+    -- --       if [ $exit_status -ne 0 ]; then
+    -- --         echo "Job $pid failed with exit status $exit_status"
+    -- --         return 1
+    -- --       fi
+    -- --     done
+    -- --
+    -- --     echo "All jobs completed successfully."
+    -- --     return 0
+    -- --   }
+    -- --
+    -- --   # Define jobs as a list
+    -- --   jobs=(
+    -- --     "sleep 2"
+    -- --     "sleep 3 && false"  # Simulate an error
+    -- --     "sleep 1"
+    -- --   )
+    -- --
+    -- --   # Run the jobs
+    -- --   run_jobs "${jobs[@]}"
+    -- -- ]])
+    -- -- ),
+    -- postfix(".debug", {
+    --   l('echo -e "\\033[0;32m  DEBUG: ' .. l.POSTFIX_MATCH .. '=\\"${!' .. l.POSTFIX_MATCH .. '}\\033[0m"'),
+    -- }),
   }
 
   local all = {
@@ -530,13 +514,13 @@ M.setup = function()
     --     |
     --     v
     --   interfaces/controllers
-    --     |         \
     --     |          \
-    --     v           v
-    --   application   interfaces/dtos
+    --     |           \
+    --     v            v
+    --   application  interfaces/dtos
     --     |
     --     v
-    --   domain/user          domain/post
+    --   domain/user    domain/post
     --     |                 |
     --     v                 v
     --   infrastructure/repositories
