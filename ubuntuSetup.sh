@@ -4,24 +4,7 @@ apt install -y curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg
 git clone https://github.com/MeiWagatsuma/dotfiles
 
 git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-. "$HOME/.asdfl/asdf.sh"
-
-list=(
-  deno
-  golang
-  nodejs
-  python
-  rust
-)
-
-for i in "${list[@]}"; do
-  (
-    asdf plugin add $i
-    asdf install $i latest
-    asdf global $i latest
-  ) &
-done
-wait
+. "$HOME/.asdf/asdf.sh"
 
 export PATH=$(asdf where rust)/bin:$PATH
 export JAVA_HOME=$(asdf where java)
@@ -40,3 +23,5 @@ echo 'export PATH=$(asdf where rust)/bin:$PATH' >>~/.bashrc
 echo 'export PATH=$(asdf where golang)/packages/bin:$PATH' >>~/.bashrc
 echo 'alias vi="nvim"' >>~/.bashrc
 echo 'alias ll="lsd -l"' >>~/.bashrc
+
+source ~/.bashrc

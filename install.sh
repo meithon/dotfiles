@@ -1,9 +1,35 @@
 #!/usr/bin/env bash
 
+DOTPATH=~/dotfiles
+
+get_user_confirmation() {
+
+  echo ""
+  read -p "$(warn 'Are you sure you want to install it? [y/N] ')" -n 1 -r
+  echo ""
+
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo ""
+    error 'OK. Goodbye.'
+    exit 1
+  fi
+}
+main() {
+  printf "%s" "$BOLD"
+  echo "$dotfiles_logo"
+  printf "%s" "$NORMAL"
+
+  get_user_confirmation
+  git_clone_dotfiles
+
+  deploy_dotfiles
+}
+
 trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
 
 if [ -z "${DOTPATH:-}" ]; then
-    DOTPATH=$HOME/dotfiles; export DOTPATH
+  DOTPATH=$HOME/dotfiles
+  export DOTPATH
 fi
 
 # set dotfiles path as default variable
@@ -59,13 +85,12 @@ log() {
 # check package & return flag
 DOTFILES_GITHUB="https://github.com/MeiWagatsuma/dotfiles"
 
-
-
 ### Start install script
 is_exists() {
   which "$1" >/dev/null 2>&1
   return $?
-}; export DOTFILES_GITHUB
+}
+export DOTFILES_GITHUB
 
 dotfiles_logo='
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
@@ -86,21 +111,7 @@ See the README for documentation.
 Licensed under the MIT license.
 '
 
-printf "%s" "$BOLD"
-echo   "$dotfiles_logo"
-printf "%s" "$NORMAL"
-
-echo ""
-read -p "$(warn 'Are you sure you want to install it? [y/N] ')" -n 1 -r
-echo ""
-
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo ""
-  error 'OK. Goodbye.'
-  exit 1
-fi
-
-_download() {
+_git_clone_dotfiles() {
   info "Downloading dotfiles..."
 
   if [ ! -d "$DOTPATH" ]; then
@@ -134,48 +145,93 @@ _download() {
   fi
 }
 
-_deploy() {
-  info "Deploying dotfiles..."
+validate_dotpath_exists() {
   if [ ! -d "$DOTPATH" ]; then
-    error "$DOTPATH: not found"
+    log_error "$DOTPATH: not found"
     exit 1
   fi
+}
 
-	ln -si pre-commit .git/hooks/pre-commit
+check_file_exists() {
+  if [ ! -e "$1" ]; then
+    log_error "File $1 does not exist"
+    exit 2
+  fi
+}
 
-	shopt -s dotglob
-	for file in ~/dotfiles/home/*; do
-		ln -si "$file" ~/
-	done
+create_symlink() {
+  local source=$1
+  local target=$2
 
-	mkdir -p ~/.config
-	for file in ~/dotfiles/config/*; do
-		ln -si "$file" ~/.config/.
-	done
-  # mkdir -p ~/.config/nvim
+  if [ ! -e "$source" ]; then
+    log_error "Source $source does not exist"
+    return
+  fi
 
-  # ln -si $DOTPATH/nvim/init.lua ~/.config/nvim/.
-  # ln -sni $DOTPATH/nvim/lua ~/.config/nvim/.
-  # ln -sni $DOTPATH/sketchybar ~/.config/.
-  # ln -si $DOTPATH/.zshrc ~/.zshrc
-  # ln -si $DOTPATH/.tmux.conf ~/.tmux.conf
-  # ln -si $DOTPATH/.alacritty.yml ~/.alacritty.yml
-  # ln -si $DOTPATH/.yabairc ~/.yabairc
-  # ln -si $DOTPATH/.skhdrc ~/.skhdrc
+  ln -si "$source" "$target"
+}
+
+deploy_dotfiles() {
+  log_info "Deploying dotfiles..."
+
+  validate_dotpath_exists
+
+  create_symlink "pre-commit" ".git/hooks/pre-commit"
+
+  shopt -s dotglob
+  for file in ~/dotfiles/home/*; do
+    create_symlink "$file" ~/
+  done
+
+  mkdir -p ~/.config
+  for file in ~/dotfiles/config/*; do
+    create_symlink "$file" ~/.config/.
+  done
 
   info "Deployed!"
 }
 
-# A script for the file named "setup"
-dotfiles_setup() {
-    # 1. Download the repository
-    # ==> downloading
-    # Priority: git > curl > wget
-    _download &&
+envsetup() {
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    echo "This is Linux "
+    apt update
+    apt install -y curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config libssl-dev
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+    . "$HOME/.asdf/asdf.sh"
+  elif [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "This is macOS."
+    brew install curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config libssl-dev
+    brew install asdf
+  else
+    echo "This is an unsupported OS."
+    exit 1
+  fi
 
-    # 2. Deploy dotfiles to your home directory
-    # ==> deploying
-    _deploy "$@"
+  rustup default stable
+  cargo install lsd sheldon bob-nvim pueue
+  bob use latest
 }
 
-dotfiles_setup "$@"
+setup_asdf() {
+  list=(
+    deno
+    golang
+    nodejs
+    python
+    rust
+    java
+  )
+
+  for i in "${list[@]}"; do
+    (
+      asdf plugin add $i
+      asdf install $i latest
+      asdf global $i latest
+    ) &
+    log "Installing asdf $i..."
+  done
+  wait
+  info "Asdf setup done"
+}
+
+_main
