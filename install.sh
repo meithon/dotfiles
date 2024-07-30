@@ -22,7 +22,14 @@ main() {
   get_user_confirmation
   git_clone_dotfiles
 
+  envsetup
   deploy_dotfiles
+
+  rustup default stable
+  cargo install lsd sheldon bob-nvim pueue
+
+  source ~/.envsetup.sh
+  bob use latest
 }
 
 trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
@@ -111,7 +118,7 @@ See the README for documentation.
 Licensed under the MIT license.
 '
 
-_git_clone_dotfiles() {
+git_clone_dotfiles() {
   info "Downloading dotfiles..."
 
   if [ ! -d "$DOTPATH" ]; then
@@ -168,11 +175,11 @@ create_symlink() {
     return
   fi
 
-  ln -si "$source" "$target"
+  ln -sif "$source" "$target"
 }
 
 deploy_dotfiles() {
-  log_info "Deploying dotfiles..."
+  info "Deploying dotfiles..."
 
   validate_dotpath_exists
 
@@ -196,7 +203,10 @@ envsetup() {
     echo "This is Linux "
     apt update
     apt install -y curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config libssl-dev
-    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+    if [ ! -d "$HOME/.asdf" ]; then
+      git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+    fi
+
     . "$HOME/.asdf/asdf.sh"
   elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "This is macOS."
@@ -207,9 +217,6 @@ envsetup() {
     exit 1
   fi
 
-  rustup default stable
-  cargo install lsd sheldon bob-nvim pueue
-  bob use latest
 }
 
 setup_asdf() {
@@ -234,4 +241,4 @@ setup_asdf() {
   info "Asdf setup done"
 }
 
-_main
+main
