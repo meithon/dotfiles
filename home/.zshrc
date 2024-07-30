@@ -1,16 +1,6 @@
-export PATH=/opt/homebrew/bin:$PATH
-export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
-export JAVA_HOME=$(asdf where java)
+source ~/.envsetup.sh
 # must load before zsh config
 eval "$(sheldon source)"
-
-### Added by Codeium. These lines cannot be automatically removed if modified
-if command -v termium > /dev/null 2>&1; then
-  eval "$(termium shell-hook show pre)"
-fi
-### End of Codeium integration
-
-
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
