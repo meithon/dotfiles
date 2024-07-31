@@ -30,9 +30,12 @@ abbrev-alias -g git_rebase_main="git switch main && git pull && git switch - && 
 
 
 function last_history_argument() {
-  echo $(echo $history[1] | string split ' ')[-1]
+  echo hello
+  # echo $(echo $history[1] | string split ' ')[-1]
 }
 
+history | tail -n 1  | awk '{print $NF}'
+abbrev-alias -e 'it'
 abbrev-alias --add 'it' --position anywhere --function last_history_argument
 
 function fzf-print-k8s-secret() {

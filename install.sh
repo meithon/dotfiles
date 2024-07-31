@@ -210,7 +210,9 @@ envsetup() {
     . "$HOME/.asdf/asdf.sh"
   elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "This is macOS."
-    brew install curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config libssl-dev
+    # TODO: Check if homebrew is installed
+    export PATH=/opt/homebrew/bin:$PATH
+    brew install curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config
     brew install asdf
   else
     echo "This is an unsupported OS."
