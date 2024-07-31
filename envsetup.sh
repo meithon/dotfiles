@@ -4,7 +4,7 @@ export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   . "$HOME/.asdf/asdf.sh"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-  echo ""
+  export PATH=/opt/homebrew/bin:$PATH
 fi
 export PATH=$(asdf where rust)/bin:$PATH
 export PATH=$(asdf where golang)/packages/bin:$PATH
