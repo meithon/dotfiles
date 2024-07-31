@@ -29,14 +29,13 @@ abbrev-alias -g git_rebase_main="git switch main && git pull && git switch - && 
 # abbrev-alias -g G="| rg --line-number"
 
 
-function last_history_argument() {
-  echo hello
-  # echo $(echo $history[1] | string split ' ')[-1]
+
+last_history_argument() {
+  history | tail -n 1  | awk '{print $NF}'
 }
 
-history | tail -n 1  | awk '{print $NF}'
-abbrev-alias -e 'it'
-abbrev-alias --add 'it' --position anywhere --function last_history_argument
+abbrev-alias -g -e 'it=$(last_history_argument)'  
+# abbrev-alias --add 'it' --position anywhere --function last_history_argument
 
 function fzf-print-k8s-secret() {
   S=$(kubectl get secrets -o name | fzf) && echo $S && kubectl get $S -o json | jq '.data | map_values(@base64d)'
