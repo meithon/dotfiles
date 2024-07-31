@@ -52,6 +52,10 @@ map(
   "<cmd>Gitsigns toggle_deleted<CR><cmd>Gitsigns toggle_numhl<CR><cmd>Gitsigns toggle_linehl<cr>",
   { desc = "Show git diff" }
 )
+map("t", "<C-w>h", "<C-\\><C-n><C-w>h", { noremap = true })
+map("t", "<C-w>j", "<C-\\><C-n><C-w>j", { noremap = true })
+map("t", "<C-w>k", "<C-\\><C-n><C-w>k", { noremap = true })
+map("t", "<C-w>l", "<C-\\><C-n><C-w>l", { noremap = true })
 
 if not vim.g.vscode then
   return
