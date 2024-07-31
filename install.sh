@@ -22,13 +22,14 @@ main() {
   get_user_confirmation
   git_clone_dotfiles
 
+  setup_asdf
   envsetup
   deploy_dotfiles
 
+  source ~/.envsetup.sh
   rustup default stable
   cargo install lsd sheldon bob-nvim pueue
 
-  source ~/.envsetup.sh
   bob use latest
 }
 
@@ -154,14 +155,14 @@ git_clone_dotfiles() {
 
 validate_dotpath_exists() {
   if [ ! -d "$DOTPATH" ]; then
-    log_error "$DOTPATH: not found"
+    error "$DOTPATH: not found"
     exit 1
   fi
 }
 
 check_file_exists() {
   if [ ! -e "$1" ]; then
-    log_error "File $1 does not exist"
+    error "File $1 does not exist"
     exit 2
   fi
 }
@@ -171,7 +172,7 @@ create_symlink() {
   local target=$2
 
   if [ ! -e "$source" ]; then
-    log_error "Source $source does not exist"
+    error "Source $source does not exist"
     return
   fi
 
