@@ -86,6 +86,194 @@ end
 ---@type Plugin[]
 return {
   {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = function(_, opts)
+      local slow_format_filetypes = {}
+      -- async format
+      -- https://github.com/stevearc/conform.nvim/blob/master/doc/recipes.md#automatically-run-slow-formatters-async
+      vim.tbl_deep_extend("force", opts, {
+        format_on_save = function(bufnr)
+          if slow_format_filetypes[vim.bo[bufnr].filetype] then
+            return
+          end
+          local function on_format(err)
+            if err and err:match("timeout$") then
+              slow_format_filetypes[vim.bo[bufnr].filetype] = true
+            end
+          end
+
+          return { timeout_ms = 200, lsp_format = "fallback" }, on_format
+        end,
+
+        format_after_save = function(bufnr)
+          if not slow_format_filetypes[vim.bo[bufnr].filetype] then
+            return
+          end
+          return { lsp_format = "fallback" }
+        end,
+      })
+    end,
+  },
+  {
+    "zbirenbaum/copilot.lua",
+    config = function()
+      require("copilot").setup({
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          hide_during_completion = true,
+          debounce = 75,
+          keymap = {
+            accept = "<right>",
+            accept_word = false,
+            accept_line = false,
+            next = "<A-]>",
+            prev = "<A-[>",
+            dismiss = "<C-]>",
+          },
+        },
+      })
+    end,
+  },
+  {
+    "L3MON4D3/LuaSnip",
+
+    dependencies = {
+      -- add this to your lua/plugins.lua, lua/plugins/init.lua,  or the file you keep your other plugins:
+      {
+        "numToStr/Comment.nvim",
+        opts = {
+          -- add any options here
+        },
+      },
+    },
+    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    keys = {
+      -- TODO: configure keymap in nvim-cmp
+      {
+        "<tab>",
+        function()
+          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
+        end,
+        expr = true,
+        silent = true,
+        mode = "i",
+      },
+      {
+        "<tab>",
+        function()
+          require("luasnip").jump(1)
+        end,
+        mode = "s",
+      },
+      {
+        "<s-tab>",
+        function()
+          require("luasnip").jump(-1)
+        end,
+        mode = { "i", "s" },
+      },
+    },
+    -- dependencies = {
+    --   { "saadparwaiz1/cmp_luasnip" },
+    --   require("snippet").dependencies,
+    -- },
+    config = function()
+      local ls = require("luasnip")
+
+      --  NOTE: refs: https://github.com/L3MON4D3/LuaSnip/wiki/Nice-Configs
+      local select_next = false
+      vim.keymap.set({ "i" }, "<C-l>", function()
+        -- the meat of this mapping: call ls.activate_node.
+        -- strict makes it so there is no fallback to activating any node in the
+        -- snippet, and select controls whether the text associated with the node is
+        -- selected.
+        local ok, _ = pcall(ls.activate_node, {
+          strict = true,
+          -- select_next is initially unset, but set within the first second after
+          -- activating the mapping, so activating it again in that timeframe will
+          -- select the text of the found node.
+          select = select_next,
+        })
+        -- ls.activate_node throws on failure.
+        if not ok then
+          print("No node.")
+          return
+        end
+
+        -- once the node is activated, we are either done (if text is SELECTed), or
+        -- we briefly highlight the text associated with the node so one can know
+        -- which node was activated.
+        -- TODO: this highlighting does not show up if the node has no text
+        -- associated (ie ${1:asdf} vs $1), a cool extension would be to also show
+        -- something if there was no text.
+        if select_next then
+          return
+        end
+
+        local curbuf = vim.api.nvim_get_current_buf()
+        local hl_duration_ms = 100
+
+        local node = ls.session.current_nodes[curbuf]
+        -- get node-position, raw means we want byte-columns, since those are what
+        -- nvim_buf_set_extmark expects.
+        local from, to = node:get_buf_position({ raw = true })
+
+        -- highlight snippet for 1000ms
+        local id = vim.api.nvim_buf_set_extmark(curbuf, ls.session.ns_id, from[1], from[2], {
+          -- one line below, at col 0 => entire last line is highlighted.
+          end_row = to[1],
+          end_col = to[2],
+          hl_group = "Visual",
+        })
+        -- disable highlight by removing the extmark after a short wait.
+        vim.defer_fn(function()
+          vim.api.nvim_buf_del_extmark(curbuf, ls.session.ns_id, id)
+        end, hl_duration_ms)
+
+        -- set select_next for the next second.
+        select_next = true
+        vim.uv.new_timer():start(1000, 0, function()
+          select_next = false
+        end)
+      end)
+
+      -- feel free to change the keys to new ones, those are just my current mappings
+      vim.keymap.set("i", "<C-f>", function()
+        if ls.choice_active() then
+          return ls.change_choice(1)
+        else
+          return _G.dynamic_node_external_update(1) -- feel free to update to any index i
+        end
+      end, { noremap = true })
+      vim.keymap.set("s", "<C-f>", function()
+        if ls.choice_active() then
+          return ls.change_choice(1)
+        else
+          return _G.dynamic_node_external_update(1)
+        end
+      end, { noremap = true })
+      vim.keymap.set("i", "<C-d>", function()
+        if ls.choice_active() then
+          return ls.change_choice(-1)
+        else
+          return _G.dynamic_node_external_update(2)
+        end
+      end, { noremap = true })
+      vim.keymap.set("s", "<C-d>", function()
+        if ls.choice_active() then
+          return ls.change_choice(-1)
+        else
+          return _G.dynamic_node_external_update(2)
+        end
+      end, { noremap = true })
+      require("snippet").setup()
+
+      -- fuck
+    end,
+  },
+  {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       table.insert(opts.ensure_installed, "typos-lsp")
@@ -333,257 +521,6 @@ return {
     end,
     opts = function(_, opts)
       opts.delay = 0
-    end,
-  },
-  {
-    "L3MON4D3/LuaSnip",
-    config = function()
-      ---@diagnostic disable: unused-local
-      local ls = require("luasnip")
-      local s = ls.snippet
-      -- local sn = ls.snippet_node
-      local isn = ls.indent_snippet_node
-      local t = ls.text_node
-      local i = ls.insert_node
-      local f = ls.function_node
-      local c = ls.choice_node
-      local d = ls.dynamic_node
-      local r = ls.restore_node
-      local events = require("luasnip.util.events")
-      local ai = require("luasnip.nodes.absolute_indexer")
-      local extras = require("luasnip.extras")
-      local l = extras.lambda
-      local rep = extras.rep
-      local p = extras.partial
-      local m = extras.match
-      local n = extras.nonempty
-      local dl = extras.dynamic_lambda
-      local fmt = require("luasnip.extras.fmt").fmt
-      local fmta = require("luasnip.extras.fmt").fmta
-      local conds = require("luasnip.extras.expand_conditions")
-      local postfix = require("luasnip.extras.postfix").postfix
-      local types = require("luasnip.util.types")
-      local parse = require("luasnip.util.parser").parse_snippet
-      local ms = ls.multi_snippet
-      local k = require("luasnip.nodes.key_indexer").new_key
-      local ts_post = require("luasnip.extras.treesitter_postfix").treesitter_postfix
-      ---@diagnostic enable: unused-local
-
-      local newline = ""
-      ---------
-      -- Lua
-      --
-
-      -- print()
-      --
-      -- function add(a, b)
-      --   return a + b
-      -- end.var
-
-      ls.add_snippets("lua", {
-
-        s("test", {
-          t({ 'test("' }),
-        }),
-        ts_post(
-          {
-            matchTSNode = {
-              query = [[
-    (function_declaration
-      name: (identifier) @fname
-      parameters: (parameters) @params
-      body: (block) @body
-    ) @prefix
-  ]],
-              query_lang = "lua",
-            },
-            trig = ".var",
-          },
-          fmt(
-            [[
-    local {} = function{}
-        {}
-    end
-  ]],
-            {
-              l(l.LS_TSCAPTURE_FNAME),
-              l(l.LS_TSCAPTURE_PARAMS),
-              l(l.LS_TSCAPTURE_BODY),
-            }
-          )
-        ),
-      })
-
-      -----------
-      -- Typescript
-      --
-
-      ls.add_snippets("typescript", {
-
-        -- test("testTitle", async ({
-        --   前提条件,
-        --   仕向け機能,
-        --   モデル機能,
-        --   ソフトウェアマイルストーン機能,
-        --   部番機能,
-        --   リリースノート機能,
-        --   ソフトウェアイメージ機能,
-        --   Swallow機能,
-        --   サインインページ,
-        --   仕向け登録ページ,
-        --   仕向け編集ページ,
-        --   仕向け一覧ページ,
-        --   部番登録ページ,
-        --   部番一覧ページ,
-        --   部番詳細ページ,
-        --   部番編集ページ,
-        --   ソフトウェアイメージ追加ページ,
-        --   ソフトウェアイメージ編集ページ,
-        --   ソフトウェアイメージ一覧ページ,
-        --   ソフトウェアマイルストーン登録ページ,
-        --   ソフトウェアマイルストーン編集ページ,
-        --   検査詳細ページ,
-        --   系図ページ,
-        --   モデル登録ページ,
-        --   モデル編集ページ,
-        --   モデル一覧ページ,
-        --   ソフトウェアマイルストーン一覧ページ,
-        --   Gerritページ,
-        --   Nextcloud,
-        -- }) => {
-        --   await 前提条件(async () => {
-        --     //
-        --   });
-        -- });
-        s("test", {
-          t({ 'test("' }),
-          i(1),
-          t({ '"' }),
-          t({ ", async ({", newline }),
-          t({
-            "  前提条件,",
-            "  仕向け機能,",
-            "  モデル機能,",
-            "  ソフトウェアマイルストーン機能,",
-            "  部番機能,",
-            "  リリースノート機能,",
-            "  ソフトウェアイメージ機能,",
-            "  Swallow機能,",
-            "  検査機能,",
-            "  サインインページ,",
-            "  仕向け登録ページ,",
-            "  仕向け編集ページ,",
-            "  仕向け一覧ページ,",
-            "  部番登録ページ,",
-            "  部番一覧ページ,",
-            "  部番詳細ページ,",
-            "  部番編集ページ,",
-            "  ソフトウェアイメージ追加ページ,",
-            "  ソフトウェアイメージ編集ページ,",
-            "  ソフトウェアイメージ一覧ページ,",
-            "  ソフトウェアマイルストーン登録ページ,",
-            "  ソフトウェアマイルストーン編集ページ,",
-            "  検査詳細ページ,",
-            "  系図ページ,",
-            "  モデル登録ページ,",
-            "  モデル編集ページ,",
-            "  モデル一覧ページ,",
-            "  ソフトウェアマイルストーン一覧ページ,",
-            "  Gerritページ,",
-            "  Nextcloud,",
-            newline,
-          }),
-          t({ "}) => {", newline }),
-          t({ "  await 前提条件(async () => {", newline }),
-          t({ "	   //", newline }),
-          t({ "  });", newline }),
-          t({ "});", newline }),
-        }),
-        s("inSorcesVitest", {
-          t({ "if (import.meta.vitest) {", "	const { it, expect } = import.meta.vitest;", [[	test("]] }),
-          i(1),
-          t({ '" () => {', "    " }),
-          i(2),
-          t({ "", "	});", "}" }),
-        }),
-        postfix(".print", {
-          d(1, function(_, parent)
-            return sn(nil, { t({ "console.log(" .. parent.env.POSTFIX_MATCH .. ")", newline }) })
-          end),
-        }),
-      })
-
-      -- local treesitter_postfix = require("luasnip.extras.treesitter_postfix").treesitter_postfix
-      --
-      -- treesitter_postfix({
-      --     trig = ".mv",
-      --     matchTSNode = {
-      --         query = [[
-      --             [
-      --               (call_expression)
-      --               (identifier)
-      --               (template_function)
-      --               (subscript_expression)
-      --               (field_expression)
-      --               (user_defined_literal)
-      --             ] @prefix
-      --         ]]
-      --         query_lang = "cpp"
-      --     },
-      -- },{
-      --     f(function(_, parent)
-      --         local node_content = table.concat(parent.snippet.env.LS_TSMATCH, '\n')
-      --         local replaced_content = ("std::move(%s)"):format(node_content)
-      --         return vim.split(ret_str, "\n", { trimempty = false })
-      --     end)
-      -- })
-
-      -- ls.add_snippets =
-      ls.add_snippets("all", {
-        postfix(".let", {
-          d(1, function(_, parent)
-            return sn(nil, { t("let " .. parent.env.POSTFIX_MATCH .. " = ") })
-          end),
-        }),
-        s("fn", {
-          t("}"),
-          ---@diagnostic disable-next-line: unused-local
-          f(function(args, parent, user_args)
-            return "() => {" .. args[1][1] .. user_args .. "}"
-          end, { 1 }, { user_args = "text" }),
-          t(") => {"),
-        }),
-        postfix(".const", {
-          d(1, function(_, parent)
-            return sn(nil, { t("const " .. parent.env.POSTFIX_MATCH .. " = ") })
-          end),
-        }),
-        --         if (import.meta.vitest) {
-        --   const { it, expect } = import.meta.vitest;
-        --   it("", () => {
-        --   });
-        -- }
-        postfix(".dbg", {
-          d(1, function(_, parent)
-            return sn(nil, {
-
-              -- console.log('a:', a);
-              -- t({ 'console.log("' .. parent.env.POSTFIX_MATCH .. ': ", ' .. parent.env.POSTFIX_MATCH .. ")" }),
-              -- console.log(JSON.stringify(a, null, 2));
-              t({
-                'console.log("'
-                  .. parent.env.POSTFIX_MATCH
-                  .. ":,"
-                  .. '"JSON.stringify('
-                  .. parent.env.POSTFIX_MATCH
-                  .. ", null, 2));",
-              }),
-            })
-          end),
-        }),
-      }, {
-        key = "all",
-      })
     end,
   },
   {
@@ -1460,189 +1397,186 @@ return {
     --   })
     -- end,
 
-    opts = function(_, opts)
-      local luasnip = require("luasnip")
-      local cmp = require("cmp")
-
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<Tab>"] = cmp.mapping({
-            c = function()
-              cmp.confirm({
-                behavior = cmp.ConfirmBehavior.Replace,
-                select = true,
-              })
-            end,
-          }),
-        }),
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          {
-            name = "cmdline",
-            option = {
-              ignore_cmds = { "Man", "!" },
-            },
-          },
-        }),
-      })
-
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<Tab>"] = cmp.mapping({
-            c = function()
-              cmp.confirm({
-                behavior = cmp.ConfirmBehavior.Replace,
-                select = true,
-              })
-            end,
-          }),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp_document_symbol" },
-        }, {
-          { name = "buffer" },
-        }),
-      })
-
-      opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<CR>"] = cmp.mapping({
-          i = function(fallback)
-            if cmp.visible() and cmp.get_active_entry() then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-            else
-              fallback()
-            end
-          end,
-          -- s = cmp.mapping.confirm({ select = true }),
-          -- c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-        }),
-        ["<C-e>"] = function()
-          if cmp.visible() then
-            cmp.abort()
-          else
-            cmp.complete()
-          end
-        end,
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.confirm({
-              behavior = cmp.ConfirmBehavior.Replace,
-              select = true,
-            })
-          elseif luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
-          else
-            -- vim.api.nvim_replace_termcodes("<Plug>(TaboutBack)", true, true, true)
-            fallback()
-          end
-        end, { "i", "s" }),
-        ["<C-n>"] = cmp.mapping({
-          c = function()
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              cmp.complete()
-            end
-          end,
-          -- c = function()
-          --   if cmp.visible() then
-          --     cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-          --   else
-          --     vim.api.nvim_feedkeys(t("<Down>"), "n", true)
-          --   end
-          -- end,
-          i = function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            else
-              fallback()
-            end
-          end,
-        }),
-        ["<C-p>"] = cmp.mapping({
-          -- c = function()
-          --   if cmp.visible() then
-          --     cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-          --   else
-          --     vim.api.nvim_feedkeys(t("<Up>"), "n", true)
-          --   end
-          -- end,
-          i = function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            else
-              fallback()
-            end
-          end,
-        }),
-      })
-
-      table.insert(opts.sources, {
-        name = "emoji",
-      })
-      table.insert(opts.sources, {
-        name = "luasnip",
-      })
-
-      --
-      --   local compare = require("cmp.config.compare")
-      --
-      --   local remove_source = { "luasnip", "copilot", "codeium" }
-      --   for i, source in ipairs(opts.sources) do
-      --     if vim.tbl_contains(remove_source, source.name) then
-      --       table.remove(opts.sources, i)
-      --     end
-      --   end
-      --
-      --   table.insert(opts.sources, {
-      --     name = "codeium",
-      --     -- group_index = 1,
-      --     -- priority = 100,
-      --   })
-      --
-      --   table.insert(opts.sources, {
-      --     name = "copilot",
-      --     group_index = nil,
-      --     --   -- priority = 100,
-      --   })
-      --   table.insert(opts.sources, {
-      --     name = "luasnip",
-      --     -- group_index = 1,
-      --     -- priority = 120,
-      --   })
-      --   table.insert(opts.sources, { name = "emoji" })
-      --
-      --   -- local a = vim.tbl_extend("force", opts.sources, {
-      --   -- })
-      --   -- table.insert(opts.sources, 1, {
-      --   --   name = "copilot",
-      --   --   group_index = 1,
-      --   --   priority = 100,
-      --   -- })
-      --   --
-      --   -- table.insert(opts.sources, {
-      --   --   name = "luasnip",
-      --   --   group_index = 1,
-      --   --   priority = 120,
-      --   -- })
-      --
-      --   opts.sorting = {
-      --     priority_weight = 1,
-      --     comparators = {
-      --       compare.length,
-      --       compare.offset,
-      --       compare.exact,
-      --       -- compare.scopes,
-      --       compare.score,
-      --       compare.recently_used,
-      --       compare.locality,
-      --       compare.kind,
-      --       -- compare.sort_text,
-      --       compare.order,
-      --     },
-      --   }
-    end,
+    -- opts = function(_, opts)
+    --   local luasnip = require("luasnip")
+    --   local cmp = require("cmp")
+    --
+    --   cmp.setup.cmdline(":", {
+    --     mapping = cmp.mapping.preset.cmdline({
+    --       ["<Tab>"] = cmp.mapping({
+    --         c = function()
+    --           cmp.confirm({
+    --             behavior = cmp.ConfirmBehavior.Replace,
+    --             select = true,
+    --           })
+    --         end,
+    --       }),
+    --     }),
+    --     sources = cmp.config.sources({
+    --       { name = "path" },
+    --     }, {
+    --       {
+    --         name = "cmdline",
+    --         option = {
+    --           ignore_cmds = { "Man", "!" },
+    --         },
+    --       },
+    --     }),
+    --   })
+    --
+    --   cmp.setup.cmdline("/", {
+    --     mapping = cmp.mapping.preset.cmdline({
+    --       ["<Tab>"] = cmp.mapping({
+    --         c = function()
+    --           cmp.confirm({
+    --             behavior = cmp.ConfirmBehavior.Replace,
+    --             select = true,
+    --           })
+    --         end,
+    --       }),
+    --     }),
+    --     sources = cmp.config.sources({
+    --       { name = "nvim_lsp_document_symbol" },
+    --     }, {
+    --       { name = "buffer" },
+    --     }),
+    --   })
+    --
+    --   opts.mapping = vim.tbl_extend("force", opts.mapping, {
+    --     ["<CR>"] = cmp.mapping({
+    --       i = function(fallback)
+    --         if cmp.visible() and cmp.get_active_entry() then
+    --           cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+    --         else
+    --           fallback()
+    --         end
+    --       end,
+    --       -- s = cmp.mapping.confirm({ select = true }),
+    --       -- c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+    --     }),
+    --     ["<C-e>"] = function()
+    --       if cmp.visible() then
+    --         cmp.abort()
+    --       else
+    --         cmp.complete()
+    --       end
+    --     end,
+    --     ["<Tab>"] = cmp.mapping(function(fallback)
+    --       if cmp.visible() then
+    --         cmp.confirm({
+    --           behavior = cmp.ConfirmBehavior.Replace,
+    --           select = true,
+    --         })
+    --       elseif luasnip.expand_or_locally_jumpable() then
+    --         luasnip.expand_or_jump()
+    --       else
+    --         -- vim.api.nvim_replace_termcodes("<Plug>(TaboutBack)", true, true, true)
+    --         fallback()
+    --       end
+    --     end, { "i", "s" }),
+    --     ["<C-n>"] = cmp.mapping({
+    --       c = function()
+    --         if cmp.visible() then
+    --           cmp.select_next_item()
+    --         else
+    --           cmp.complete()
+    --         end
+    --       end,
+    --       -- c = function()
+    --       --   if cmp.visible() then
+    --       --     cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+    --       --   else
+    --       --     vim.api.nvim_feedkeys(t("<Down>"), "n", true)
+    --       --   end
+    --       -- end,
+    --       i = function(fallback)
+    --         if cmp.visible() then
+    --           cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+    --         else
+    --           fallback()
+    --         end
+    --       end,
+    --     }),
+    --     ["<C-p>"] = cmp.mapping({
+    --       -- c = function()
+    --       --   if cmp.visible() then
+    --       --     cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+    --       --   else
+    --       --     vim.api.nvim_feedkeys(t("<Up>"), "n", true)
+    --       --   end
+    --       -- end,
+    --       i = function(fallback)
+    --         if cmp.visible() then
+    --           cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+    --         else
+    --           fallback()
+    --         end
+    --       end,
+    --     }),
+    --   })
+    --
+    --   table.insert(opts.sources, {
+    --     name = "emoji",
+    --   })
+    --
+    --   --
+    --   --   local compare = require("cmp.config.compare")
+    --   --
+    --   --   local remove_source = { "luasnip", "copilot", "codeium" }
+    --   --   for i, source in ipairs(opts.sources) do
+    --   --     if vim.tbl_contains(remove_source, source.name) then
+    --   --       table.remove(opts.sources, i)
+    --   --     end
+    --   --   end
+    --   --
+    --   --   table.insert(opts.sources, {
+    --   --     name = "codeium",
+    --   --     -- group_index = 1,
+    --   --     -- priority = 100,
+    --   --   })
+    --   --
+    --   --   table.insert(opts.sources, {
+    --   --     name = "copilot",
+    --   --     group_index = nil,
+    --   --     --   -- priority = 100,
+    --   --   })
+    --   --   table.insert(opts.sources, {
+    --   --     name = "luasnip",
+    --   --     -- group_index = 1,
+    --   --     -- priority = 120,
+    --   --   })
+    --   --   table.insert(opts.sources, { name = "emoji" })
+    --   --
+    --   --   -- local a = vim.tbl_extend("force", opts.sources, {
+    --   --   -- })
+    --   --   -- table.insert(opts.sources, 1, {
+    --   --   --   name = "copilot",
+    --   --   --   group_index = 1,
+    --   --   --   priority = 100,
+    --   --   -- })
+    --   --   --
+    --   --   -- table.insert(opts.sources, {
+    --   --   --   name = "luasnip",
+    --   --   --   group_index = 1,
+    --   --   --   priority = 120,
+    --   --   -- })
+    --   --
+    --   --   opts.sorting = {
+    --   --     priority_weight = 1,
+    --   --     comparators = {
+    --   --       compare.length,
+    --   --       compare.offset,
+    --   --       compare.exact,
+    --   --       -- compare.scopes,
+    --   --       compare.score,
+    --   --       compare.recently_used,
+    --   --       compare.locality,
+    --   --       compare.kind,
+    --   --       -- compare.sort_text,
+    --   --       compare.order,
+    --   --     },
+    --   --   }
+    -- end,
   },
   {
     "echasnovski/mini.bufremove",
