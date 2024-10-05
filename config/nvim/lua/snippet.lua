@@ -441,6 +441,23 @@ M.setup = function()
     postfix(".length", {
       l("${#" .. l.POSTFIX_MATCH .. "[@]} # length of " .. l.POSTFIX_MATCH),
     }),
+    postfix(".last", {
+      l("${" .. l.POSTFIX_MATCH .. "[-1]} # last element of " .. l.POSTFIX_MATCH),
+    }),
+    postfix(".split", {
+      t({ "IFS='" }),
+      i(1, "separator"),
+      t({ "' read -r -a " }),
+      i(2, "list"),
+      l(" <<< " .. l.POSTFIX_MATCH),
+    }),
+    -- IFS=' ' joined_str="${arr[*]}"
+    postfix(".join", {
+      t({ "IFS=' " }),
+      i(1, "separator"),
+      t({ "' " }),
+      l('joined_str="${' .. l.POSTFIX_MATCH .. '[*]}"'),
+    }),
 
     -- s("switch", {
     --   t({ "case $" }),

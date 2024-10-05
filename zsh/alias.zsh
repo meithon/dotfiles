@@ -24,10 +24,16 @@
 # abbrev-alias -g grb="git rebase"
 # abbrev-alias -g grs="git reset --soft HEAD^"
 # abbrev-alias -g gtree="git tree"
-# abbrev-alias -g git_rebase_main="git switch main && git pull && git switch - && git rebase main"
+abbrev-alias -g git_rebase_main="git switch main && git pull && git switch - && git rebase main"
 #
 # abbrev-alias -g G="| rg --line-number"
 
+
+function last_history_argument() {
+  echo $(echo $history[1] | string split ' ')[-1]
+}
+
+abbrev-alias --add 'it' --position anywhere --function last_history_argument
 
 function fzf-print-k8s-secret() {
   S=$(kubectl get secrets -o name | fzf) && echo $S && kubectl get $S -o json | jq '.data | map_values(@base64d)'

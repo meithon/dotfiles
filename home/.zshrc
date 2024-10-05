@@ -1,6 +1,6 @@
-. "$HOME/.asdf/asdf.sh"
 export PATH=/opt/homebrew/bin:$PATH
 export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
+export JAVA_HOME=$(asdf where java)
 # must load before zsh config
 eval "$(sheldon source)"
 
@@ -74,8 +74,18 @@ PATH=~/.console-ninja/.bin:$PATH
 
 
 
+<<<<<<< HEAD
 ### Added by Codeium. These lines cannot be automatically removed if modified
 if command -v termium > /dev/null 2>&1; then
   eval "$(termium shell-hook show post)"
 fi
 ### End of Codeium integration
+=======
+
+source <(argo completion zsh)
+export ARGO_SERVER='***REMOVED***' 
+export ARGO_HTTP1=true  
+export ARGO_SECURE=true
+export ARGO_BASE_HREF=
+export ARGO_NAMESPACE=build-workflows
+>>>>>>> ed9ed10 (some)
