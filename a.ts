@@ -16,4 +16,3 @@ try {
   console.error(e);
   return
 }
-

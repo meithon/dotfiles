@@ -2,5 +2,9 @@
     "diagnostics.disable": [
         "assign-type-mismatch",
         "unused-function"
+    ],
+    "diagnostics.globals": [
+        "require",
+        "vim"
     ]
 }
