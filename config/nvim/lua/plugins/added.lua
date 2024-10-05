@@ -5,6 +5,162 @@ local map = vim.keymap.set
 ---
 return {
   {
+    "wallpants/github-preview.nvim",
+    cmd = { "GithubPreviewToggle" },
+    keys = { "<leader>mpt" },
+    opts = {
+      -- config goes here
+    },
+    config = function(_, opts)
+      local gpreview = require("github-preview")
+      gpreview.setup(opts)
+
+      local fns = gpreview.fns
+      vim.keymap.set("n", "<leader>mpt", fns.toggle)
+      vim.keymap.set("n", "<leader>mps", fns.single_file_toggle)
+      vim.keymap.set("n", "<leader>mpd", fns.details_tags_toggle)
+    end,
+  },
+  {
+    "glepnir/nerdicons.nvim",
+    cmd = "NerdIcons",
+    config = function()
+      require("nerdicons").setup({})
+    end,
+  },
+  {
+    "codota/tabnine-nvim",
+    build = "./dl_binaries.sh",
+    config = function()
+      require("tabnine").setup({
+        disable_auto_comment = true,
+        accept_keymap = "<Right>",
+        dismiss_keymap = "<C-]>",
+        debounce_ms = 800,
+        suggestion_color = { gui = "#808080", cterm = 244 },
+        exclude_filetypes = { "TelescopePrompt", "NvimTree" },
+        log_file_path = nil, -- absolute path to Tabnine log file
+        ignore_certificate_errors = false,
+      })
+    end,
+  },
+  {
+    "nvim-java/nvim-java",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+    },
+    config = function()
+      require("java").setup()
+      require("lspconfig").jdtls.setup({})
+    end,
+  },
+  { -- Colorize text with ANSI escape sequences (8, 16, 256 or TrueColor)
+    "m00qek/baleia.nvim",
+    version = "*",
+    config = function()
+      vim.g.baleia = require("baleia").setup({})
+
+      -- Command to colorize the current buffer
+      vim.api.nvim_create_user_command("BaleiaColorize", function()
+        vim.g.baleia.once(vim.api.nvim_get_current_buf())
+      end, { bang = true })
+
+      -- Command to show logs
+      vim.api.nvim_create_user_command("BaleiaLogs", vim.g.baleia.logger.show, { bang = true })
+    end,
+  },
+  {
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
+  },
+  -- { "starwing/luaiter" },
+  -- {
+  --   "neovim/nvim-lspconfig", -- REQUIRED: for native Neovim LSP integration
+  --   lazy = false, -- REQUIRED: tell lazy.nvim to start this plugin at startup
+  --   dependencies = {
+  --     -- main one
+  --     { "ms-jpq/coq_nvim", branch = "coq" },
+  --
+  --     -- 9000+ Snippets
+  --     -- { "ms-jpq/coq.artifacts", branch = "artifacts" },
+  --
+  --     -- lua & third party sources -- See https://github.com/ms-jpq/coq.thirdparty
+  --     -- Need to **configure separately**
+  --     { "ms-jpq/coq.thirdparty", branch = "3p" },
+  --     -- - shell repl
+  --     -- - nvim lua api
+  --     -- - scientific calculator
+  --     -- - comment banner
+  --     -- - etc
+  --     --
+  --     --
+  --     { "mendes-davi/coq_luasnip" },
+  --     {
+  --       "williamboman/mason-lspconfig.nvim",
+  --       config = function(_, opts)
+  --         local coq = require("coq")
+  --         local lsp = require("lspconfig")
+  --         local mason_lspconfig = require("mason-lspconfig")
+  --         mason_lspconfig.setup({
+  --           handlers = {
+  --             function(server_name)
+  --               lsp[server_name].setup(coq.lsp_ensure_capabilities())
+  --             end,
+  --           },
+  --         })
+  --       end,
+  --     },
+  --   },
+  --   init = function()
+  --     vim.g.coq_settings = {
+  --       auto_start = true, -- if you want to start COQ at startup
+  --       -- Your COQ settings here
+  --     }
+  --   end,
+  --   config = function()
+  --     require("coq_3p")({
+  --       { src = "nvimlua", short_name = "nLUA" },
+  --
+  --       { src = "vimtex", short_name = "vTEX" },
+  --       { src = "copilot", short_name = "COP", accept_key = "<c-f>" },
+  --       { src = "codeium", short_name = "COD" },
+  --       -- ...
+  --       -- { src = "demo" },
+  --     })
+  --
+  --     -- Your LSP settings here
+  --     -- vim.api.nvim_set_keymap(
+  --     --   "i",
+  --     --   "<Tab>",
+  --     --   [[pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"]],
+  --     --   { expr = true, silent = true }
+  --     -- )
+  --   end,
+  -- },
+  -- {
+  --   "nvim-cmp",
+  --   enabled = false,
+  -- },
+  {
+    "leath-dub/snipe.nvim",
+    keys = {
+      {
+        "gb",
+        function()
+          require("snipe").open_buffer_menu()
+        end,
+        desc = "Open Snipe buffer menu",
+      },
+    },
+    opts = {},
+  },
+  {
     "jvgrootveld/telescope-zoxide",
     dependencies = {
       "nvim-lua/popup.nvim",
@@ -694,13 +850,13 @@ return {
   --   end,
   -- },
   -- Lazy
-  {
-    "piersolenski/telescope-import.nvim",
-    dependencies = "nvim-telescope/telescope.nvim",
-    config = function()
-      require("telescope").load_extension("import")
-    end,
-  },
+  -- {
+  --   "piersolenski/telescope-import.nvim",
+  --   dependencies = "nvim-telescope/telescope.nvim",
+  --   config = function()
+  --     require("telescope").load_extension("import")
+  --   end,
+  -- },
   -- {
   --   "atusy/treemonkey.nvim",
   --   init = function()
@@ -949,34 +1105,34 @@ return {
   --     require("render-markdown").setup({})
   --   end,
   -- },
-  -- { -- AI Completion
-  --   "archibate/genius.nvim",
-  --   requires = {
-  --     "nvim-lua/plenary.nvim",
-  --     "MunifTanjim/nui.nvim",
-  --   },
-  --   config = function()
-  --     require("genius").setup({
-  --       completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
-  --       -- This plugin supports many backends, openai backend is the default:
-  --       default_bot = "openai",
-  --       -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
-  --       -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
-  --       --
-  --       config_openai = {
-  --         api_key = os.getenv("OPENAI_API_KEY"),
-  --         infill_options = {
-  --           max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
-  --           model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
-  --           temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
-  --         },
-  --       },
-  --       -- Otherwise, you may run DeepSeek-Coder locally instead:
-  --       -- default_bot = 'deepseek',
-  --       -- See sections below for detailed instructions on setting up this model.
-  --     })
-  --   end,
-  -- },
+  { -- AI Completion
+    "archibate/genius.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("genius").setup({
+        completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
+        -- This plugin supports many backends, openai backend is the default:
+        default_bot = "openai",
+        -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
+        -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
+        --
+        config_openai = {
+          api_key = os.getenv("OPENAI_API_KEY"),
+          infill_options = {
+            max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
+            model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
+            temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
+          },
+        },
+        -- Otherwise, you may run DeepSeek-Coder locally instead:
+        -- default_bot = 'deepseek',
+        -- See sections below for detailed instructions on setting up this model.
+      })
+    end,
+  },
   { "wakatime/vim-wakatime", lazy = false },
   {
     "stevearc/oil.nvim",
@@ -1019,58 +1175,58 @@ return {
       -- your options here
     },
   },
-  {
-    {
-      "CopilotC-Nvim/CopilotChat.nvim",
-      branch = "canary",
-      dependencies = {
-        { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-        { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
-      },
-      opts = {
-        debug = true, -- Enable debugging
-      },
-
-      --     :CopilotChat <input>? - Open chat window with optional input
-      --     :CopilotChatOpen - Open chat window
-      --     :CopilotChatClose - Close chat window
-      --     :CopilotChatToggle - Toggle chat window
-      --     :CopilotChatReset - Reset chat window
-      --     :CopilotChatSave <name>? - Save chat history to file
-      --     :CopilotChatLoad <name>? - Load chat history from file
-      --     :CopilotChatDebugInfo - Show debug information
-      --
-      -- Commands coming from default prompts
-      --
-      --     :CopilotChatExplain - Explain how it works
-      --     :CopilotChatTests - Briefly explain how selected code works then generate unit tests
-      --     :CopilotChatFix - There is a problem in this code. Rewrite the code to show it with the bug fixed.
-      --     :CopilotChatOptimize - Optimize the selected code to improve performance and readablilty.
-      --     :CopilotChatDocs - Write documentation for the selected code. The reply should be a codeblock containing the original code with the documentation added as comments. Use the most appropriate documentation style for the programming language used (e.g. JSDoc for JavaScript, docstrings for Python etc.
-      --     :CopilotChatFixDiagnostic - Please assist with the following diagnostic issue in file
-      --     :CopilotChatCommit - Write commit message for the change with commitizen convention
-      --     :CopilotChatCommitStaged - Write commit message for the change with commitizen convention
-      cmd = {
-        "CopilotChat",
-        "CopilotChatOpen",
-        "CopilotChatClose",
-        "CopilotChatToggle",
-        "CopilotChatReset",
-        "CopilotChatSave",
-        "CopilotChatLoad",
-        "CopilotChatDebugInfo",
-        "CopilotChatExplain",
-        "CopilotChatTests",
-        "CopilotChatFix",
-        "CopilotChatOptimize",
-        "CopilotChatDocs",
-        "CopilotChatFixDiagnostic",
-        "CopilotChatCommit",
-        "CopilotChatCommitStaged",
-      },
-      -- See Commands section for default commands if you want to lazy load on them
-    },
-  },
+  -- {
+  --   {
+  --     "CopilotC-Nvim/CopilotChat.nvim",
+  --     branch = "canary",
+  --     dependencies = {
+  --       { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+  --       { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+  --     },
+  --     opts = {
+  --       debug = true, -- Enable debugging
+  --     },
+  --
+  --     --     :CopilotChat <input>? - Open chat window with optional input
+  --     --     :CopilotChatOpen - Open chat window
+  --     --     :CopilotChatClose - Close chat window
+  --     --     :CopilotChatToggle - Toggle chat window
+  --     --     :CopilotChatReset - Reset chat window
+  --     --     :CopilotChatSave <name>? - Save chat history to file
+  --     --     :CopilotChatLoad <name>? - Load chat history from file
+  --     --     :CopilotChatDebugInfo - Show debug information
+  --     --
+  --     -- Commands coming from default prompts
+  --     --
+  --     --     :CopilotChatExplain - Explain how it works
+  --     --     :CopilotChatTests - Briefly explain how selected code works then generate unit tests
+  --     --     :CopilotChatFix - There is a problem in this code. Rewrite the code to show it with the bug fixed.
+  --     --     :CopilotChatOptimize - Optimize the selected code to improve performance and readablilty.
+  --     --     :CopilotChatDocs - Write documentation for the selected code. The reply should be a codeblock containing the original code with the documentation added as comments. Use the most appropriate documentation style for the programming language used (e.g. JSDoc for JavaScript, docstrings for Python etc.
+  --     --     :CopilotChatFixDiagnostic - Please assist with the following diagnostic issue in file
+  --     --     :CopilotChatCommit - Write commit message for the change with commitizen convention
+  --     --     :CopilotChatCommitStaged - Write commit message for the change with commitizen convention
+  --     cmd = {
+  --       "CopilotChat",
+  --       "CopilotChatOpen",
+  --       "CopilotChatClose",
+  --       "CopilotChatToggle",
+  --       "CopilotChatReset",
+  --       "CopilotChatSave",
+  --       "CopilotChatLoad",
+  --       "CopilotChatDebugInfo",
+  --       "CopilotChatExplain",
+  --       "CopilotChatTests",
+  --       "CopilotChatFix",
+  --       "CopilotChatOptimize",
+  --       "CopilotChatDocs",
+  --       "CopilotChatFixDiagnostic",
+  --       "CopilotChatCommit",
+  --       "CopilotChatCommitStaged",
+  --     },
+  --     -- See Commands section for default commands if you want to lazy load on them
+  --   },
+  -- },
   -- use your favorite package manager to install, for example in lazy.nvim
   --  Optionally, you can also install nvim-telescope/telescope.nvim to use some search functionality.
   -- {

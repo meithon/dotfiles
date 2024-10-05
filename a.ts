@@ -1,35 +1,19 @@
-const name8 = (argumentsreturn) => {
-  typeof argumentsreturn === 'string'
-  if (typeof argumentsreturn === 'bigint') {
-    return
-  }
 
-}
+const numbers = [1, 2, 3, 4, 5];
+const sum = numbers.reduce((accumulator, current) => {
+  // __AUTO_GENERATED_PRINT_VAR_START__
+  console.log("(anon) current: %s", current); // __AUTO_GENERATED_PRINT_VAR_END__
+  // __AUTO_GENERATED_PRINT_VAR_START__
+  console.log("(anon) accumulator: %s", accumulator); // __AUTO_GENERATED_PRINT_VAR_END__
 
-let asdfasdf: undefined
+  return accumulator + current;
+}, 0);
+
+let variable = undefined
 try {
-  asdfasdf = asdfasdfaasdfasdf
+  variable = number
 } catch (e) {
   console.error(e);
-}
-try {
-   = some
-} catch (e) {
-  console.error(e);
+  return
 }
 
-const coasdf = 
-
-const const = constd.const
-
-  constb.call.const
-
-
-function name(params: type) {
-
-}
-function asdf(asd) {
-  qasdf
-}
-
-repeat
