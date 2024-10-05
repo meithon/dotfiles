@@ -1,4 +1,6 @@
+. "$HOME/.asdf/asdf.sh"
 export PATH=/opt/homebrew/bin:$PATH
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 # must load before zsh config
 eval "$(sheldon source)"
 
@@ -68,12 +70,7 @@ fi
 
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
-source /Users/mei/.config/broot/launcher/bash/br
-
 PATH=~/.console-ninja/.bin:$PATH
-# eval "$(/opt/homebrew/bin/mise activate zsh)"
-export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-
 
 
 
