@@ -13,7 +13,7 @@ github = "romkatv/zsh-defer"
 
 [plugins.zsh-async]
 github = "mafredri/zsh-async"
-apply = ["defer"]
+# apply = ["defer"]
 
 [plugins.zsh-vi-mode]
 github = "jeffreytse/zsh-vi-mode"
@@ -62,6 +62,8 @@ apply = ["defer"]
 
 [plugins.per-directory-history]
 github = "jimhester/per-directory-history"
+apply = ["defer"]
+
 [plugins.per-directory-history.hooks]
 pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
 post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
@@ -69,3 +71,12 @@ post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
 
 [plugins.zsh-abbrev-alias]
 github = "momo-lab/zsh-abbrev-alias"
+
+[plugins.zsh-ssh]
+github = "sunlei/zsh-ssh"
+apply = ["defer"]
+
+# [plugins.history-search-multi-word]
+# github = "zdharma-continuum/history-search-multi-word"
+# [plugins.history-search-multi-word.hooks]
+# post = "bindkey \"^[[A\" history-search-multi-word-pbackwards"

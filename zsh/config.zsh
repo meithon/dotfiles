@@ -58,10 +58,10 @@ function tmux_pane_select_zvm_keybind() {
 	zvm_define_widget tmux_vsplit
 	zvm_define_widget tmux_split
 	# move
-	zvm_bindkey vicmd '^Wh' tmux_left_pane
-	zvm_bindkey vicmd '^Wj' tmux_down_pane
-	zvm_bindkey vicmd '^Wk' tmux_up_pane
-	zvm_bindkey vicmd '^Wl' tmux_right_pane
+	# zvm_bindkey vicmd '^Wh' tmux_left_pane
+	# zvm_bindkey vicmd '^Wj' tmux_down_pane
+	# zvm_bindkey vicmd '^Wk' tmux_up_pane
+	# zvm_bindkey vicmd '^Wl' tmux_right_pane
 
 	# split
 	zvm_bindkey vicmd '^Wv' tmux_vsplit
@@ -111,7 +111,7 @@ function fzf_vi_keybind() {
 ## initial zvm
 function zvm_after_lazy_keybindings() {
 	# keybind functions
-	tmux_pane_select_zvm_keybind
+	# tmux_pane_select_zvm_keybind
 	tmux_page_scroll_zvm_keybind
 	fzf_vi_keybind
 	# fzf-find-file-keybing
@@ -124,4 +124,6 @@ function zvm_after_lazy_keybindings() {
 	zvm_bindkey vicmd '/' tmux_search_up_mode
 
 	zvm_bindkey vicmd '^G' fzf-z-search
+  # zvm_bindkey vicmd '^[[A' history-search-multi-word-pbackwards
+  # zvm_bindkey vicmd '^P' history-search-multi-word-pbackwards
 }

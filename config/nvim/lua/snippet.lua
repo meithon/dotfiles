@@ -35,6 +35,68 @@ local postfix_builtin = require("luasnip.extras.treesitter_postfix").builtin
 
 local calculate_comment_string = require("Comment.ft").calculate
 local utils = require("Comment.utils")
+local pfmatches = require("luasnip.extras.postfix").matches
+
+---comment
+---@param str string
+---@return string
+local function to_upper_camel_case(str)
+  local words = {}
+
+  for word in str:gmatch("%S+") do
+    for sub_word in word:gmatch("([^_%-%s]+)") do
+      local first_char = sub_word:sub(1, 1):upper()
+      local rest_chars = sub_word:sub(2):lower()
+      table.insert(words, first_char .. rest_chars)
+    end
+  end
+
+  return table.concat(words)
+end
+
+--- remove (...)
+---@param str string
+---@return string
+local function remove_function_call_str(str)
+  return string:gsub(str, "%b()", "")
+end
+
+---@param trig string
+---@param snip_fn fun(node_content: string): unknown
+---@return unknown
+local function tspost(trig, snip_fn)
+  return treesitter_postfix({
+    trig = trig,
+    reparseBuffer = "live",
+    matchTSNode = postfix_builtin.tsnode_matcher.find_topmost_types({
+      "expression_statement",
+      "call_expression",
+      "identifier",
+    }),
+  }, {
+    d(1, function(_, parent)
+      local ls_tsmatch = parent.snippet.env.LS_TSMATCH or {}
+      local node_content = table.concat(ls_tsmatch, "\n")
+
+      return snip_fn(node_content)
+    end),
+  })
+end
+
+local function figlet(text)
+  local command = 'figlet -f slant "' .. text .. '"'
+  local handle = io.popen(command)
+  ---@type string
+  local result = handle:read("*a")
+  local success, _, code = handle:close()
+
+  if success then
+    return result
+  else
+    print("Command execution failed with exit code: " .. tostring(code))
+    return nil, "Command execution failed with exit code: " .. tostring(code)
+  end
+end
 
 --- Get the comment string {beg,end} table
 ---@param ctype integer 1 for `line`-comment and 2 for `block`-comment
@@ -47,22 +109,25 @@ local get_cstring = function(ctype)
   -- create a `{left, right}` table for it
   return { left, right }
 end
+
+local function pick_comment_start_and_end()
+  -- because lua block comment is unlike other language's,
+  --  so handle lua ctype
+  local ctype = 2
+  if vim.opt.ft:get() == "lua" then
+    ctype = 1
+  end
+  local cs = get_cstring(ctype)[1]
+  local ce = get_cstring(ctype)[2]
+  if ce == "" or ce == nil then
+    ce = cs
+  end
+  return cs, ce
+end
+
 local function create_box(opts)
   local pl = opts.padding_length or 4
-  local function pick_comment_start_and_end()
-    -- because lua block comment is unlike other language's,
-    --  so handle lua ctype
-    local ctype = 2
-    if vim.opt.ft:get() == "lua" then
-      ctype = 1
-    end
-    local cs = get_cstring(ctype)[1]
-    local ce = get_cstring(ctype)[2]
-    if ce == "" or ce == nil then
-      ce = cs
-    end
-    return cs, ce
-  end
+
   return {
     -- top line
     f(function(args)
@@ -87,6 +152,8 @@ local function create_box(opts)
     end, { 1 }),
   }
 end
+
+local function box_figlet() end
 
 M.setup = function()
   -- If you're reading this file for the first time, best skip to around line 190
@@ -135,40 +202,59 @@ M.setup = function()
 
   require("luasnip.loaders.from_snipmate").lazy_load() -- Lazy loading
 
+  ------------------------------------------------------------------
+  --           __                  _____           _       __     --
+  --          / /___ __   ______ _/ ___/__________(_)___  / /_    --
+  --     __  / / __ `/ | / / __ `/\__ \/ ___/ ___/ / __ \/ __/    --
+  --    / /_/ / /_/ /| |/ / /_/ /___/ / /__/ /  / / /_/ / /_      --
+  --    \____/\__,_/ |___/\__,_//____/\___/_/  /_/ .___/\__/      --
+  --                                            /_/               --
+  ------------------------------------------------------------------
   local javascript = {
     postfix(".let", {
       d(1, function(_, parent)
         return sn(nil, { t("let " .. parent.env.POSTFIX_MATCH .. " = ") })
       end),
     }),
-    -- postfix(".const", {
-    --   d(1, function(_, parent)
-    --     return sn(nil, { t("const " .. parent.env.POSTFIX_MATCH .. " = ") })
-    --   end),
-    -- }),
+    tspost(".trylet", function(node_content)
+      return sn(nil, {
+        t("let "),
+        d(2, function(args)
+          return sn(nil, { t(args[1]) })
+        end, { 1 }),
+        t({ " = undefined", "" }),
+        t({ "try {", "" }),
+        t("  "),
+        i(1, "variable"),
+        t(" = " .. node_content),
+        i(3),
+        t({ "", "} catch (e) {", "" }),
+        t({
+          "  console.error(e);",
+          "  return",
+          "}",
+          "",
+        }),
+      })
+    end),
+    tspost(".const", function(node_content)
+      local identifiers = vim.split(node_content, ".", { plain = true })
+      local identifier_amount = #identifiers
+      _ = identifiers[#identifiers]
+      local identifier = _:gsub("[\n%(%[%]%)%]]", "")
 
-    treesitter_postfix({
-      trig = ".const",
-      reparseBuffer = "live",
-      matchTSNode = postfix_builtin.tsnode_matcher.find_topmost_types({
-        "expression_statement",
-        "call_expression",
-        "identifier",
-      }),
-    }, {
-      f(function(_, parent)
-        local ls_tsmatch = parent.snippet.env.LS_TSMATCH or {}
-        local node_content = table.concat(ls_tsmatch, "\n")
-
-        local _ = vim.split(node_content, ".", { plain = true })
-        _ = _[#_]
-        local identifier = _:gsub("[\n%(%[%]%)%]]", "")
-
-        local replaced_content = ("const %s = %s"):format(identifier, node_content)
-        return vim.split(replaced_content, "\n", { trimempty = false })
-      end),
-    }),
-
+      local replaced_content = ("const %s = "):format(identifier)
+      print(replaced_content)
+      if identifier_amount > 1 then
+        return sn(nil, {
+          t("const "),
+          i(1, "variable"),
+          t(" = "),
+          t(node_content),
+        })
+      end
+      return sn(nil, { t(("const %s = "):format(identifier)), i(1) })
+    end),
     postfix(".is type", {
       l("if (typeof " .. l.POSTFIX_MATCH .. " === '"),
       i(1),
@@ -209,27 +295,16 @@ M.setup = function()
       t({ "", "} catch (e) {", "" }),
       t({ "  console.error(e);", "}" }),
     }),
-    treesitter_postfix({
-      trig = ".return",
-      reparseBuffer = "live",
-      matchTSNode = postfix_builtin.tsnode_matcher.find_topmost_types({
-        "expression_statement",
-        "call_expression",
-        "identifier",
-      }),
-    }, {
-      f(function(_, parent)
-        local ls_tsmatch = parent.snippet.env.LS_TSMATCH or {}
-        local node_content = table.concat(ls_tsmatch, "\n")
-        local replaced_content = ("return %s"):format(node_content)
-        return vim.split(replaced_content, "\n", { trimempty = false })
-      end),
-    }),
-
+    tspost(".return", function(node_content)
+      return sn(nil, {
+        t("return " .. node_content),
+      })
+    end),
     treesitter_postfix({
       trig = ".await",
       reparseBuffer = "live",
-      matchTSNode = postfix_builtin.tsnode_matcher.find_topmost_types({
+      matchTSNode = postfix_builtin.tsnode_matcher.find_first_types({
+        "member_expression",
         "expression_statement",
         "call_expression",
         "identifier",
@@ -289,16 +364,27 @@ M.setup = function()
       l(l.POSTFIX_MATCH .. ".slice(-1)[0]"),
     }),
   }
-  -- table.insert()
+
+  ---------------------------------
+  --        __                   --
+  --       / /   __  ______ _    --
+  --      / /   / / / / __ `/    --
+  --     / /___/ /_/ / /_/ /     --
+  --    /_____/\__,_/\__,_/      --
+  --                             --
+  ---------------------------------
+
   local lua = {
     postfix(".insert", {
       l("table.insert(" .. l.POSTFIX_MATCH .. ", "),
       i(1),
       t(")"),
     }),
-    postfix(".debug", {
-      l("print(vim.inspect(" .. l.POSTFIX_MATCH .. "))"),
-    }),
+    tspost(".dbg", function(node_content)
+      return sn(nil, {
+        t("print(vim.inspect(" .. node_content .. ' :", ' .. node_content .. "))"),
+      })
+    end),
     postfix(".merge", {
       l("vim.tbl_extend('force', " .. l.POSTFIX_MATCH .. ", "),
       t(""),
@@ -333,6 +419,15 @@ M.setup = function()
       t(")"),
     }),
   }
+
+  ------------------------------------
+  --       _____ __         ____    --
+  --      / ___// /_  ___  / / /    --
+  --      \__ \/ __ \/ _ \/ / /     --
+  --     ___/ / / / /  __/ / /      --
+  --    /____/_/ /_/\___/_/_/       --
+  --                                --
+  ------------------------------------
   local shell = {
     s("isNumEqual", {
       t({ "if [ " }),
@@ -459,20 +554,20 @@ M.setup = function()
       l('joined_str="${' .. l.POSTFIX_MATCH .. '[*]}"'),
     }),
 
-    -- s("switch", {
-    --   t({ "case $" }),
-    --   i(1),
-    --   t({ " in" }),
-    --   t({ "", "  pattern1)" }),
-    --   t({ "", "    echo pattern1 matched!" }),
-    --   i(2),
-    --   t({ "", "    ;;" }),
-    --   t({ "", "  *)" }),
-    --   t({ "", "    echo No pattern matched!" }),
-    --   t({ "", "    ;;" }),
-    --   t({ "", "esac" }),
-    -- }),
-    --
+    s("switch", {
+      t({ "case $" }),
+      i(1),
+      t({ " in" }),
+      t({ "", "  " }),
+      i(2, "pattern"),
+      t({ ")", "" }),
+      t({ "", "    echo pattern1 matched!" }),
+      t({ "", "    ;;" }),
+      t({ "", "  *)" }),
+      t({ "", "    echo No pattern matched!" }),
+      t({ "", "    ;;" }),
+      t({ "", "esac" }),
+    }),
     -- -- FIXME:
     -- -- ...local/share/nvim/lazy/LuaSnip/lua/luasnip/extras/fmt.lua:144: Found unescaped { inside placeholder; format[12:180]="{
     -- --   local jobs=("$@")  # Accept a list of jobs as arguments
@@ -522,9 +617,212 @@ M.setup = function()
     -- }),
   }
 
+  --------------------------------------------------
+  --        ____        __  __                  --
+  --       / __ \__  __/ /_/ /_  ____  ____     --
+  --      / /_/ / / / / __/ __ \/ __ \/ __ \    --
+  --     / ____/ /_/ / /_/ / / / /_/ / / / /    --
+  --    /_/    \__, /\__/_/ /_/\____/_/ /_/     --
+  --          /____/                            --
+  --------------------------------------------------
+  local python = {
+    tspost(".dbg", function(node_content)
+      return sn(nil, {
+        t('print(f"' .. node_content .. ": {" .. node_content .. '}")'),
+      })
+    end),
+    tspost(".map", function(node_content)
+      return sn(nil, {
+        t("map("),
+        i(1, "lambda x:"),
+        t(", " .. node_content .. ")"),
+      })
+    end),
+    tspost(".filter", function(node_content)
+      return sn(nil, {
+        t("filter("),
+        i(1, "lambda x:"),
+        t(", " .. node_content .. ")"),
+      })
+    end),
+    tspost(".list", function(node_content)
+      return sn(nil, { t("list(" .. node_content .. ")") })
+    end),
+    tspost(".acc", function(node_content)
+      return sn(nil, {
+        t("accumulate(" .. node_content .. ", "),
+        i(1),
+        t(")"),
+        i(2),
+      })
+    end),
+    tspost(".reduce", function(node_content)
+      return sn(nil, {
+        t("reduce(" .. node_content .. ", "),
+        i(1),
+        t(")"),
+        i(2),
+      })
+    end),
+    tspost(".var", function(node_content)
+      return sn(nil, {
+        i(1, "variable"),
+        t(" = " .. node_content),
+      })
+    end),
+    tspost(".trylet", function(node_content)
+      return sn(nil, {
+        d(2, function(args)
+          return sn(nil, { t(args[1]) })
+        end, { 1 }),
+        t({ " = None", "" }),
+        t({ "try:", "" }),
+        t("  "),
+        i(1, "variable"),
+        t(" = " .. node_content),
+        i(3),
+        t({ "", "expect SomeException as e:", "" }),
+        t({
+          "  print(e)",
+          "  return",
+          "",
+        }),
+      })
+    end),
+    s("test", {
+      t("class Test"),
+      d(4, function(args)
+        local input = args[1][1]
+        local _ = input:gsub("%b()", "")
+        local test = to_upper_camel_case(_)
+        return sn(nil, { t(test) })
+      end, { 1 }),
+      t("Function(unittest.TestCase):"),
+      t({ "", "    def test_" }),
+      d(3, function(args)
+        local input = args[1][1]
+        input = input:gsub("%b()", "")
+        return sn(nil, { t(input) })
+      end, { 1 }),
+      t("(self):"),
+      t({ "", "        self.assertEqual(" }),
+      i(1, "function_call()"),
+      t(", "),
+      i(2, "expected_value"),
+      t(")"),
+      t({
+        "",
+        "",
+        "if __name__ == '__main__':",
+        "    unittest.main()",
+      }),
+    }),
+    tspost(".test", function(node_content)
+      local test_class_name = to_upper_camel_case(node_content):gsub("%b()", "")
+      local test_method_name = node_content:gsub("%b()", "")
+      return sn(nil, {
+        t("class Test" .. test_class_name .. "Function(unittest.TestCase):"),
+        t({ "", "    def test_" .. test_method_name .. "(self):" }),
+        t({ "", "        self.assertEqual(" }),
+        t(node_content),
+        t(", "),
+        i(1, "expected_value"),
+        t(")"),
+        t({
+          "",
+          "",
+          "if __name__ == '__main__':",
+          "    unittest.main()",
+        }),
+      })
+    end),
+  }
+
+  -------------------------
+  --       ______        --
+  --      / ____/___     --
+  --     / / __/ __ \    --
+  --    / /_/ / /_/ /    --
+  --    \____/\____/     --
+  --                     --
+  -------------------------
+
+  ls.add_snippets("go", {
+    s("test", {
+      t({
+        "func TestFunc(t *testing.T) {",
+        "  result := Func",
+        "  if result != 1 {",
+        '    t.Errorf("Func() = %d; want 1", result)',
+        "  }",
+        "}",
+      }),
+    }),
+  })
+
+  ---------------------------
+  --        ___    ____    --
+  --       /   |  / / /    --
+  --      / /| | / / /     --
+  --     / ___ |/ / /      --
+  --    /_/  |_/_/_/       --
+  --                       --
+  ---------------------------
   local all = {
+    postfix(".box", {
+      d(1, function(_, parent)
+        local pl = 4
+        local text = parent.env.POSTFIX_MATCH:gsub("%.$", "")
+        local big_text = figlet(text)
+
+        if big_text == nil then
+          return sn(nil, { t(text) })
+        end
+        local cs, ce = pick_comment_start_and_end()
+
+        local left_line = cs .. string.rep(" ", pl)
+        local right_line = string.rep(" ", pl) .. ce
+
+        local output = {}
+        for str in string.gmatch(big_text, "[^\n]+") do
+          table.insert(output, left_line .. str .. right_line)
+        end
+
+        local text_length = output[1]:len() - 10
+
+        local top_line = cs .. string.rep(string.sub(cs, #cs, #cs), text_length + 2 * pl) .. ce
+        local bottom_line = cs .. string.rep(string.sub(ce, 1, 1), text_length + 2 * pl) .. ce
+
+        return sn(nil, {
+          -- top line
+          t(top_line),
+          t({ "", "" }),
+          t(output),
+          t({ "", "" }),
+          -- bottom line
+          t(bottom_line),
+        })
+      end),
+    }),
     s({ trig = "box" }, create_box({ padding_length = 8 })),
     s({ trig = "bbox" }, create_box({ padding_length = 20 })),
+    postfix("figlet", {
+      d(1, function(_, parent)
+        local text = parent.env.POSTFIX_MATCH:gsub("%.$", "")
+        local big_text = figlet(text)
+
+        if big_text == nil then
+          return sn(nil, { t(text) })
+        end
+
+        local output = {}
+        for str in string.gmatch(big_text, "[^\n]+") do
+          table.insert(output, str)
+        end
+
+        return sn(nil, t(output))
+      end),
+    }, { match_pattern = pfmatches.line }),
     -- s("DDD", {
     --   fmt([[
     --   main.ts
@@ -577,6 +875,7 @@ M.setup = function()
   ls.add_snippets("bash", shell)
   ls.add_snippets("zsh", shell)
   ls.add_snippets("all", all)
+  ls.add_snippets("python", python)
 
   require("luasnip").config.setup({
     ext_opts = {

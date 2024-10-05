@@ -115,27 +115,27 @@ return {
       })
     end,
   },
-  {
-    "zbirenbaum/copilot.lua",
-    config = function()
-      require("copilot").setup({
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          hide_during_completion = true,
-          debounce = 75,
-          keymap = {
-            accept = "<right>",
-            accept_word = false,
-            accept_line = false,
-            next = "<A-]>",
-            prev = "<A-[>",
-            dismiss = "<C-]>",
-          },
-        },
-      })
-    end,
-  },
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   config = function()
+  --     require("copilot").setup({
+  --       suggestion = {
+  --         enabled = true,
+  --         auto_trigger = true,
+  --         hide_during_completion = true,
+  --         debounce = 75,
+  --         keymap = {
+  --           accept = "<right>",
+  --           accept_word = false,
+  --           accept_line = false,
+  --           next = "<A-]>",
+  --           prev = "<A-[>",
+  --           dismiss = "<C-]>",
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
   {
     "L3MON4D3/LuaSnip",
 
@@ -149,32 +149,32 @@ return {
       },
     },
     version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-    keys = {
-      -- TODO: configure keymap in nvim-cmp
-      {
-        "<tab>",
-        function()
-          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
-        end,
-        expr = true,
-        silent = true,
-        mode = "i",
-      },
-      {
-        "<tab>",
-        function()
-          require("luasnip").jump(1)
-        end,
-        mode = "s",
-      },
-      {
-        "<s-tab>",
-        function()
-          require("luasnip").jump(-1)
-        end,
-        mode = { "i", "s" },
-      },
-    },
+    -- keys = {
+    --   -- TODO: configure keymap in nvim-cmp
+    --   {
+    --     "<tab>",
+    --     function()
+    --       return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
+    --     end,
+    --     expr = true,
+    --     silent = true,
+    --     mode = "i",
+    --   },
+    --   {
+    --     "<tab>",
+    --     function()
+    --       require("luasnip").jump(1)
+    --     end,
+    --     mode = "s",
+    --   },
+    --   {
+    --     "<s-tab>",
+    --     function()
+    --       require("luasnip").jump(-1)
+    --     end,
+    --     mode = { "i", "s" },
+    --   },
+    -- },
     -- dependencies = {
     --   { "saadparwaiz1/cmp_luasnip" },
     --   require("snippet").dependencies,
@@ -269,8 +269,11 @@ return {
         end
       end, { noremap = true })
       require("snippet").setup()
-
+      -- \udb83\udfd8
+      -- \udb83\udfd8
+      -- \udb83\udfd8
       -- fuck
+      -- 󰿘
     end,
   },
   {
@@ -1151,6 +1154,98 @@ return {
       "onsails/lspkind-nvim",
       "L3MON4D3/LuaSnip",
     },
+    opts = function(_, opts)
+      local cmp = require("cmp")
+      opts.sorting = {
+        priority_weight = 2,
+        comparators = {
+          -- deprioritize_snippet,
+          -- copilot_cmp_comparators.prioritize or function() end,
+          cmp.config.compare.exact,
+          cmp.config.compare.offset,
+          cmp.config.compare.locality,
+          cmp.config.compare.score,
+          cmp.config.compare.recently_used,
+          cmp.config.compare.sort_text,
+          cmp.config.compare.order,
+        },
+      }
+
+      -- local lspkind = require("lspkind")
+      -- local source_mapping = {
+      --   npm = "   " .. "NPM",
+      --   cmp_tabnine = "  ",
+      --   Copilot = "",
+      --   Codeium = "",
+      --   nvim_lsp = "  " .. "LSP",
+      --   buffer = "  " .. "BUF",
+      --   nvim_lua = "  ",
+      --   luasnip = "  " .. "SNP",
+      --   calc = "  ",
+      --   path = " 󰉖 ",
+      --   treesitter = "  ",
+      --   zsh = "  " .. "ZSH",
+      -- }
+      -- opts.formatting = {
+      --   format = function(entry, vim_item)
+      --     -- Set the highlight group for the Codeium source
+      --     if entry.source.name == "codeium" then
+      --       vim_item.kind_hl_group = "CmpItemKindCopilot"
+      --     end
+      --
+      --     -- Get the item with kind from the lspkind plugin
+      --     local item_with_kind = lspkind.cmp_format({
+      --       mode = "symbol_text",
+      --       maxwidth = 50,
+      --       symbol_map = source_mapping,
+      --     })(entry, vim_item)
+      --     item_with_kind.kind = lspkind.symbolic(item_with_kind.kind, { with_text = true })
+      --     item_with_kind.menu = source_mapping[entry.source.name]
+      --     item_with_kind.menu = vim.trim(item_with_kind.menu or "")
+      --     item_with_kind.abbr = string.sub(item_with_kind.abbr, 1, item_with_kind.maxwidth)
+      --
+      --     if entry.source.name == "cmp_tabnine" then
+      --       if entry.completion_item.data ~= nil and entry.completion_item.data.detail ~= nil then
+      --         item_with_kind.kind = " " .. lspkind.symbolic("Event", { with_text = false }) .. " TabNine"
+      --         item_with_kind.menu = item_with_kind.menu .. entry.completion_item.data.detail
+      --       else
+      --         item_with_kind.kind = " " .. lspkind.symbolic("Event", { with_text = false }) .. " TabNine"
+      --         item_with_kind.menu = item_with_kind.menu .. " TBN"
+      --       end
+      --     end
+      --
+      --     local function get_lsp_completion_context(completion, source)
+      --       local ok, source_name = pcall(function()
+      --         return source.source.client.config.name
+      --       end)
+      --       if not ok then
+      --         return nil
+      --       end
+      --       if source_name == "tsserver" or source_name == "typescript-tools" then
+      --         return completion.detail
+      --       elseif source_name == "pyright" then
+      --         if completion.labelDetails ~= nil then
+      --           return completion.labelDetails.description
+      --         end
+      --       end
+      --     end
+      --     local completion_context = get_lsp_completion_context(entry.completion_item, entry.source)
+      --     if completion_context ~= nil and completion_context ~= "" then
+      --       item_with_kind.menu = item_with_kind.menu .. [[ -> ]] .. completion_context
+      --     end
+      --
+      --     if string.find(vim_item.kind, "Color") then
+      --       -- Override for plugin purposes
+      --       vim_item.kind = "Color"
+      --       local tailwind_item = require("cmp-tailwind-colors").format(entry, vim_item)
+      --       item_with_kind.menu = lspkind.symbolic("Color", { with_text = false }) .. " Color"
+      --       item_with_kind.kind = " " .. tailwind_item.kind
+      --     end
+      --
+      --     return item_with_kind
+      --   end,
+      -- }
+    end,
     -- config = function()
     --   local cmp = require("cmp")
     --   local copilot_cmp_comparators = require("copilot_cmp.comparators")
