@@ -5,6 +5,10 @@ local map = vim.keymap.setadded
 ---
 return {
   {
+    "triarius/fileline.nvim",
+    opts = {},
+  },
+  {
     "ownerRef.nvim",
     dir = "/Users/mei/workspace/private/ownerRef.nvim",
     config = function()
@@ -679,10 +683,13 @@ return {
   --     { "<leader>gg", "<cmd>GhBlameCurrentLine<cr>", desc = "GitHub Blame Current Line" },
   --   },
   -- },
-  { -- File git history inspector
+  { -- File git history inspector changes
     "fredeeb/tardis.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = true,
+    cmd = {
+      "Tardis",
+    },
   },
   { -- File git history inspector
     "niuiic/git-log.nvim",

@@ -109,4 +109,15 @@ _main
 
 # Created by `pipx` on 2024-09-12 01:05:40
 export PATH="$PATH:/Users/mei/.local/bin"
+<<<<<<< HEAD
 >>>>>>> 16c037e (change)
+=======
+
+# pnpm
+export PNPM_HOME="/Users/mei/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+>>>>>>> ce655b8 (change)
