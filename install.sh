@@ -22,11 +22,11 @@ main() {
   get_user_confirmation
   git_clone_dotfiles
 
+  source ~/.envsetup.sh
   setup_asdf
   envsetup
   deploy_dotfiles
 
-  source ~/.envsetup.sh
   rustup default stable
   cargo install lsd sheldon bob-nvim pueue
 

@@ -1,9 +1,16 @@
-local map = vim.keymap.set
+local map = vim.keymap.setadded
 
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 ---
 return {
+  {
+    "ownerRef.nvim",
+    dir = "/Users/mei/workspace/private/ownerRef.nvim",
+    config = function()
+      require("ownerRef").setup()
+    end,
+  },
   {
     "wallpants/github-preview.nvim",
     cmd = { "GithubPreviewToggle" },
@@ -34,10 +41,10 @@ return {
     config = function()
       require("tabnine").setup({
         disable_auto_comment = true,
-        accept_keymap = "<Right>",
+        accept_keymap = "<Tab>",
         dismiss_keymap = "<C-]>",
         debounce_ms = 800,
-        suggestion_color = { gui = "#808080", cterm = 244 },
+        suggestion_color = { gui = "#805d80", cterm = 244 },
         exclude_filetypes = { "TelescopePrompt", "NvimTree" },
         log_file_path = nil, -- absolute path to Tabnine log file
         ignore_certificate_errors = false,
@@ -49,6 +56,7 @@ return {
     dependencies = {
       "neovim/nvim-lspconfig",
     },
+    ft = { "java" },
     config = function()
       require("java").setup()
       require("lspconfig").jdtls.setup({})
@@ -1259,6 +1267,50 @@ return {
           path = "~/Documents/obsidian-vault",
         },
       },
+      note_id_func = function(title)
+        return title
+      end,
+      note_frontmatter_func = function(note)
+        -- -- Add the title of the note as an alias.
+        -- if note.title then
+        --   note:add_alias(note.title)
+        -- end
+        --
+        -- local out = { id = note.id, aliases = note.aliases, tags = note.tags }
+        --
+        -- -- `note.metadata` contains any manually added fields in the frontmatter.
+        -- -- So here we just make sure those fields are kept in the frontmatter.
+        -- if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+        --   for k, v in pairs(note.metadata) do
+        --     out[k] = v
+        --   end
+        -- end
+        --
+        return {}
+      end,
+      mappings = {
+        -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+        ["gf"] = {
+          action = function()
+            return require("obsidian").util.gf_passthrough()
+          end,
+          opts = { noremap = false, expr = true, buffer = true },
+        },
+        -- Toggle check-boxes.
+        ["<leader>ch"] = {
+          action = function()
+            return require("obsidian").util.toggle_checkbox()
+          end,
+          opts = { buffer = true },
+        },
+        -- Smart action depending on context, either follow link or toggle checkbox.
+        ["<cr>"] = {
+          action = function()
+            return require("obsidian").util.smart_action()
+          end,
+          opts = { buffer = true, expr = true },
+        },
+      },
 
       -- see below for full list of options 👇
     },
@@ -1327,45 +1379,6 @@ return {
   --     require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
   --   end,
   -- },
-  { -- auto 改行
-    "hrsh7th/nvim-insx",
-    config = function()
-      require("insx.preset.standard").setup()
-      local insx = require("insx")
-      -- Simple pair deletion recipe.
-      -- local function your_recipe(option)
-      --   return {
-      --     action = function(ctx)
-      --       if option.allow_space then
-      --         ctx.remove([[\s*\%#\s*]])
-      --       end
-      --       ctx.send("<BS><Right><BS>")
-      --     end,
-      --     enabled = function(ctx)
-      --       if option.allow_space then
-      --         return ctx.match([[(\s*\%#\s*)]])
-      --       end
-      --       return ctx.match([[(\%#)]])
-      --     end,
-      --   }
-      -- end
-      -- require("insx").add(
-      --   "<C-j>",
-      --   require("insx.recipe.fast_wrap")({
-      --     close = ")",
-      --   })
-      -- )
-
-      -- insx.add(
-      --   "<C-z>",
-      --   require("insx.recipe.fast_wrap")({
-      --     close = ")",
-      --   })
-      -- )
-      -- Simple pair deletion recipe.
-      --
-    end,
-  },
   { "akinsho/toggleterm.nvim", version = "*", config = true },
   -- {
   --   "nvim-telescope/telescope-frecency.nvim",
@@ -1924,18 +1937,32 @@ return {
   { -- auto 改行
     "hrsh7th/nvim-insx",
     config = function()
-      local esc = require("insx").helper.regex.esc
-      require("insx").add(
-        "<CR>",
-        require("insx.recipe.fast_break")({
+      require("insx.preset.standard").setup({
+        fast_wrap = { enabled = false },
+      })
+      local insx = require("insx")
+      local esc = insx.esc
+
+      insx.add(
+        "<Space>",
+        require("insx.recipe.pair_spacing").increase({
           open_pat = esc("("),
           close_pat = esc(")"),
-          arguments = true,
-          html_attrs = true,
         })
       )
-      -- Simple pair deletion recipe.
-      --
+
+      for _, close in pairs({ ")", "]", "}", ">" }) do
+        insx.add(
+          "<C-x>",
+          insx.with(
+            require("insx.recipe.fast_wrap")({
+              close = close,
+            }),
+            {}
+          ),
+          { mode = "i" }
+        )
+      end
     end,
     event = "InsertEnter",
   },
@@ -1998,7 +2025,7 @@ return {
       },
     },
     keys = {
-      { "<C-x>", mode = "i" },
+      -- { "<C-x>", mode = "i" },
     },
     event = { "InsertEnter", "CmdlineEnter" },
     branch = "v0.6", --recommended as each new version will have breaking changes
@@ -2019,7 +2046,7 @@ return {
       table.insert(internal_pairs, { "<div>", "</div>", fly = true, dosuround = true, newline = true, space = true })
 
       local configs = {
-        fastwarp = { map = "<C-x>" },
+        -- fastwarp = { map = "<C-x>" },
         internal_pairs = internal_pairs,
       }
       return configs

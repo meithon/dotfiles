@@ -660,6 +660,26 @@ return {
           local path = node:get_id()
           vim.api.nvim_input(": " .. path .. "<Home>")
         end,
+        -- open terminal
+        ["e"] = function(state)
+          local node = state.tree:get_node()
+          local path = node:get_id()
+          local dir = path
+          if not vim.fn.isdirectory(path) then
+            local dir = vim.fs.dirname(path)
+          end
+          vim.cmd('ToggleTerm dir="' .. dir .. '"')
+        end,
+        ["F"] = function(state)
+          local node = state.tree:get_node()
+          local path = node:get_id()
+          local dir = path
+          if not vim.fn.isdirectory(path) then
+            local dir = vim.fs.dirname(path)
+          end
+          require("telescope.builtin").find_files({ cwd = dir })
+        end,
+
         -- ["h"] = function(state)
         --   local node = state.tree:get_node()
         --   if node.type == "directory" and node:is_expanded() then
@@ -1170,6 +1190,16 @@ return {
           cmp.config.compare.order,
         },
       }
+      --- Example integration with Tabnine and LuaSnip; falling back to inserting tab if neither has a completion
+      vim.keymap.set("i", "<tab>", function()
+        if require("tabnine.keymaps").has_suggestion() then
+          return require("tabnine.keymaps").accept_suggestion()
+        elseif require("luasnip").jumpable(1) then
+          return require("luasnip").jump(1)
+        else
+          return "<tab>"
+        end
+      end, { expr = true })
 
       -- local lspkind = require("lspkind")
       -- local source_mapping = {

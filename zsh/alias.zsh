@@ -87,6 +87,8 @@ alias mie="fzf-mise-tasks-edit"
 
 alias ka="kubectl-attach"
 
+alias tf="terraform"
+
 # pueue 
 alias pf=pueue-follow-fzf
 # 'pueue status --json | jq -r \'.tasks[] | " \(.id)  \(.command) "\' | fzf-tmux --preview \'echo {} | awk "{print \$1}" | xargs pueue follow\' | awk "{print \$1}"\'

@@ -7,7 +7,8 @@ _main() {
   eval "$(sheldon source)"
   setup_p10k
   zsh-defer setup_tools
-  zsh-defer -m load_zsh_configs
+  # do no use zsh-defer, bug: not set HIST env
+  load_zsh_configs 
   setup_bun_completion 
   source /Users/mei/.docker/init-zsh.sh || true # Added by Docker Desktop
   setup_brew_completion
@@ -37,7 +38,7 @@ load_zsh_configs() {
   if [[ -d "$ZSHHOME" && -r "$ZSHHOME" && -x "$ZSHHOME" ]]; then
       for file in "$ZSHHOME"/*.zsh; do
           if is_readable_zsh_file "$file"; then
-              zsh-defer source "$file"
+              source "$file"
           fi
       done
   fi
@@ -102,4 +103,10 @@ _main
 # now=$(($(gdate +%s%N)/1000000))
 # elapsed=$(($now-$timer))
 # echo $elapsed ms
+<<<<<<< HEAD
 >>>>>>> 6fd57af (some)
+=======
+
+# Created by `pipx` on 2024-09-12 01:05:40
+export PATH="$PATH:/Users/mei/.local/bin"
+>>>>>>> 16c037e (change)
