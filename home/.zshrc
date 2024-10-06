@@ -81,14 +81,6 @@ if command -v termium > /dev/null 2>&1; then
 fi
 ### End of Codeium integration
 
-source <(argo completion zsh)
-export ARGO_SERVER='***REMOVED***' 
-export ARGO_HTTP1=true  
-export ARGO_SECURE=true
-export ARGO_BASE_HREF=
-export ARGO_NAMESPACE=build-workflows
-
-
 _main
 # now=$(($(gdate +%s%N)/1000000))
 # elapsed=$(($now-$timer))
