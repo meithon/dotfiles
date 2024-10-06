@@ -18,7 +18,7 @@
 #
 # ## git 
 # abbrev-alias -g ga="git add"
-# abbrev-alias -g gc="git commit"
+# abbrev-alias -g gc="Git commit"
 # abbrev-alias -g gs="git status"
 # abbrev-alias -g gsw="git switch"
 # abbrev-alias -g grb="git rebase"
@@ -41,53 +41,6 @@ function fzf-print-k8s-secret() {
   S=$(kubectl get secrets -o name | fzf) && echo $S && kubectl get $S -o json | jq '.data | map_values(@base64d)'
 }
 
-alias ta="tmux attach"
-alias vd="neovide"
-
-alias vi="nvim"
-alias vv="~/dotfiles/nvim-switcher/switcher.sh"
-alias lv="NVIM_APPNAME=LazyVim nvim"
-alias av="NVIM_APPNAME=AstroVim nvim"
-
-alias ksec=fzf-print-k8s-secret
-alias ll="lsd -l"
-alias la="lsd -l -a"
-alias ..="cd .."
-alias ...="cd ../../"
-
-# one word
-alias k="kubectl"
-alias j="just"
-
-## node
-alias pn="pnpm"
-alias pnr="pnpm run"
-alias pne="pnpm exec"
-
-## git
-alias ga="git add"
-alias gc="git commit"
-alias gs="git status"
-alias gph="git push"
-alias gll="git pull"
-alias gsw="git switch"
-alias grb="git rebase"
-alias grs="git reset"
-alias gitr="git tree"
-
-alias git-pretty-log="git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --commit --date=format:'%Y-%m-%d %H:%M'"
-alias remain="git switch main && git pull && git switch - && git rebase main"
-
-alias -g G="| rg --line-number"
-
-## mise
-alias mir="mise run"
-alias mr="fzf-mise-run"
-alias mie="fzf-mise-tasks-edit"
-
-alias ka="kubectl-attach"
-
-alias tf="terraform"
 
 # pueue 
 alias pf=pueue-follow-fzf
@@ -136,9 +89,9 @@ alias -g rps='repos'
 
 
 # docker 
-# alias docker-fzf-stop="docker stop $(docker ps -a | tail -n +2 | fzf -m | awk '{print $1}')"
-# alias docker-fzf-start="docker start $(docker ps -a | tail -n +2 | fzf -m | awk '{print $1}')"
-# alias docker-fzf-valume-remove="docker volume rm -f $(docker volume ls | tail -n +2 | fzf -m | awk '{print $2}')"
+alias docker-fzf-stop='docker stop $(docker ps -a | tail -n +2 | fzf -m | awk "{print $1}")'
+alias docker-fzf-start='docker start $(docker ps -a | tail -n +2 | fzf -m | awk "{print $1}")'
+alias docker-fzf-valume-remove='docker volume rm -f $(docker volume ls | tail -n +2 | fzf -m | awk "{print $2}")'
 #
 # # stern
 # alias stern-pod="stern $(kubectl get pods --output name| fzf) | tspin"

@@ -3,23 +3,19 @@
 DOTPATH=~/dotfiles
 DOTFILES_YES_OPTION=false
 
-parseArgs() {
-  # オプションを処理
-  while getopts "y" opt; do
-    case $opt in
-    y)
-      DOTFILES_YES_OPTION=true
-      echo "yyyyyyyyy"
-      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
-      exit 1
-      ;;
-    esac
-  done
-
-  shift $((OPTIND - 1))
-}
+# オプションを処理
+while getopts "y" opt; do
+  case $opt in
+  y)
+    DOTFILES_YES_OPTION=true
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+shift $((OPTIND - 1))
 
 get_user_confirmation() {
   if [ "$DOTFILES_YES_OPTION" = true ]; then
@@ -37,23 +33,32 @@ get_user_confirmation() {
   fi
 }
 main() {
-  parseArgs
   printf "%s" "$BOLD"
   echo "$dotfiles_logo"
   printf "%s" "$NORMAL"
 
   get_user_confirmation
+  info "Downloading dotfiles..."
   git_clone_dotfiles
 
-  envsetup
-  setup_asdf
+  info "Deploying dotfiles..."
   deploy_dotfiles
-  source ~/.envsetup.sh
+  info "Deployed!"
+
+  info "Installing tools..."
+  install_tools
+  . ~/dotfiles/shell/asdf.sh
+
+  info "Setting up Asdf"
+  setup_asdf
+
+  . ~/dotfiles/shell/envsetup.sh
 
   rustup default stable
   cargo install lsd sheldon bob-nvim pueue
 
   bob use latest
+  . ~/dotfiles/shell/alias.sh
 }
 
 trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
@@ -69,48 +74,53 @@ set -euo pipefail
 # load lib functions
 # use colors on terminal
 tput=$(which tput)
-if [ -n "$tput" ]; then
-  ncolors=$($tput colors)
-fi
-if [ -t 1 ] && [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
-  RED="$(tput setaf 1)"
-  GREEN="$(tput setaf 2)"
-  YELLOW="$(tput setaf 3)"
-  BOLD="$(tput bold)"
-  NORMAL="$(tput sgr0)"
+if [ -n "$tput" ] && [ -t 1 ]; then
+  if ! ncolors=$($tput colors 2>/dev/null); then
+    # tput execution failed, fallback to ANSI escape codes
+    RED="\033[0;31m"
+    GREEN="\033[0;32m"
+    YELLOW="\033[0;33m"
+    BOLD="\033[1m"
+    NORMAL="\033[0m"
+  elif [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
+    RED="$($tput setaf 1)"
+    GREEN="$($tput setaf 2)"
+    YELLOW="$($tput setaf 3)"
+    BOLD="$($tput bold)"
+    NORMAL="$($tput sgr0)"
+  else
+    # Terminal doesn't support enough colors
+    RED=""
+    GREEN=""
+    YELLOW=""
+    BOLD=""
+    NORMAL=""
+  fi
 else
-  RED=""
-  GREEN=""
-  YELLOW=""
-  BOLD=""
-  NORMAL=""
+  # tput is not available, use ANSI escape codes
+  RED="\033[0;31m"
+  GREEN="\033[0;32m"
+  YELLOW="\033[0;33m"
+  BOLD="\033[1m"
+  NORMAL="\033[0m"
 fi
 
 ### functions
 # info: output terminal green
 info() {
-  printf "%s" "$GREEN"
-  echo -n "[+] "
-  printf "%s" "$NORMAL"
-  echo "$1"
+  printf "${GREEN}[+] ${NORMAL}%s\n" "$1"
 }
 # error: output terminal red
 error() {
-  printf "%s" "$RED"
-  echo -n "[-] "
-  printf "%s" "$NORMAL"
-  echo "$1"
+  printf "${RED}[-] ${NORMAL}%s\n" "$1"
 }
 # warn: output terminal yellow
 warn() {
-  printf "%s" "$YELLOW"
-  echo -n "[*] "
-  printf "%s" "$NORMAL"
-  echo "$1"
+  printf "${YELLOW}[*] ${NORMAL}%s\n" "$1"
 }
-# log: out put termial normal
+# log: output terminal normal
 log() {
-  echo "  $1"
+  printf "  %s\n" "$1"
 }
 
 # check package & return flag
@@ -143,7 +153,6 @@ Licensed under the MIT license.
 '
 
 git_clone_dotfiles() {
-  info "Downloading dotfiles..."
 
   if [ ! -d "$DOTPATH" ]; then
     if is_exists "git"; then
@@ -151,26 +160,45 @@ git_clone_dotfiles() {
       info "Downloaded"
 
     elif is_exists "curl" || is_exists "wget"; then
-      local zip_url="https://github.com/MeiWagatsuma/dotfiles/archive/master.zip"
+      local zip_url="https://github.com/MeiWagatsuma/dotfiles/archive/main.zip"
+      local temp_file="/tmp/dotfiles.zip"
 
       if is_exists "curl"; then
-        curl -L "$zip_url"
-
+        curl -L "$zip_url" -o "$temp_file"
       elif is_exists "wget"; then
-        wget -O - "$zip_url"
-      fi | tar xvz
+        wget "$zip_url" -O "$temp_file"
+      fi
 
-      if [ ! -d dotfiles-master ]; then
-        error "dotfiles-master: not found"
+      if [ ! -f "$temp_file" ]; then
+        error "Failed to download dotfiles"
         exit 1
       fi
-      mv -f dotfiles-master "$DOTPATH"
+
+      if is_exists "unzip"; then
+        unzip "$temp_file" -d "/tmp"
+      elif is_exists "tar"; then
+        # Some systems have tar with zip support
+        tar -xvf "$temp_file" -C "/tmp"
+      else
+        error "unzip or tar command is required"
+        rm "$temp_file"
+        exit 1
+      fi
+
+      rm "$temp_file"
+
+      if [ ! -d "/tmp/dotfiles-main" ]; then
+        error "dotfiles-main: not found"
+        exit 1
+      fi
+      mv -f "/tmp/dotfiles-main" "$DOTPATH"
       info "Downloaded!"
 
     else
-      error "curl or wget required"
+      error "git, curl or wget required"
       exit 1
     fi
+
   else
     warn "Dotfiles are already installed"
   fi
@@ -203,7 +231,6 @@ create_symlink() {
 }
 
 deploy_dotfiles() {
-  info "Deploying dotfiles..."
 
   validate_dotpath_exists
 
@@ -216,22 +243,39 @@ deploy_dotfiles() {
 
   mkdir -p ~/.config
   for file in ~/dotfiles/config/*; do
-    create_symlink "$file" ~/.config/.
+    create_symlink "$file" ~/.config
   done
 
-  info "Deployed!"
 }
 
-envsetup() {
+install_tools() {
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "This is Linux "
-    apt update
-    apt install -y curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config libssl-dev
+    apt-get update
+    apt-get install -y software-properties-common
+    add-apt-repository ppa:apt-fast/stable
+    apt-get update
+    apt-get -y install apt-fast
+    apt-fast install -y \
+      curl \
+      git \
+      btop \
+      zsh \
+      tmux \
+      jq \
+      fzf \
+      tmux \
+      vim \
+      ripgrep \
+      bat \
+      gcc \
+      unzip \
+      make \
+      pkg-config \
+      libssl-dev
     if [ ! -d "$HOME/.asdf" ]; then
       git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
     fi
-
-    . "$HOME/.asdf/asdf.sh"
   elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "This is macOS."
     # TODO: Check if homebrew is installed
@@ -246,25 +290,35 @@ envsetup() {
 }
 
 setup_asdf() {
-  list=(
-    deno
-    golang
-    nodejs
-    python
-    rust
-    java
+  local list=(
+    "deno"
+    "golang"
+    "nodejs"
+    "python"
+    "rust"
   )
 
-  for i in "${list[@]}"; do
+  # Check if asdf is installed
+  if ! command -v asdf &>/dev/null; then
+    echo "Error: asdf is not installed. Please install it first."
+    return 1
+  fi
+
+  for lang in "${list[@]}"; do
     (
-      asdf plugin add $i
-      asdf install $i latest
-      asdf global $i latest
-    ) &
-    log "Installing asdf $i..."
+      asdf plugin add "$lang"
+      asdf install "$lang" latest
+      asdf global "$lang" latest
+      info "Installed asdf $lang"
+    )
   done
+
+  (
+    asdf plugin add java
+    asdf install java openjdk-21.0.2
+    asdf global java openjdk-21.0.2
+  )
   wait
-  info "Asdf setup done"
 }
 
 main

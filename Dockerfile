@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -y \
   iproute2 \
   htop \
   nload \
+  build-essential libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev \
+  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
   speedtest-cli \
   hping3 \
   fping \
@@ -30,11 +33,11 @@ RUN apt-get update && apt-get install -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspace
-COPY . .
+WORKDIR /root
+COPY . dotfiles/
 
 
 ENV TERM=xterm-256color
-RUN ./install.sh
+RUN cd dotfiles && ./install.sh -y || true
 
 CMD ["/bin/bash"]
