@@ -75,43 +75,27 @@ fi
 
 PATH=~/.console-ninja/.bin:$PATH
 
-<<<<<<< HEAD
-
-
-<<<<<<< HEAD
 ### Added by Codeium. These lines cannot be automatically removed if modified
 if command -v termium > /dev/null 2>&1; then
   eval "$(termium shell-hook show post)"
 fi
 ### End of Codeium integration
-=======
 
 source <(argo completion zsh)
-=======
->>>>>>> 6fd57af (some)
 export ARGO_SERVER='***REMOVED***' 
 export ARGO_HTTP1=true  
 export ARGO_SECURE=true
 export ARGO_BASE_HREF=
 export ARGO_NAMESPACE=build-workflows
-<<<<<<< HEAD
->>>>>>> ed9ed10 (some)
-=======
 
 
 _main
 # now=$(($(gdate +%s%N)/1000000))
 # elapsed=$(($now-$timer))
 # echo $elapsed ms
-<<<<<<< HEAD
->>>>>>> 6fd57af (some)
-=======
 
 # Created by `pipx` on 2024-09-12 01:05:40
 export PATH="$PATH:/Users/mei/.local/bin"
-<<<<<<< HEAD
->>>>>>> 16c037e (change)
-=======
 
 # pnpm
 export PNPM_HOME="/Users/mei/Library/pnpm"
@@ -120,4 +104,3 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
->>>>>>> ce655b8 (change)

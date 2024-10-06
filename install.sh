@@ -1,8 +1,30 @@
 #!/usr/bin/env bash
 
 DOTPATH=~/dotfiles
+DOTFILES_YES_OPTION=false
+
+parseArgs() {
+  # オプションを処理
+  while getopts "y" opt; do
+    case $opt in
+    y)
+      DOTFILES_YES_OPTION=true
+      echo "yyyyyyyyy"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    esac
+  done
+
+  shift $((OPTIND - 1))
+}
 
 get_user_confirmation() {
+  if [ "$DOTFILES_YES_OPTION" = true ]; then
+    return
+  fi
 
   echo ""
   read -p "$(warn 'Are you sure you want to install it? [y/N] ')" -n 1 -r
@@ -15,6 +37,7 @@ get_user_confirmation() {
   fi
 }
 main() {
+  parseArgs
   printf "%s" "$BOLD"
   echo "$dotfiles_logo"
   printf "%s" "$NORMAL"
