@@ -12,7 +12,9 @@ _main() {
   setup_bun_completion 
   source /Users/mei/.docker/init-zsh.sh || true # Added by Docker Desktop
   setup_brew_completion
-  . ~/.envsetup.sh
+  . ~/dotfiles/shell/alias.sh
+  . ~/dotfiles/shell/asdf.sh
+  . ~/dotfiles/shell/envsetup.sh
 }
 
 setup_p10k() {
