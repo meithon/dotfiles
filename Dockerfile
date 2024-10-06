@@ -38,6 +38,6 @@ COPY . dotfiles/
 
 
 ENV TERM=xterm-256color
-RUN cd dotfiles && ./install.sh -y || true
+RUN cd dotfiles && ./install.sh -y
 
 CMD ["/bin/bash"]

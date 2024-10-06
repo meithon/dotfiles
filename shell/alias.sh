@@ -35,8 +35,6 @@ alias gitr="git tree"
 alias git-pretty-log="git log --graph --pretty=format:'%Cred%h%Creset %Cgreen(%ad) -%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --commit --date=format:'%Y-%m-%d %H:%M'"
 alias remain="git switch main && git pull && git switch - && git rebase main"
 
-alias -g G="| rg --line-number"
-
 ## mise
 alias mir="mise run"
 alias mr="fzf-mise-run"
