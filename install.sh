@@ -266,6 +266,7 @@ install_tools() {
       fzf \
       tmux \
       vim \
+      gh \
       ripgrep \
       bat \
       gcc \
