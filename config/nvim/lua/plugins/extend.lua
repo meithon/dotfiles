@@ -644,6 +644,135 @@ return {
       local cc = require("neo-tree.sources.common.commands")
       local renderer = require("neo-tree.ui.renderer")
 
+      -- M.navigate(source_name, state.path, nil, callback)
+
+      ---@param path string Path to navigate to. If empty, will navigate to the cwd.
+      ---@param path_to_reveal string Node to focus after the items are loaded.
+      ---@param callback function Callback to call after the items are loaded.
+      -- M.navigate = function(state, path, path_to_reveal, callback, async)
+
+      -- require('neo-tree.sources.filesystem').navigate({})
+      -- require('neo-tree.sources.manager').navigate("filesystem", nil, nil, nil)
+      -- require('neo-tree.sources.filesystem').navigate(require("neo-tree.sources.manager").get_state('filesystem'), "/", "")
+      -- require("neo-tree.setup").win_enter_event()
+      -- require("neo-tree.sources.filesystem").navigate( require("neo-tree.sources.manager").create_state( vim.api.nvim_get_current_tabpage(), { name = "filesystem" }, vim.api.nvim_get_current_win()), "/", "", nil)
+
+      -- require('neo-tree.sources.filesystem.lib.fs_scan').get_dir_items_async(require("neo-tree.sources.manager").create_state( vim.api.nvim_get_current_tabpage(), { name = "filesystem" } ), nil, true)
+      -- require('neo-tree.sources.filesystem.lib.fs_scan').get_items(require("neo-tree.sources.manager").create_state( vim.api.nvim_get_current_tabpage(), { name = "filesystem" } ), nil, '/')
+
+      opts.log_level = "trace"
+      local fs_scan = require("neo-tree.sources.filesystem.lib.fs_scan")
+
+      vim.api.nvim_create_user_command("OpenNeoTree", function()
+        local state = require("neo-tree.sources.manager").create_state(
+          vim.api.nvim_get_current_tabpage(),
+          { name = "filesystem" },
+          vim.api.nvim_get_current_win()
+        )
+
+        state.follow_current_file.enabled = false
+        state.path = "/"
+        state.current_position = "current"
+        -- state.winid = vim.api.nvim_get_current_win()
+        -- state.bufnr = vim.api.nvim_get_current_buf()
+
+        local async = nil
+
+        local highlights = require("neo-tree.ui.highlights")
+        local utils = require("neo-tree.utils")
+        local relative = utils.resolve_config_option(state, "window.relative", "editor")
+        state.current_position = state.current_position
+        local size_opt, default_size = "window.width", "40"
+        local NuiSplit = require("nui.split")
+        local events = require("neo-tree.events")
+
+        local win_options = {
+          ns_id = highlights.ns_id,
+          size = utils.resolve_config_option(state, size_opt, default_size),
+          position = "left",
+          relative = "editor",
+          buf_options = {
+            buftype = "nofile",
+            modifiable = false,
+            swapfile = false,
+            filetype = "neo-tree",
+            undolevels = -1,
+          },
+          win_options = {
+            colorcolumn = "",
+            signcolumn = "no",
+          },
+        }
+
+        local win = NuiSplit(win_options)
+        win:mount()
+        state.bufnr = win.bufnr
+        state.winid = win.winid
+
+        local tabid_to_tabnr = function(tabid)
+          return vim.api.nvim_tabpage_is_valid(tabid) and vim.api.nvim_tabpage_get_number(tabid)
+        end
+        local event_args = {
+          position = state.current_position,
+          source = state.name,
+          tabnr = tabid_to_tabnr(state.tabid), -- for compatibility
+          tabid = state.tabid,
+        }
+        event_args.winid = state.winid
+        events.fire_event(events.NEO_TREE_WINDOW_AFTER_OPEN, event_args)
+
+        if type(state.bufnr) == "number" then
+          vim.api.nvim_buf_set_var(state.bufnr, "neo_tree_source", state.name)
+          vim.api.nvim_buf_set_var(state.bufnr, "neo_tree_tabnr", tabid_to_tabnr(state.tabid))
+          vim.api.nvim_buf_set_var(state.bufnr, "neo_tree_tabid", state.tabid)
+          vim.api.nvim_buf_set_var(state.bufnr, "neo_tree_position", state.current_position)
+          vim.api.nvim_buf_set_var(state.bufnr, "neo_tree_winid", state.winid)
+        end
+        autocmd.buf.define(bufnr, "BufDelete", function()
+          M.position.save(state)
+        end)
+
+        -- require('neo-tree.command').execute({
+        --   action = 'focus',
+        --   source = 'source',
+        --   position = 'current'
+        --   toggle = true,
+        --
+        --
+        -- })
+
+        local window_exists = renderer.window_exists(state)
+        print(window_exists)
+        -- if window_exists then
+        -- else
+        -- ~/.local/share/nvim/lazy/neo-tree.nvim/lua/neo-tree/sources/filesystem/init.lua:171:7
+        -- ~/.local/share/nvim/lazy/neo-tree.nvim/lua/neo-tree/sources/filesystem/init.lua:150:7
+        require("neo-tree.sources.filesystem").navigate(state, state.path, nil, nil, false)
+        -- end
+
+        -- -- renderer.acquire_window(state)
+        -- fs_scan.get_items(state, nil, path_to_reveal, function()
+        --   -- show_only_explicitly_opened()
+        --   renderer.focus_node(state, path_to_reveal, true)
+        --   -- if type(callback) == "function" then
+        --   --   callback()
+        --   -- end
+        -- end, async)
+
+        -- Error executing Lua callback: ...neo-tree.nvim/lua/neo-tree/sources/common/file-items.lua:135: table index is nil
+        -- stack traceback:
+        -- 	...neo-tree.nvim/lua/neo-tree/sources/common/file-items.lua:135: in function 'create_item'
+        -- 	...ree.nvim/lua/neo-tree/sources/filesystem/lib/fs_scan.lua:565: in function 'get_items'
+        -- 	/Users/mei/.config/nvim/lua/plugins/extend.lua:670: in function </Users/mei/.config/nvim/lua/plugins/extend.lua:665>
+        --
+      end, {})
+
+      -- require("neo-tree.sources.filesystem").navigate(
+      --   require("neo-tree.sources.manager").create_state(1, { name = "filesystem" }, 1),
+      --   "/",
+      --   ""
+      -- )
+
       local function getAddress(t)
         return string.match(tostring(t), "0x%x+")
       end
