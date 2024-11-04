@@ -639,8 +639,77 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = function(_, opts)
-      -- opts.window.mappings["H"] = "close_all_nodes"
-      local mappings = vim.tbl_extend("force", opts.window.mappings, {
+      -- NOTE: Manage clipboard in global state
+
+      local cc = require("neo-tree.sources.common.commands")
+      local renderer = require("neo-tree.ui.renderer")
+
+      local function getAddress(t)
+        return string.match(tostring(t), "0x%x+")
+      end
+
+      local global_state = {
+        clipboard = {},
+        states = {},
+      }
+
+      function global_state.manage(state)
+        vim.notify("inject")
+        print("inject")
+        -- if state.clipboard == nil then
+        state.clipboard = global_state.clipboard
+
+        local address = getAddress(state)
+        -- if global_state.states[address] == nil then
+        global_state.states[address] = state
+        -- end
+
+        return state
+      end
+
+      function global_state.redraw_callback()
+        return function()
+          for _, state in pairs(global_state.states) do
+            renderer.redraw(state)
+          end
+        end
+      end
+
+      local copy_to_clipboard = function(state)
+        local gs = global_state.manage(state)
+        cc.copy_to_clipboard(gs, global_state.redraw_callback())
+      end
+
+      local copy_to_clipboard_visual = function(state, selected_nodes)
+        local gs = global_state.manage(state)
+        cc.copy_to_clipboard_visual(gs, selected_nodes, global_state.redraw_callback())
+      end
+
+      local cut_to_clipboard = function(state)
+        local gs = global_state.manage(state)
+        cc.cut_to_clipboard(gs, global_state.redraw_callback())
+        -- injectGlobalClipboard(cc.cut_to_clipboard, state, utils.wrap(redraw, state))
+      end
+
+      local cut_to_clipboard_visual = function(state, selected_nodes)
+        local gs = global_state.manage(state)
+        cc.cut_to_clipboard_visual(gs, selected_nodes, global_state.redraw_callback())
+      end
+
+      local paste_from_clipboard = function(state)
+        local gs = global_state.manage(state)
+        cc.paste_from_clipboard(gs, global_state.redraw_callback())
+      end
+
+      opts.commands = vim.tbl_extend("force", opts.commands or {}, {
+        g_copy_to_clipboard = copy_to_clipboard,
+        g_copy_to_clipboard_visual = copy_to_clipboard_visual,
+        g_cut_to_clipboard = cut_to_clipboard,
+        g_cut_to_clipboard_visual = cut_to_clipboard_visual,
+        g_paste_from_clipboard = paste_from_clipboard,
+      })
+
+      opts.window.mappings = vim.tbl_extend("force", opts.window.mappings, {
         ["s"] = "open_split",
         ["v"] = "open_vsplit",
         -- ["H"] = "close_all_nodes",
@@ -654,6 +723,9 @@ return {
             end
           end
         end,
+        ["y"] = "g_copy_to_clipboard",
+        ["x"] = "g_cut_to_clipboard",
+        ["p"] = "g_paste_from_clipboard",
         -- run command
         ["i"] = function(state)
           local node = state.tree:get_node()
@@ -689,7 +761,6 @@ return {
         --   end
         -- end,
       })
-      opts.window.mappings = mappings
     end,
   },
   { -- add window picker to neo-tree
