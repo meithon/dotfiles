@@ -5,6 +5,7 @@
     ],
     "diagnostics.globals": [
         "require",
-        "vim"
+        "vim",
+        "getAddress"
     ]
 }

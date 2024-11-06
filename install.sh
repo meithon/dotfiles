@@ -54,10 +54,7 @@ main() {
 
   . ~/dotfiles/shell/envsetup.sh
 
-  rustup default stable
-  cargo install lsd sheldon bob-nvim pueue
-
-  bob use latest
+  setup_rust
   . ~/dotfiles/shell/alias.sh
 }
 
@@ -320,6 +317,13 @@ setup_asdf() {
     asdf global java openjdk-21.0.2
   )
   wait
+}
+
+setup_rust() {
+  rustup default stable
+  cargo install lsd sheldon bob-nvim pueue
+
+  bob use latest
 }
 
 main

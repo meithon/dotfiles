@@ -5,6 +5,42 @@ local map = vim.keymap.setadded
 ---
 return {
   {
+    "Mr-LLLLL/interestingwords.nvim",
+    config = function()
+      require("interestingwords").setup({
+        colors = {
+          "#2E8B57",
+          "#008080",
+          "#008B8B",
+          "#708090",
+          "#4682B4",
+          "#6A5ACD",
+          "#6495ED",
+          "#007FFF",
+          "#9370DB",
+          "#9932CC",
+        },
+        search_count = true,
+        navigation = true,
+        scroll_center = true,
+        search_key = "<leader>m",
+        cancel_search_key = "<leader>M",
+        color_key = "<leader>k",
+        cancel_color_key = "<leader>K",
+        select_mode = "random", -- random or loop
+      })
+    end,
+  },
+
+  --   "iamcco/markdown-preview.nvim",
+  --   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+  --   ft = { "markdown" },
+  --   build = function()
+  --     vim.fn["mkdp#util#install"]()
+  --   end,
+  -- },
+
+  {
     "triarius/fileline.nvim",
     opts = {},
   },
@@ -197,13 +233,13 @@ return {
       t.setup({
         extensions = {
           zoxide = {
-            prompt_title = "[ Oil Up! ]", -- Any title you like
+            -- prompt_title = "[ Oil Up! ]", -- Any title you like
             mappings = {
               default = {
                 -- telescope-zoxide will change directory.
                 -- But I'm only using it to get selection.path from telescope UI.
                 after_action = function(selection)
-                  vim.cmd("Oil " .. selection.path)
+                  vim.cmd("NeotreeNewPane " .. selection.path)
                   vim.api.nvim_feedkeys("_", "", false)
                 end,
               },
@@ -278,7 +314,20 @@ return {
       vim.api.nvim_set_keymap("v", "<Leader>a", "<cmd>CodeCompanionToggle<cr>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionAdd<cr>", { noremap = true, silent = true })
 
-      require("codecompanion").setup()
+      require("codecompanion").setup({
+        strategies = {
+          chat = {
+            adapter = "anthropic",
+          },
+          inline = {
+            adapter = "anthropic",
+            -- adapter = "copilot",
+          },
+          agent = {
+            adapter = "anthropic",
+          },
+        },
+      })
     end,
   },
   { -- colorschma
@@ -690,6 +739,17 @@ return {
     cmd = {
       "Tardis",
     },
+    --     require('tardis-nvim').setup {
+    --     keymap = {
+    --         ["next"] = '<C-j>',             -- next entry in log (older)
+    --         ["prev"] = '<C-k>',             -- previous entry in log (newer)
+    --         ["quit"] = 'q',                 -- quit all
+    --         ["revision_message"] = '<C-m>', -- show revision message for current revision
+    --         ["commit"] = '<C-g>',           -- replace contents of origin buffer with contents of tardis buffer
+    --     },
+    --     initial_revisions = 10,             -- initial revisions to create buffers for
+    --     max_revisions = 256,                -- max number of revisions to load
+    -- }
   },
   { -- File git history inspector
     "niuiic/git-log.nvim",
@@ -914,22 +974,22 @@ return {
     -- CSV
     "emmanueltouzery/decisive.nvim",
   },
-  {
-    "ramilito/kubectl.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    keys = {
-      {
-        "<leader>k",
-        function()
-          require("kubectl").open()
-        end,
-        desc = "Kubectl",
-      },
-    },
-    config = function()
-      require("kubectl").setup()
-    end,
-  },
+  -- {
+  --   "ramilito/kubectl.nvim",
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   keys = {
+  --     {
+  --       "<leader>k",
+  --       function()
+  --         require("kubectl").open()
+  --       end,
+  --       desc = "Kubectl",
+  --     },
+  --   },
+  --   config = function()
+  --     require("kubectl").setup()
+  --   end,
+  -- },
   -- {
   --   "SuperBo/fugit2.nvim",
   --   opts = {
@@ -1151,7 +1211,9 @@ return {
   { "wakatime/vim-wakatime", lazy = false },
   {
     "stevearc/oil.nvim",
-    opts = {},
+    opts = {
+      default_file_explorer = false,
+    },
     -- Optional dependencies
     dependencies = { "nvim-tree/nvim-web-devicons" },
   },

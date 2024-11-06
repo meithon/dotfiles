@@ -13,7 +13,10 @@ map({ "n", "v" }, "x", '"_x', { noremap = true })
 
 map("n", "<CR>", "i<CR><ESC>", { noremap = true })
 -- map("n", "<TAB>", "<C-^>", { noremap = true })
-
+-- map("n", "<c-q>", "<cmd>q<cr>", { noremap = true })
+map("n", "<D-s>", "<cmd>w<cr>", { noremap = true })
+-- map("n", "<leader>w", "<cmd>w<cr>", { noremap = true })
+-- map("n", "<leader>w", "<cmd>w<cr>", { noremap = true })
 map("i", "<C-f>", "<Right>", { noremap = true })
 map("i", "<C-b>", "<Left>", { noremap = true })
 map("i", "<C-n>", "<Down>", { noremap = true })
