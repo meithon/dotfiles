@@ -121,3 +121,15 @@ function zvm_after_lazy_keybindings() {
   # zvm_bindkey vicmd '^[[A' history-search-multi-word-pbackwards
   # zvm_bindkey vicmd '^P' history-search-multi-word-pbackwards
 }
+
+
+
+tmux_copy_mode_vi() {
+  if [ -n "$TMUX" ]; then
+    tmux send-keys 'bind-key -T copy-mode-vi v send-keys -X begin-selection' C-m
+  fi
+}
+
+zle -N tmux_copy_mode_vi
+bindkey -M vicmd 's' tmux_copy_mode_vi
+

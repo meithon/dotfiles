@@ -1,5 +1,7 @@
 local Util = require("lazyvim.util")
 local icons = require("lazyvim.config").icons
+local events = require("neo-tree.events")
+local filesystem = require("neo-tree.sources.filesystem")
 
 local Path = require("plenary.path")
 
@@ -647,7 +649,6 @@ return {
       local NuiSplit = require("nui.split")
       local manager = require("neo-tree.sources.manager")
 
-      opts.log_level = "trace"
       local function remove_trailing_slash(path)
         if path:sub(-1) == "/" then
           return path:sub(1, -2)
@@ -850,6 +851,24 @@ return {
         "s1n7ax/nvim-window-picker",
         version = "2.*",
         config = function()
+          -- 1. Lua関数を定義
+          local function greet(name)
+            print("Hello, " .. name .. "!")
+          end
+
+          -- 2. Neovimコマンドを作成
+          vim.api.nvim_create_user_command("Greet", function(opts)
+            local name = opts.args
+            greet(name)
+          end, { nargs = 1 })
+
+          local manager = require("neo-tree.sources.manager")
+          vim.api.nvim_create_user_command("NewNvimtree", function(opts)
+            local winid = vim.api.nvim_get_current_win()
+            local state = manager.get_state("filesystem", nil, winid)
+            manager.navigate(state, nil, nil, nil, false)
+          end, {})
+
           require("window-picker").setup({
             filter_rules = {
               include_current_win = false,

@@ -98,3 +98,35 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+eval "$(argo completion zsh)"
+
+
+######################################################################
+#              _ __                   _____                          #
+#       ____ _(_) /__________  ____  / __(_)___ ____  ____ _   __    #
+#      / __ `/ / __/ ___/ __ \/ __ \/ /_/ / __ `/ _ \/ __ \ | / /    #
+#     / /_/ / / /_/ /__/ /_/ / / / / __/ / /_/ /  __/ / / / |/ /     #
+#     \__, /_/\__/\___/\____/_/ /_/_/ /_/\__, /\___/_/ /_/|___/      #
+#    /____/                             /____/                       #
+######################################################################
+function gitconfig_chpwd() {
+  local work_dir="${HOME}/workspace/work"
+
+  old_git_config=$GIT_CONFIG_GLOBAL
+
+  if [[ "$PWD" == "$work_dir"* ]]; then
+    export GIT_CONFIG_GLOBAL="${work_dir}/.gitconfig"
+    if [[ $old_git_config != $GIT_CONFIG_GLOBAL ]] {
+      echo "GIT_CONFIG_GLOBAL set to ${work_dir}/.gitconfig"
+    }
+  else
+    unset GIT_CONFIG_GLOBAL
+    if [[ $old_git_config != $GIT_CONFIG_GLOBAL ]] {
+      echo "GIT_CONFIG_GLOBAL unset"
+    }
+  fi
+}
+
+# chpwd フックに新しい関数を追加
+autoload -U add-zsh-hook
+add-zsh-hook chpwd gitconfig_chpwd
