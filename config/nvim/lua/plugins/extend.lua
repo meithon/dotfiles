@@ -655,7 +655,7 @@ return {
         end
         return path
       end
-      local openNewPane = function(path)
+      local function openNewPane(path)
         path = remove_trailing_slash(path)
 
         local state = manager.get_state(
@@ -664,21 +664,15 @@ return {
           nil
         )
         state.tabid = vim.api.nvim_get_current_tabpage()
-        -- local state = vim.deepcopy(sstate, false)
-
-        -- 別タブとして開くにはstateを分ける必要がある。
-        -- stateを扱うレベルまでAPIを下げたら以下のコードになった
-
         state.follow_current_file.enabled = false
         state.path = path
+
         state.current_position = "current"
         state.dirty = true
 
-        local size_opt, default_size = "window.width", "40"
-
         local win_options = {
           ns_id = highlights.ns_id,
-          size = utils.resolve_config_option(state, size_opt, default_size),
+          size = utils.resolve_config_option(state, "window.width", "40"),
           position = "left",
           relative = "editor",
           buf_options = {
@@ -695,12 +689,14 @@ return {
         }
 
         local win = NuiSplit(win_options)
-        win:mount()
+        local ok = pcall(win.mount, win)
+        if not ok then
+          return
+        end
+
         state.bufnr = win.bufnr
         state.winid = 0 -- for hack window_exists
         state.id = win.winid
-
-        local path_to_reveal = nil
         state.async_directory_scan = "always"
         state.commands = vim.tbl_extend("force", state.commands or {}, {
           close_window = function()
@@ -708,21 +704,11 @@ return {
           end,
         })
 
-        renderer.acquire_window(state)
-        filesystem.navigate(state, nil, nil, nil, false)
-        -- fs_scan.get_items(state, nil, state.path, function()
-        --   -- fs_scan.get_dir_items_async()
-        --   -- fs_scan.get_dir_items_async(state, nil, true)
-        --   -- renderer.show_nodes({ root }, state, nil, context.callback)
-        --   -- renderer.focus_node(state, path_to_reveal, true)
-        --   filesystem.navigate(state, state.path, state.path, nil, nil)
-        -- end)
-        -- filesystem.navigate(state, state.path, state.path, nil, nil)
-        -- fs_scan.get_dir_items_async(state, nil, true)
+        fs_scan.get_items(state, nil, state.path, function() end)
       end
 
-      vim.api.nvim_create_user_command("NeotreeNewPane", function(opts)
-        openNewPane(opts.args)
+      vim.api.nvim_create_user_command("NeotreeNewPane", function(args)
+        openNewPane(args.args)
       end, {
         desc = "Open Neotree in a new pane",
         nargs = 1, -- Exactly one required argument
