@@ -3,13 +3,14 @@
 echo "Running pre-commit checks..."
 
 result=$(
-	stylua --config-path config/nvim/lua/.stylua.toml config/nvim/lua
-	echo $?
+  stylua --config-path config/nvim/lua/.stylua.toml config/nvim/lua
+  echo $?
 )
 
 if [ $result -eq 0 ]; then
-	echo "Pre-commit passed, committing changes..."
+  echo "✅ Pre-commit checks passed successfully. Proceeding with commit..."
 else
-	echo "Pre-commit failed! Aborting commit."
-	exit 1
+  echo "❌ Pre-commit checks failed! Please fix the issues and try again."
+  echo "   Run 'pre-commit run --all-files' to check all files manually."
+  exit 1
 fi

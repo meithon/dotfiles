@@ -84,12 +84,19 @@ function tmux_page_scroll_zvm_keybind() {
 	zvm_bindkey vicmd '^D' tmux_half_page_down
 }
 ## fzf vi
-function fzf_vi() {
-	vi $(git ls-files $(git rev-parse --git-dir)/.. | fzf)
+# function fzf_vi() {
+# 	vi $(git ls-files $(git rev-parse --git-dir)/.. | fzf)
+# }
+# function fzf_vi_keybind() {
+# 	zvm_define_widget fzf_vi
+# 	zvm_bindkey vicmd 'fg' fzf_vi
+# }
+function find_gitfile() {
+	git ls-files $(git rev-parse --git-dir)/.. | fzf
 }
 function fzf_vi_keybind() {
-	zvm_define_widget fzf_vi
-	zvm_bindkey vicmd 'fg' fzf_vi
+	zvm_define_widget find_gitfile
+	zvm_bindkey vicmd 'fg' find_gitfile
 }
 
 # ## find function

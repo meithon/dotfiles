@@ -10,3 +10,4 @@ add_path 'asdf where rust' /bin
 add_path 'asdf where golang' /packages/bin
 add_path '' ~/.cargo/bin
 export JAVA_HOME=$(asdf where java)
+export PATH=$PATH:$(go env GOPATH)/bin

@@ -1,3 +1,8 @@
+# typeset -A ZI
+# ZI[BIN_DIR]="${HOME}/.zi/bin"
+# source "${ZI[BIN_DIR]}/zi.zsh"
+# autoload -Uz _zi
+# (( ${+_comps} )) && _comps[zi]=_zi
 # timer=$(($(gdate +%s%N)/1000000))
 # # I use gdate from brew's core-utils because macOS date does not support nanoseconds
 # # must load before zsh config
@@ -14,7 +19,7 @@ _main() {
   setup_brew_completion
   . ~/dotfiles/shell/alias.sh
   . ~/dotfiles/shell/asdf.sh
-  . ~/dotfiles/shell/envsetup.sh
+  source ~/dotfiles/shell/envsetup.sh
 }
 
 setup_p10k() {
@@ -130,3 +135,9 @@ function gitconfig_chpwd() {
 # chpwd フックに新しい関数を追加
 autoload -U add-zsh-hook
 add-zsh-hook chpwd gitconfig_chpwd
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/mei/.config/.dart-cli-completion/zsh-config.zsh ]] && . /Users/mei/.config/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
