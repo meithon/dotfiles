@@ -554,6 +554,20 @@ return {
       "windwp/nvim-ts-autotag",
     },
     opts = function(_, opts)
+      -- require("nvim-treesitter.parsers").filetype_to_parsername.zsh = "bash"
+      vim.filetype.add({
+        extension = {
+          zsh = "bash",
+        },
+        pattern = {
+          [".*%.zsh"] = "bash",
+          ["%.zshrc"] = "bash",
+          ["%.zshenv"] = "bash",
+          ["%.zprofile"] = "bash",
+          ["%.zlogin"] = "bash",
+          ["%.zlogout"] = "bash",
+        },
+      })
       opts.markid = {
         enable = true,
       }

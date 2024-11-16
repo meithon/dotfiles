@@ -25,6 +25,7 @@
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
   "code-refactor.nvim": { "branch": "main", "commit": "d73662b0089cac94e109ccece58d1b31c32940c7" },
   "codecompanion.nvim": { "branch": "main", "commit": "62d272ea218a631dc27c095ad479d280b6071fb4" },
+  "colorful-winsep.nvim": { "branch": "alpha", "commit": "0070484536ea55ec64a8453d41e3badace04a61a" },
   "command-and-cursor.nvim": { "branch": "master", "commit": "43485e6d4f0ffd42414b35e156075e46047563dd" },
   "conform.nvim": { "branch": "master", "commit": "023f795dbcf32d4351b6a9ed2e613d471b5bb812" },
   "core.nvim": { "branch": "main", "commit": "26ada48758e73ff3763ac134a9a0da320a7762e4" },
