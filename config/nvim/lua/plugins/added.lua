@@ -5,6 +5,11 @@ local map = vim.keymap.setadded
 ---
 return {
   {
+    "nvim-zh/colorful-winsep.nvim",
+    config = true,
+    event = { "WinLeave" },
+  },
+  {
     "neovim/nvim-lspconfig",
     opts = {
       -- make sure mason installs the server
