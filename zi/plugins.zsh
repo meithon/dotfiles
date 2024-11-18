@@ -19,14 +19,16 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 source "${ZINIT_HOME}/zinit.zsh"
 
 
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+zinit light paulmelnikow/zsh-startup-timer
 
 # 補完システムの初期化
 autoload -Uz compinit
 compinit -u
 
-# 補完のキャッシュ設定
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zcompcache
+# # 補完のキャッシュ設定
+# zstyle ':completion:*' use-cache on
+# zstyle ':completion:*' cache-path ~/.zcompcache
 
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
@@ -35,21 +37,22 @@ autoload -Uz _zinit
 # # zi snippet OMZP::history-substring-search
 #
 # zi ice blockf
+zi ice lucid wait 
 zi light zsh-users/zsh-completions
 
 
 # zi ice svn silent wait'!1' atload'prompt smiley'
 # zi snippet PZT::modules/prompt
 
-zi ice depth"1" 
-zi light romkatv/powerlevel10k  
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ./.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
+# zi ice depth"1" 
+# zi light romkatv/powerlevel10k  
+# # Enable Powerlevel10k instant prompt. Should stay close to the top of ./.zshrc.
+# # Initialization code that may require console input (password prompts, [y/n]
+# # confirmations, etc.) must go above this block; everything else may go below.
+# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# fi
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 
 
 
@@ -151,6 +154,7 @@ zinit light hlissner/zsh-autopair  # add autopair quote, brackets
 zinit ice wait lucid src"bd.zsh" atload"zicompinit; zicdreplay"
 zinit light Tarrasch/zsh-bd #Quickly go back to a specific parent directory instead of typing cd ../../.. redundantly.
 
+ZSH_CMD_STATUS_DURATION_THRESHOLD=5 # default 10
 # Lazy git commit tools
 # escape single quote of command argument
 # it just: git pull -rebase && git add . && git commit '${message}'
@@ -159,9 +163,16 @@ zinit wait lucid for \
       ZAQ_PREFIXES+=("c")
     ' \
   ianthehenry/zsh-autoquoter \
-  sebastiangraz/c
+  sebastiangraz/c \
+  wintermi/zsh-brew \
+  willghatch/zsh-cdr \
+  0b10/cheatsheet \
+  zpm-zsh/clipboard \
+  BlaineEXE/zsh-cmd-status  \
+  zuxfoucault/colored-man-pages_mod \
+  Freed-Wu/zsh-colorize-functions \
+  D3STY/cros-auto-notify-zsh # Automatically sends out a notification when a long running task 
 
-zinit light wintermi/zsh-brew # setup homebrew completion
 
 # fpath=(/path/to/dir/cd-reporoot(N-/) $fpath)
 #
@@ -174,20 +185,11 @@ zinit light wintermi/zsh-brew # setup homebrew completion
 #       has"git" \
 #     P4Cu/cd-reporoot \
 #     MikeDacre/cdbk # can create alias directory
-zinit light willghatch/zsh-cdr
-zinit light 0b10/cheatsheet
-zinit light zpm-zsh/clipboard
-
-zinit light BlaineEXE/zsh-cmd-status 
-ZSH_CMD_STATUS_DURATION_THRESHOLD=5 # default 10
-
 
 # zinit light tom-doerr/zsh_codex
 #   bindkey -M viins '^X' create_completion
 #   bindkey -M vicmd '^X' create_completion
 
-zinit light zuxfoucault/colored-man-pages_mod
-zinit light Freed-Wu/zsh-colorize-functions
 
 # zinit ice depth'1' src'ble.sh' nocompile \
 #     atclone"make PREFIX=~/.local" \
@@ -195,51 +197,28 @@ zinit light Freed-Wu/zsh-colorize-functions
 #     compile'src/*/*.C'
 # zinit light akinomyoga/ble.sh
 
-zinit light D3STY/cros-auto-notify-zsh # Automatically sends out a notification when a long running task
 
-zinit ice lucid src'deer'
-zinit light Vifon/deer # cloudnt load with wait
-
-autoload -U deer
-zle -N deer
-bindkey -M viins '^K' deer
-bindkey -M vicmd '^K' deer
+# zinit ice lucid src'deer'
+# zinit light Vifon/deer # cloudnt load with wait
+# autoload -U deer
+# zle -N deer
+# bindkey -M viins '^K' deer
+# bindkey -M vicmd '^K' deer
 
 # zinit ice lucid src'zsh-delete-prompt.zsh'
 # zinit light aoyama-val/zsh-delete-prompt
 
 # ignore $
-zinit light zpm-zsh/undollar
-
-
-zinit ice lucid \
-    atclone"${0:A:h}/install.sh" \
-    atpull'%atclone'
-zinit light kuoe0/zsh-depot-tools
 
 # zinit light AdrieanKhisbe/diractions
 # zinit light webyneter/docker-aliases
 # zplug "kuoe0/zsh-depot-tools", hook-build:"./install.sh"
 
-# expect next command
-zinit ice lucid src="init.zsh"
-zinit light oknowton/zsh-dwim
-
 # zinit ice atclone"make build" atpull"%atclone"
 # zinit light decayofmind/zsh-fast-alias-tips
-
-zinit light djui/alias-tips
-zinit light QuarticCat/zsh-smartcache
-  export ZSH_PLUGINS_ALIAS_TIPS_TEXT="💡 Alias tip: "
-
 # zinit load wfxr/forgit
 # zinit ice src"zsk-git-worktrees.zsh"
 # zinit light egyptianbman/zsh-git-worktrees
-
-zinit ice multisrc="_hist"
-zinit light marlonrichert/zsh-hist
-
-zinit load zdharma-continuum/history-search-multi-word
 
 # down-line-or-execute() {
 #     if [[ -n $BUFFER ]]; then
@@ -264,65 +243,71 @@ zinit load zdharma-continuum/history-search-multi-word
 # bindkey -M viins '^[[B' down-line-or-execute
 # bindkey -M vicmd '^[[B' down-line-or-execute
 
-zinit light yzdann/kctl
-zinit load Dbz/kube-aliases
-
 # zinit light romkatv/zsh-no-ps2
 # zinit light deyvisonrocha/pantheon-terminal-notify-zsh-plugin # for x server
-zinit light t413/zsh-background-notify
 
-zinit light "wintermi/zsh-rust"
-
-zinit ice src"shell-plugins/shellfirm.plugin.zsh"
-zinit light kaplanelad/shellfirm
-
-zinit ice wait lucid
-zinit load redxtech/zsh-show-path
 
 # TODO: 多分zsh-syntax-highlightingのディレクトリに移動させないと行けない
-zinit ice src"zsh-syntax-highlighting-filetypes.zsh" 
-zinit light trapd00r/zsh-syntax-highlighting-filetypes
+
 # zinit ice src"lscolor.sh"
 # zinit light trapd00r/LS_COLORS 
 
-# TODO: cache output of vivid
-export LS_COLORS="$(vivid generate tokyonight-storm)"
-zinit light paulmelnikow/zsh-startup-timer
 
 # zinit ice atload'zsh-startify' 
 # zinit load NorthIsMirror/zsh-startify
 # zstyle ":plugin:zsh-startify:shellutils" size 5  # The size of the recently used file list (default: 5)
 # zstyle ":plugin:zsh-startify:vim" size 5         # The size of the recently opened in Vim list (default: 5)
 
-zinit light mollifier/zload
-zinit ice src"tipz.zsh"
-zinit light molovo/tipz
+# TODO: cache output of vivid
+export LS_COLORS="$(vivid generate tokyonight-storm)"
+export ZSH_PLUGINS_ALIAS_TIPS_TEXT="💡 Alias tip: "
+  # djui/alias-tips \
+zinit wait lucid for \
+  zpm-zsh/undollar \
+    atclone"${0:A:h}/install.sh" \
+    atpull'%atclone' \
+  kuoe0/zsh-depot-tools \
+    src="init.zsh" \
+  oknowton/zsh-dwim \
+  QuarticCat/zsh-smartcache \
+  marlonrichert/zsh-hist \
+  zdharma-continuum/history-search-multi-word \
+  yzdann/kctl \
+  Dbz/kube-aliases \
+  t413/zsh-background-notify \
+  wintermi/zsh-rust \
+  redxtech/zsh-show-path \
+    src"zsh-syntax-highlighting-filetypes.zsh"  \
+  trapd00r/zsh-syntax-highlighting-filetypes \
+  mollifier/zload 
+  #   src"tipz.zsh" \
+  # molovo/tipz 
+  #   src"shell-plugins/shellfirm.plugin.zsh" \
+  # kaplanelad/shellfirm \
 
 # FIXME: 動かない
 # export YSU_HARDCORE=1
 # export YSU_IGNORED_ALIASES=("$")
 # zinit light "MichaelAquilina/zsh-you-should-use"
+  #   src"url/url-highlighter.zsh" \
+  #   atclone"
+  #     mkdir -p \${ZINIT[PLUGINS_DIR]}/zsh-syntax-highlighting/highlighters && \
+  #     ln -sf \$PWD/url \${ZINIT[PLUGINS_DIR]}/zsh-syntax-highlighting/highlighters/url" \
+  #   atpull'%atclone' \
+  # ascii-soup/zsh-url-highlighter \
 
-zinit ice \
-    src"url/url-highlighter.zsh" \
-    atclone"mkdir -p \${ZINIT[PLUGINS_DIR]}/zsh-syntax-highlighting/highlighters && \
-            ln -sf \$PWD/url \${ZINIT[PLUGINS_DIR]}/zsh-syntax-highlighting/highlighters/url" \
-    atpull'%atclone'
-zinit light ascii-soup/zsh-url-highlighter
-
-# undo in git
-zinit light Bhupesh-V/ugit
-zinit ice src"vimman.zsh"
-zinit light yonchu/vimman
 export LSCOLORS=$LS_COLORS
-zinit ice atload'export PATH="$PATH:${ZINIT[PLUGINS_DIR]}/unixorn---warhol.plugin.zsh/bin"'
-# colorize output of command with grc
-zinit light unixorn/warhol.plugin.zsh
-
-zinit light https://github.com/Anant-mishra1729/web-search/
 export ZSH_WEB_SEARCH_ENGINES=(
-    reddit "https://www.reddit.com/search?q="
-    )
+  reddit "https://www.reddit.com/search?q="
+)
+
+zinit wait lucid for \
+  Bhupesh-V/ugit \
+     src"vimman.zsh" \
+  yonchu/vimman \
+    atload'export PATH="$PATH:${ZINIT[PLUGINS_DIR]}/unixorn---warhol.plugin.zsh/bin"' \
+  unixorn/warhol.plugin.zsh \
+  Anant-mishra1729/web-search
 # zinit ice as"program"  \
 #   atclone"./install.sh" \
 #   atpull'%atclone'
@@ -354,3 +339,13 @@ function fzf-history-search() {
 source ~/dotfiles/zi/plugin/fzf.zsh
 source ~/dotfiles/zi/plugin/zoxide.zsh
 
+
+
+find-repository-and-move() {
+  local repo=$(ghq list | fzf)
+  cd ~/ghq/$repo
+  echo moved to \"$repo\"
+}
+
+alias repos=find-repository-and-move
+alias -g rps='repos'
