@@ -32,10 +32,10 @@ compinit -u
 
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
-#
-# # zi ice svn
-# # zi snippet OMZP::history-substring-search
-#
+
+# zi ice svn
+# zi snippet OMZP::history-substring-search
+
 # zi ice blockf
 zi ice lucid wait 
 zi light zsh-users/zsh-completions
@@ -44,15 +44,15 @@ zi light zsh-users/zsh-completions
 # zi ice svn silent wait'!1' atload'prompt smiley'
 # zi snippet PZT::modules/prompt
 
-# zi ice depth"1" 
-# zi light romkatv/powerlevel10k  
-# # Enable Powerlevel10k instant prompt. Should stay close to the top of ./.zshrc.
-# # Initialization code that may require console input (password prompts, [y/n]
-# # confirmations, etc.) must go above this block; everything else may go below.
-# if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-# fi
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
+zi ice depth"1" 
+zi light romkatv/powerlevel10k  
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ./.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh 
 
 
 
@@ -107,7 +107,6 @@ zinit lucid for \
       #   bindkey -M vicmd '^v' per-directory-history-toggle-history
       # } 
       " \
-  jimhester/per-directory-history \
   Aloxaf/fzf-tab \
     as"program" \
     from"gh-r" \
@@ -258,6 +257,8 @@ zinit wait lucid for \
 # zstyle ":plugin:zsh-startify:shellutils" size 5  # The size of the recently used file list (default: 5)
 # zstyle ":plugin:zsh-startify:vim" size 5         # The size of the recently opened in Vim list (default: 5)
 
+# zdharma-continuum/history-search-multi-word \
+
 # TODO: cache output of vivid
 export LS_COLORS="$(vivid generate tokyonight-storm)"
 export ZSH_PLUGINS_ALIAS_TIPS_TEXT="💡 Alias tip: "
@@ -271,7 +272,6 @@ zinit wait lucid for \
   oknowton/zsh-dwim \
   QuarticCat/zsh-smartcache \
   marlonrichert/zsh-hist \
-  zdharma-continuum/history-search-multi-word \
   yzdann/kctl \
   Dbz/kube-aliases \
   t413/zsh-background-notify \
@@ -322,9 +322,9 @@ zinit wait lucid for \
   
 
 
-function fzf-history-search() {
-  BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ") CURSOR=$#BUFFER
-}
+# function fzf-history-search() {
+#   BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ") CURSOR=$#BUFFER
+# }
 
 
   # echo "ZLE initialized - zle commands available"
@@ -336,7 +336,7 @@ function fzf-history-search() {
   # zle -N fzf-history-search
   # bindkey -M viins '^r' fzf-history-search
   # bindkey -M vicmd '^r' fzf-history-search
-source ~/dotfiles/zi/plugin/fzf.zsh
+# source ~/dotfiles/zi/plugin/fzf.zsh
 source ~/dotfiles/zi/plugin/zoxide.zsh
 
 
@@ -349,3 +349,129 @@ find-repository-and-move() {
 
 alias repos=find-repository-and-move
 alias -g rps='repos'
+
+zinit wait lucid for larkery/zsh-histdb
+
+_zsh_autosuggest_strategy_histdb_top() {
+    local query="
+        select commands.argv from history
+        left join commands on history.command_id = commands.rowid
+        left join places on history.place_id = places.rowid
+        where commands.argv LIKE '$(sql_escape $1)%'
+        group by commands.argv, places.dir
+        order by places.dir != '$(sql_escape $PWD)', count(*) desc
+        limit 1
+    "
+    suggestion=$(_histdb_query "$query")
+}
+
+
+bindkey -M vicmd '^v' per-directory-history-toggle-history
+find_most_used_command() {
+  local query="
+    select commands.argv from history
+    left join commands on history.command_id = commands.rowid
+    left join places on history.place_id = places.rowid
+    where commands.argv LIKE '$(sql_escape $1)%'
+    group by commands.argv, places.dir
+    order by places.dir != '$(sql_escape $PWD)'
+  "
+  suggestion=$(_histdb_query "$query")
+  echo $suggestion
+}
+
+find_command_in_current_dir() {
+  local query="
+    select commands.argv from history
+    left join commands on history.command_id = commands.rowid
+    left join places on history.place_id = places.rowid
+    where commands.argv LIKE '$(sql_escape $1)%'
+    and places.dir = '$(sql_escape $PWD)'
+    group by commands.argv
+    order by count(*) desc
+  "
+  suggestion=$(_histdb_query "$query")
+  echo $suggestion
+}
+
+_per_directory_history_is_global=0
+
+# 履歴検索ウィジェットの実装
+# function history-search-search() {
+# echo "history-search-search"
+#     local selected
+#
+#     local fzy_query='--query "$LBUFFER" --prompt="History > "'
+#     if [[ -z "$_per_directory_history_is_global" ]] || [[ $_per_directory_history_is_global -eq 1 ]]; then
+#       # グローバル履歴から検索
+#       selected=$(find_most_used_command |  fzy --query "$LBUFFER" --prompt="History > ")
+#     else
+#       selected=$(find_command_in_current_dir | fzy --query "$LBUFFER" --prompt="History > ")
+#     fi
+#
+#     if [[ -n "$selected" ]]; then
+#         # 選択された履歴からコマンド部分を抽出
+#         # local cmd=$(echo "$selected" | sed 's/^[0-9 ]*//g')
+#         # BUFFER="$cmd"
+#         # local cmd=$(echo "$selected" | sed 's/^[0-9 ]*//g')
+#         BUFFER=$selected
+#         CURSOR=$#BUFFER  # カーソルを末尾に移動
+#
+#         zle reset-prompt
+#     fi
+# }
+#
+# # ウィジェットとして登録
+# zle -N history-search-search
+# # キーバインドの設定（例: Ctrl+r）
+# bindkey '^R' history-search-search
+# bindkey -M viins '^r' history-search-search
+# bindkey -M vicmd '^r' history-search-search
+# per-directory-history機能の実装
+per-directory-history-toggle-history() {
+    # グローバル変数の初期化
+    if [[ -z "$_per_directory_history_is_global" ]]; then
+        _per_directory_history_is_global=0
+    fi
+
+    # 現在のディレクトリのヒストリーファイル
+    local directory_history_file="${HOME}/.zsh_history_${PWD//\//_}"
+
+    if [[ $_per_directory_history_is_global -eq 0 ]]; then
+        # ローカル→グローバル切り替え
+        _per_directory_history_is_global=1
+        echo "Switched to global history"
+    else
+        # グローバル→ローカル切り替え
+        _per_directory_history_is_global=0
+        echo "Switched to directory history"
+    fi
+}
+
+zle -N per-directory-history-toggle-history
+bindkey -M vicmd '^v' per-directory-history-toggle-history
+
+ZSH_AUTOSUGGEST_STRATEGY=histdb_top
+
+zinit snippet OMZ::plugins/git/git.plugin.zsh
+
+
+
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zinit load 'Freed-Wu/fzf-tab-source'
+
+zinit ice wait src'ls-colors.zsh'
+zinit load 'xPMo/zsh-ls-colors'
+
+zinit ice wait src'fzf-histdb.zsh'
+zinit load m42e/zsh-histdb-fzf
+# zinit ice wait src"zsh-histdb-skim.zsh" atclone'./zsh-histdb-skim.zsh' \
+#     atpull"%atclone" 
+# zinit load 'm42e/zsh-histdb-skim' 
+# bindkey '^R' histdb-skim-widget
+
+zinit wait lucid light-mode for \
+  OMZL::key-bindings.zsh \
+  OMZL::history.zsh \
+  casonadams/skim.zsh \
+  ;

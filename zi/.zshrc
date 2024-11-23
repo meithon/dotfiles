@@ -1,3 +1,4 @@
+# z4h init
 # if [[ -z "${ISTERM}" && $- = *i* && $- != *c* ]]; then
 #   if [[ -o login ]]; then
 #     is -s zsh --login ; exit
@@ -20,3 +21,5 @@ source ~/dotfiles/shell/asdf.sh
 
 
 # [[ -f ~/.inshellisense/zsh/init.zsh ]] && source ~/.inshellisense/zsh/init.zsh
+
+PATH=~/.console-ninja/.bin:$PATH
