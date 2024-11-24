@@ -45,6 +45,8 @@ zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
 # up-to-date. Cloned files can be used after `z4h init`. This is just an
 # example. If you don't plan to use Oh My Zsh, delete this line.
 z4h install ohmyzsh/ohmyzsh || return
+z4h install larkery/zsh-histdb || return
+z4h install paulmelnikow/zsh-startup-timer
 
 # Install or update core components (fzf, zsh-autosuggestions, etc.) and
 # initialize Zsh. After this point console I/O is unavailable until Zsh
@@ -60,12 +62,20 @@ export GPG_TTY=$TTY
 
 # Source additional local files if they exist.
 z4h source ~/.env.zsh
+z4h source ~/dotfiles/shell/alias.sh
 
+
+z4h source larkery/zsh-histdb/zsh-histdb.plugin.zsh
+z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
+z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
+
+
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 # Use additional Git repositories pulled in with `z4h install`.
 #
 # This is just an example that you should delete. It does nothing useful.
-z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
-z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
+# z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
+# z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
 
 # Define key bindings.
 z4h bindkey undo Ctrl+/   Shift+Tab  # undo the last command line change

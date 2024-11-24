@@ -2,7 +2,7 @@
 source /Users/mei/.docker/init-fish.sh || true # Added by Docker Desktop
 
 # plugin conifg
-cod init $fish_pid fish | source
+# cod init $fish_pid fish | source
 
 # fifc config
 set fifc_fd_opts --max-depth=1
@@ -29,3 +29,4 @@ if test -d (brew --prefix)"/share/fish/vendor_completions.d"
 end
 
 thefuck --alias | source
+atuin init fish | source

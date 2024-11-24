@@ -47,9 +47,9 @@ apply = ["defer"]
 github = "junegunn/fzf"
 apply = ["defer"]
 
-[plugins.fzf-tab]
-github = "Aloxaf/fzf-tab"
-apply = ["defer"]
+# [plugins.fzf-tab]
+# github = "Aloxaf/fzf-tab"
+# apply = ["defer"]
 # apply = ["wait0", "lucid", "light-mode"]
 
 [plugins.fast-syntax-highlighting]
@@ -60,13 +60,17 @@ apply = ["defer"]
 github = "dim-an/cod"
 apply = ["defer"]
 
-[plugins.per-directory-history]
-github = "jimhester/per-directory-history"
-apply = ["defer"]
 
-[plugins.per-directory-history.hooks]
-pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
-post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+[plugins.evalcache]
+github = 'mroth/evalcache'
+
+# [plugins.per-directory-history]
+# github = "jimhester/per-directory-history"
+# apply = ["defer"]
+
+# [plugins.per-directory-history.hooks]
+# pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+# post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
 
 
 [plugins.zsh-abbrev-alias]
