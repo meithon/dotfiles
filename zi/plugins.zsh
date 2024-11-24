@@ -37,8 +37,8 @@ autoload -Uz _zinit
 # zi snippet OMZP::history-substring-search
 
 # zi ice blockf
-zi ice lucid wait 
-zi light zsh-users/zsh-completions
+zinit ice lucid wait 
+zinit light zsh-users/zsh-completions
 
 
 # zi ice svn silent wait'!1' atload'prompt smiley'
@@ -57,8 +57,8 @@ fi
 
 
 
-zi ice wait lucid atload'!_zsh_autosuggest_start'
-zi light zsh-users/zsh-autosuggestions
+zinit ice wait lucid atload'!_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
 
 zinit wait"1" lucid as"program" for \
     cp"wd.sh -> wd" mv"_wd.sh -> _wd" \
@@ -81,8 +81,8 @@ zinit wait"1" lucid as"program" for \
     atpull"%atclone" src"zhook.zsh" \
   direnv/direnv 
 
-zi ice wait"1" lucid
-zi light sunlei/zsh-ssh
+zinit ice wait"1" lucid
+zinit light sunlei/zsh-ssh
 
 
 
@@ -327,16 +327,6 @@ zinit wait lucid for \
 # }
 
 
-  # echo "ZLE initialized - zle commands available"
-  # bindkey -M viins '^v' per-directory-history-toggle-history
-  # bindkey -M vicmd '^v' per-directory-history-toggle-history
-  #
-  #
-  #
-  # zle -N fzf-history-search
-  # bindkey -M viins '^r' fzf-history-search
-  # bindkey -M vicmd '^r' fzf-history-search
-# source ~/dotfiles/zi/plugin/fzf.zsh
 source ~/dotfiles/zi/plugin/zoxide.zsh
 
 
@@ -350,7 +340,7 @@ find-repository-and-move() {
 alias repos=find-repository-and-move
 alias -g rps='repos'
 
-zinit wait lucid for larkery/zsh-histdb
+zinit lucid for larkery/zsh-histdb
 
 _zsh_autosuggest_strategy_histdb_top() {
     local query="
@@ -366,7 +356,6 @@ _zsh_autosuggest_strategy_histdb_top() {
 }
 
 
-bindkey -M vicmd '^v' per-directory-history-toggle-history
 find_most_used_command() {
   local query="
     select commands.argv from history
@@ -396,38 +385,6 @@ find_command_in_current_dir() {
 
 _per_directory_history_is_global=0
 
-# 履歴検索ウィジェットの実装
-# function history-search-search() {
-# echo "history-search-search"
-#     local selected
-#
-#     local fzy_query='--query "$LBUFFER" --prompt="History > "'
-#     if [[ -z "$_per_directory_history_is_global" ]] || [[ $_per_directory_history_is_global -eq 1 ]]; then
-#       # グローバル履歴から検索
-#       selected=$(find_most_used_command |  fzy --query "$LBUFFER" --prompt="History > ")
-#     else
-#       selected=$(find_command_in_current_dir | fzy --query "$LBUFFER" --prompt="History > ")
-#     fi
-#
-#     if [[ -n "$selected" ]]; then
-#         # 選択された履歴からコマンド部分を抽出
-#         # local cmd=$(echo "$selected" | sed 's/^[0-9 ]*//g')
-#         # BUFFER="$cmd"
-#         # local cmd=$(echo "$selected" | sed 's/^[0-9 ]*//g')
-#         BUFFER=$selected
-#         CURSOR=$#BUFFER  # カーソルを末尾に移動
-#
-#         zle reset-prompt
-#     fi
-# }
-#
-# # ウィジェットとして登録
-# zle -N history-search-search
-# # キーバインドの設定（例: Ctrl+r）
-# bindkey '^R' history-search-search
-# bindkey -M viins '^r' history-search-search
-# bindkey -M vicmd '^r' history-search-search
-# per-directory-history機能の実装
 per-directory-history-toggle-history() {
     # グローバル変数の初期化
     if [[ -z "$_per_directory_history_is_global" ]]; then
@@ -440,16 +397,21 @@ per-directory-history-toggle-history() {
     if [[ $_per_directory_history_is_global -eq 0 ]]; then
         # ローカル→グローバル切り替え
         _per_directory_history_is_global=1
-        echo "Switched to global history"
+        local msg="📝 History Mode: Global"
     else
-        # グローバル→ローカル切り替え
+        # Switch from global to directory-specific history
         _per_directory_history_is_global=0
-        echo "Switched to directory history"
+        local msg="📂 History Mode: Directory-specific"
     fi
+
+    print "$msg"
+    print
+    zle reset-prompt
 }
 
 zle -N per-directory-history-toggle-history
 bindkey -M vicmd '^v' per-directory-history-toggle-history
+bindkey -M viins '^v' per-directory-history-toggle-history
 
 ZSH_AUTOSUGGEST_STRATEGY=histdb_top
 
@@ -463,15 +425,91 @@ zinit load 'Freed-Wu/fzf-tab-source'
 zinit ice wait src'ls-colors.zsh'
 zinit load 'xPMo/zsh-ls-colors'
 
-zinit ice wait src'fzf-histdb.zsh'
-zinit load m42e/zsh-histdb-fzf
-# zinit ice wait src"zsh-histdb-skim.zsh" atclone'./zsh-histdb-skim.zsh' \
-#     atpull"%atclone" 
-# zinit load 'm42e/zsh-histdb-skim' 
-# bindkey '^R' histdb-skim-widget
+__skimcmd() {
+  [ -n "$TMUX_PANE" ] && { [ "${SKIM_TMUX:-0}" != 0 ] || [ -n "$SKIM_TMUX_OPTS" ]; } &&
+    echo "sk-tmux ${SKIM_TMUX_OPTS:--d${SKIM_TMUX_HEIGHT:-40%}} -- " || echo "sk"
+}
 
-zinit wait lucid light-mode for \
-  OMZL::key-bindings.zsh \
-  OMZL::history.zsh \
-  casonadams/skim.zsh \
-  ;
+function search_history() {
+  local sql_query
+  if [[ -z "$_per_directory_history_is_global" ]] || [[ $_per_directory_history_is_global -eq 1 ]]; then
+    sql_query="
+      select commands.argv from history
+      left join commands on history.command_id = commands.rowid
+      where commands.argv != ''
+      group by commands.argv
+      order by max(history.start_time) desc, count(*) desc
+    "
+  else
+    # グローバル履歴から検索
+    sql_query="
+      select commands.argv from history
+      left join commands on history.command_id = commands.rowid
+      left join places on history.place_id = places.rowid
+      where places.dir = '$(sql_escape $PWD)'
+        and commands.argv != ''
+      group by commands.argv
+      order by max(history.start_time) desc, count(*) desc
+    "
+  fi
+
+  local fzf_preview_cmd='echo {}| syncat -l bash'
+  
+  # 配列を使用する方法
+  local -a fzf_opts=(
+      --read0
+      --ansi
+      --layout=reverse
+      --no-sort
+      --height=60%
+      --highlight-line
+      --preview='echo {}| syncat -l bash'
+      --preview-window=right:50%:wrap
+      --prompt='History > '
+      --header='[CTRL-Y:copy, CTRL-R:execute, ESC:exit]'
+      --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
+      --bind 'ctrl-r:execute(echo {} | sh)+abort'
+      --bind 'ctrl-v:execute(per-directory-history-toggle-history)'
+      --bind 'esc:abort'
+      --bind 'ctrl-/:toggle-preview'
+      --color='header:italic:underline'
+  )
+
+
+  local history_data="$(
+    _histdb_query -json "$sql_query"
+  )"
+  local processed_data
+  processed_data=$(
+    jq -j '.[].argv | gsub("\n$";"") + "\u0000"' <<<"$history_data" | \
+    perl -pe 's/\x00/;\n\x1E/g' |  \
+    perl -pe 's/\x1E$//' | \
+    syncat --language bash | \
+    perl -0777 -pe 's/;\n+/\x00/g'
+  )
+
+  local selected_command="$(echo "$processed_data" | fzf "${fzf_opts[@]}")"
+
+  BUFFER=$(echo $selected_command)
+  CURSOR=$#BUFFER
+}
+
+zle -N search_history
+bindkey '^r' search_history
+bindkey -M vicmd '^r' search_history
+bindkey -M viins '^r' search_history
+unsetopt HIST_REDUCE_BLANKS      # 空白の削除を無効化（改行を保持したい場合）
+
+# export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+#   --color=fg:-1,fg+:#c9fdff,bg:-1,bg+:#060715
+#   --color=hl:#ff29c2,hl+:#ff5ea9,info:#afaf87,marker:#87ff00
+#   --color=prompt:#d7005f,spinner:#af5fff,pointer:#ff0062,header:#87afaf
+#   --color=gutter:#181515,border:#a28580,separator:#51384c,scrollbar:#666363
+#   --color=label:#aeaeae,query:#d9d9d9
+#   --border="thinblock" --border-label="" --preview-window="border-thinblock" --padding="0,1"
+#   --layout="reverse" --info="right"'
+
+
+zinit light qoomon/zsh-lazyload
+lazyload kubecolor -- 'source <(kubectl completion zsh);compdef kubecolor="kubectl"'
+command -v kubecolor >/dev/null 2>&1 && alias kubectl="kubecolor"
