@@ -1,2 +1,0 @@
-. <( echo wrapper\(\){ ; cat ; echo } );
-type wrapper | sed '1,/{/d; $d;s/^    //g'
