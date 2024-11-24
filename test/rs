@@ -1,15 +1,0 @@
-cat -A json
-vi -b json
-_histdb_query -json "
-select commands.argv from history
-left join commands on history.command_id = commands.rowid
-left join places on history.place_id = places.rowid
-where places.dir = '$(sql_escape $PWD)'
-group by commands.argv
-order by count(*) desc" | jq -j '.[].argv | gsub("\n$";"") + "\u0000"' | perl -pe 's/\n/\x1E/g' | tr '\0' '\n' | syncat --language bash | tr '\n' '\0' | perl -pe 's/\x1E/\n/g'
-setopt HIST_SUBST_PATTERN
-echo "hello 
-world"
-bindkey -M vicmd '^r' search_history
-bindkey '^r' select_history
-_histdb_query -json "
