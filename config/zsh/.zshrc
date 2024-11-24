@@ -1,5 +1,6 @@
 ZSHRC_DIR=${${(%):-%N}:A:h}
-# source command override technique
+
+# overwrite
 function source {
   ensure_zcompiled $1
   builtin source $1
@@ -12,9 +13,7 @@ function ensure_zcompiled {
   fi
 }
 
-
-
-ensure_zcompiled ~/.zshrc
+# ensure_zcompiled ~/.zshrc
 
 # sheldon cache technique
 export SHELDON_CONFIG_DIR="$ZSHRC_DIR/sheldon"
@@ -26,14 +25,10 @@ fi
 source "$sheldon_cache"
 unset sheldon_cache sheldon_toml
 
-
-source ~/dotfiles/zi/plugins.zsh
-source ~/dotfiles/zi/config.zsh
-#
-source ~/dotfiles/shell/alias.sh
-source ~/dotfiles/shell/asdf.sh
-
+# sync process
 source $ZSHRC_DIR/nonlazy.zsh
+
+# lazy process
 zsh-defer source $ZSHRC_DIR/lazy.zsh
 zsh-defer unfunction source
 

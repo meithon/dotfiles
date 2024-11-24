@@ -16,3 +16,14 @@ setopt HIST_VERIFY               # Don't execute immediately upon history expans
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 
 export EDITOR="nvim"
+
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+  --color=fg:-1,fg+:#c9fdff,bg:-1,bg+:#060715
+  --color=hl:#ff29c2,hl+:#ff5ea9,info:#afaf87,marker:#87ff00
+  --color=prompt:#d7005f,spinner:#af5fff,pointer:#ff0062,header:#87afaf
+  --color=gutter:#181515,border:#a28580,separator:#51384c,scrollbar:#666363
+  --color=label:#aeaeae,query:#d9d9d9
+  --border="thinblock" --border-label="" --preview-window="border-thinblock" --padding="0,1"
+  --layout="reverse" --info="right"
+  --height=40%'
+

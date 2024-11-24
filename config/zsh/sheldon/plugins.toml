@@ -11,8 +11,8 @@ defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file 
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
 
-[plugins.evalcache]
-github = "mroth/evalcache"
+# [plugins.evalcache]
+# github = "mroth/evalcache"
 
 [plugins.zsh-async]
 github = "mafredri/zsh-async"
@@ -20,10 +20,13 @@ github = "mafredri/zsh-async"
 
 [plugins.zsh-vi-mode]
 github = "jeffreytse/zsh-vi-mode"
-apply = ["defer"]
+# apply = ["defer"]
 
 [plugins.powerlevel10k]
 github = "romkatv/powerlevel10k"
+
+[plugins.zsh-histdb]
+github = "larkery/zsh-histdb"
 
 # [plugins."z.lua"]
 # github = "skywind3000/z.lua"
@@ -34,7 +37,7 @@ github = "romkatv/powerlevel10k"
 #
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
-apply = ["defer"]
+# apply = ["defer"]
 #
 # [plugins.zsh-256color]
 # github = "chrissicool/zsh-256color"
@@ -46,13 +49,9 @@ apply = ["defer"]
 github = "BurntSushi/ripgrep"
 apply = ["defer"]
 
-[plugins.fzf]
-github = "junegunn/fzf"
-apply = ["defer"]
-
 [plugins.fzf-tab]
 github = "Aloxaf/fzf-tab"
-apply = ["defer"]
+# apply = ["defer"]
 # apply = ["wait0", "lucid", "light-mode"]
 
 [plugins.fast-syntax-highlighting]
@@ -63,21 +62,22 @@ apply = ["defer"]
 github = "dim-an/cod"
 apply = ["defer"]
 
-[plugins.per-directory-history]
-github = "jimhester/per-directory-history"
-apply = ["defer"]
+# [plugins.per-directory-history]
+# github = "jimhester/per-directory-history"
+# apply = ["defer"]
+# [plugins.per-directory-history.hooks]
+# pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
+# post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
 
-[plugins.per-directory-history.hooks]
-pre = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
-post = "export PER_DIRECTORY_HISTORY_TOGGLE=^V"
-
+[plugins.evalcache]
+github = 'mroth/evalcache'
 
 [plugins.zsh-abbrev-alias]
 github = "momo-lab/zsh-abbrev-alias"
 
-[plugins.zsh-ssh]
-github = "sunlei/zsh-ssh"
-apply = ["defer"]
+# [plugins.zsh-ssh]
+# github = "sunlei/zsh-ssh"
+# apply = ["defer"]
 
 # [plugins.history-search-multi-word]
 # github = "zdharma-continuum/history-search-multi-word"
