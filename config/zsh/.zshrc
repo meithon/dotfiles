@@ -1,7 +1,3 @@
-
-
-
-
 ZSHRC_DIR=${${(%):-%N}:A:h}
 # source command override technique
 function source {
@@ -30,8 +26,18 @@ fi
 source "$sheldon_cache"
 unset sheldon_cache sheldon_toml
 
+
+source ~/dotfiles/zi/plugins.zsh
+source ~/dotfiles/zi/config.zsh
+#
+source ~/dotfiles/shell/alias.sh
+source ~/dotfiles/shell/asdf.sh
+
 source $ZSHRC_DIR/nonlazy.zsh
 zsh-defer source $ZSHRC_DIR/lazy.zsh
 zsh-defer unfunction source
-# zsh-defer unfunction eval
+
+
+
+
 

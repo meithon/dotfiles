@@ -16,6 +16,3 @@ setopt HIST_VERIFY               # Don't execute immediately upon history expans
 setopt HIST_BEEP                 # Beep when accessing nonexistent history.
 
 export EDITOR="nvim"
-
-
-  source /Users/mei/.docker/init-zsh.sh || true # Added by Docker Desktop
