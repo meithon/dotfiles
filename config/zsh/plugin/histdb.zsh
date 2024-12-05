@@ -67,38 +67,39 @@ function search_history() {
   fi
 
   local fzf_preview_cmd='echo {}| syncat -l bash'
-  
+
   # 配列を使用する方法
   local -a fzf_opts=(
-      --read0
-      --ansi
-      --layout=reverse
-      --no-sort
-      --height=60%
-      --highlight-line
-      --preview='echo {}| syncat -l bash'
-      --preview-window=right:50%:wrap
-      --prompt='History > '
-      --header='[CTRL-Y:copy, CTRL-R:execute, ESC:exit]'
-      --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
-      --bind 'ctrl-r:execute(echo {} | sh)+abort'
-      --bind 'ctrl-v:execute(per-directory-history-toggle-history)'
-      --bind 'esc:abort'
-      --bind 'ctrl-/:toggle-preview'
-      --color='header:italic:underline'
+    --query="$BUFFER"
+    --read0
+    --ansi
+    --layout=reverse
+    --no-sort
+    --height=60%
+    --highlight-line
+    --tiebreak=chunk,length,index
+    --preview='echo {}| syncat -l bash'
+    --preview-window=right:50%:wrap
+    --prompt='History > '
+    --header='[CTRL-Y:copy, CTRL-R:execute, ESC:exit]'
+    --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'
+    --bind 'ctrl-r:execute(echo {} | sh)+abort'
+    --bind 'ctrl-v:execute(per-directory-history-toggle-history)'
+    --bind 'esc:abort'
+    --bind 'ctrl-/:toggle-preview'
+    --color='header:italic:underline'
   )
-
 
   local history_data="$(
     _histdb_query -json "$sql_query"
   )"
   local processed_data
   processed_data=$(
-    jq -j '.[].argv | gsub("\n$";"") + "\u0000"' <<<"$history_data" | \
-    perl -pe 's/\x00/;\n\x1E/g' |  \
-    perl -pe 's/\x1E$//' | \
-    syncat --language bash | \
-    perl -0777 -pe 's/;\n+/\x00/g'
+    jq -j '.[].argv | gsub("\n$";"") + "\u0000"' <<<"$history_data" |
+      perl -pe 's/\x00/;\n\x1E/g' |
+      perl -pe 's/\x1E//' |
+      syncat --language bash |
+      perl -0777 -pe 's/;\n+/\x00/g'
   )
 
   local selected_command="$(echo "$processed_data" | fzf "${fzf_opts[@]}")"
@@ -108,7 +109,9 @@ function search_history() {
 }
 
 zle -N search_history
-bindkey '^R' search_history
-bindkey -M vicmd '^R' search_history
-bindkey -M viins '^R' search_history
-unsetopt HIST_REDUCE_BLANKS      # 空白の削除を無効化（改行を保持したい場合）
+function zvm_after_init() {
+  bindkey '^R' search_history
+  bindkey -M vicmd '^R' search_history
+  bindkey -M viins '^R' search_history
+}
+unsetopt HIST_REDUCE_BLANKS # 空白の削除を無効化（改行を保持したい場合）

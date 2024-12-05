@@ -7,6 +7,7 @@ end
 
 local opt = vim.opt
 opt.splitkeep = "cursor"
+vim.cmd("set nospell")
 
 vim.g.neovide_transparency = 0.8
 vim.g.transparency = 0.3
@@ -50,3 +51,45 @@ end
 --
 -- -- * a function with signature `function(buf) -> string|string[]`
 -- vim.g.root_spec = {}
+
+-- swapfile
+
+-- swapファイルの更新間隔を短くする（ミリ秒単位）
+-- vim.opt.updatetime = 100 -- デフォルトは4000
+--
+-- -- swapファイルの保存先を指定
+-- vim.opt.directory = vim.fn.stdpath("data") .. "/swap//"
+--
+-- -- swapファイル作成を確実に有効化
+-- vim.opt.swapfile = true
+--
+-- -- バックアップも有効化（オプション）
+-- vim.opt.backup = true
+-- vim.opt.writebackup = true
+--
+-- -- swapファイルの自動クリーンアップ設定
+-- vim.api.nvim_create_autocmd("VimLeave", {
+--   pattern = "*",
+--   callback = function()
+--     -- swapディレクトリのパスを取得
+--     local swap_dir = vim.fn.stdpath("data") .. "/swap"
+--
+--     -- 古いswapファイルを検索して削除（7日以上前のファイル）
+--     local cmd = string.format('find "%s" -type f -mtime +7 -delete', swap_dir)
+--     vim.fn.system(cmd)
+--   end,
+-- })
+
+-- 起動時に無効なswapファイルをクリーンアップ
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--   pattern = "*",
+--   callback = function()
+--     -- 存在しないバッファのswapファイルを削除
+--     for _, swapfile in ipairs(vim.fn.glob(vim.fn.stdpath('data') .. '/swap/*', true, true)) do
+--       local swapname = vim.fn.fnamemodify(swapfile, ':t')
+--       if not vim.fn.filereadable(swapname) then
+--         vim.fn.delete(swapfile)
+--       end
+--     end
+--   end
+-- })
