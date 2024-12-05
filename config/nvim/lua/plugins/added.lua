@@ -5,6 +5,37 @@ local map = vim.keymap.setadded
 ---
 return {
   {
+    "hrsh7th/nvim-cmp",
+    dependencies = { "alexander-born/cmp-bazel" },
+    opts = function(_, opts)
+      opts.sources = require("cmp").config.sources(vim.list_extend(opts.sources, { { name = "bazel" } }))
+    end,
+  },
+  {
+    "apple/pkl-neovim",
+    lazy = true,
+    ft = "pkl",
+    dependencies = {
+      {
+        "nvim-treesitter/nvim-treesitter",
+        build = function(_)
+          vim.cmd("TSUpdate")
+        end,
+      },
+      "L3MON4D3/LuaSnip",
+    },
+    build = function()
+      require("pkl-neovim.internal").init()
+
+      -- Set up syntax highlighting.
+      vim.cmd("TSInstall! pkl")
+    end,
+    config = function()
+      -- Set up snippets.
+      require("luasnip.loaders.from_snipmate").lazy_load()
+    end,
+  },
+  {
     "nvim-zh/colorful-winsep.nvim",
     config = true,
     event = { "WinLeave" },
@@ -14,6 +45,22 @@ return {
     opts = {
       -- make sure mason installs the server
       servers = {
+        yamlls = {
+          settings = {
+            yaml = {
+              schemaStore = {
+                enable = true,
+              },
+              validate = true,
+              completion = true,
+              format = {
+                enable = true,
+              },
+              hover = true,
+              keyOrdering = false,
+            },
+          },
+        },
         --- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
         --- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
         dartls = {
@@ -49,6 +96,7 @@ return {
       "nvim-lua/plenary.nvim",
       "stevearc/dressing.nvim", -- optional for vim.ui.select
     },
+    ft = "dart",
     -- opts = {
     --   widget_guides = true,
     -- },
@@ -160,6 +208,10 @@ return {
   },
   {
     "Mr-LLLLL/interestingwords.nvim",
+    keys = {
+      "<leader>k",
+      "<leader>m",
+    },
     config = function()
       require("interestingwords").setup({
         colors = {
@@ -201,6 +253,7 @@ return {
   {
     "ownerRef.nvim",
     dir = "/Users/mei/workspace/private/ownerRef.nvim",
+    lazy = true,
     config = function()
       require("ownerRef").setup()
     end,
@@ -229,22 +282,23 @@ return {
       require("nerdicons").setup({})
     end,
   },
-  {
-    "codota/tabnine-nvim",
-    build = "./dl_binaries.sh",
-    config = function()
-      require("tabnine").setup({
-        disable_auto_comment = true,
-        accept_keymap = "<Tab>",
-        dismiss_keymap = "<C-]>",
-        debounce_ms = 800,
-        suggestion_color = { gui = "#805d80", cterm = 244 },
-        exclude_filetypes = { "TelescopePrompt", "NvimTree" },
-        log_file_path = nil, -- absolute path to Tabnine log file
-        ignore_certificate_errors = false,
-      })
-    end,
-  },
+  -- {
+  --   "codota/tabnine-nvim",
+  --   build = "./dl_binaries.sh",
+  --   event = "BufReadPost",
+  --   config = function()
+  --     require("tabnine").setup({
+  --       disable_auto_comment = true,
+  --       accept_keymap = "<Tab>",
+  --       dismiss_keymap = "<C-]>",
+  --       debounce_ms = 800,
+  --       suggestion_color = { gui = "#805d80", cterm = 244 },
+  --       exclude_filetypes = { "TelescopePrompt", "NvimTree" },
+  --       log_file_path = nil, -- absolute path to Tabnine log file
+  --       ignore_certificate_errors = false,
+  --     })
+  --   end,
+  -- },
   {
     "nvim-java/nvim-java",
     dependencies = {
@@ -258,6 +312,7 @@ return {
   },
   { -- Colorize text with ANSI escape sequences (8, 16, 256 or TrueColor)
     "m00qek/baleia.nvim",
+    cmd = "BaleiaColorize",
     version = "*",
     config = function()
       vim.g.baleia = require("baleia").setup({})
@@ -275,6 +330,7 @@ return {
     "toppair/peek.nvim",
     event = { "VeryLazy" },
     build = "deno task --quiet build:fast",
+    cmd = "PeekOpen",
     config = function()
       require("peek").setup()
       vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
@@ -364,6 +420,11 @@ return {
   },
   {
     "jvgrootveld/telescope-zoxide",
+    lazy = true,
+    keys = {
+      "<C-g>",
+      "<leader>z",
+    },
     dependencies = {
       "nvim-lua/popup.nvim",
       "nvim-lua/plenary.nvim",
@@ -417,6 +478,18 @@ return {
   },
   { -- ⭐ Powerful AI interface
     "olimorris/codecompanion.nvim",
+    cmd = {
+      "CodeCompanion",
+      "CodeCompanionChat",
+      "CodeCompanionActions",
+      "CodeCompanionCmd",
+    },
+    keys = {
+      { "<C-a>", mode = { "n", "v" } },
+      "<Leader>a",
+      "<Leader>a",
+      "ga",
+    },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
@@ -424,14 +497,6 @@ return {
       {
         "stevearc/dressing.nvim", -- Optional: Improves the default Neovim UI
         opts = {},
-      },
-      cmd = {
-        "cc",
-        "CodeCompanion",
-        "CodeCompanionAdd",
-        "CodeCompanionChat",
-        "CodeCompanionActions",
-        "CodeCompanionToggle",
       },
       -- {
       --   "echasnovski/mini.diff",
@@ -632,7 +697,7 @@ return {
   --     require("treepin").setup()
   --   end,
   -- },
-  {
+  { -- markdown viewer
     "serenevoid/kiwi.nvim",
     ft = { "markdown" },
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -796,16 +861,27 @@ return {
   --     })
   --   end,
   -- },
-  {
+  { -- markdown viewer?
     "chomosuke/typst-preview.nvim",
     lazy = false, -- or ft = 'typst'
     version = "0.3.*",
+    cmd = {
+      "TypstPreview",
+      "TypstPreviewFollowCursor",
+      "TypstPreviewFollowCursorToggle",
+      "TypstPreviewNoFollowCursor",
+      "TypstPreviewStop",
+      "TypstPreviewSyncCursor",
+      "TypstPreviewToggle",
+      "TypstPreviewUpdate",
+    },
     build = function()
       require("typst-preview").update()
     end,
   },
-  {
+  { -- reactive to mode change
     "rasulomaroff/reactive.nvim",
+    event = "BufReadPost",
     config = function()
       require("reactive").setup({
         builtin = {
@@ -853,8 +929,9 @@ return {
     end,
     opts = {},
   },
-  {
+  { -- display space in visual mode
     "mcauley-penney/visual-whitespace.nvim",
+    event = "BufReadPost",
     config = true,
   },
   { -- lazy load docs
@@ -903,16 +980,26 @@ return {
       require("telepath").use_default_mappings()
     end,
   },
-  {
+  { --  open document of lsp data
     "icholy/lsplinks.nvim",
+
+    keys = {
+      { "gx", mode = "n" },
+    },
     config = function()
       local lsplinks = require("lsplinks")
       lsplinks.setup()
-      -- vim.keymap.set("n", "gx", lsplinks.gx)
+      vim.keymap.set("n", "gx", lsplinks.gx)
     end,
   },
   {
     "snehlsen/pomo.nvim",
+    cmd = {
+      "PomoNewDay",
+      "PomoAssign",
+      "PomoPause",
+      "PomoComplete",
+    },
     config = true,
   },
   {
@@ -975,6 +1062,7 @@ return {
   },
   { -- File git history inspector
     "niuiic/git-log.nvim",
+    lazy = true,
     dependencies = {
       { "niuiic/core.nvim" },
     },
@@ -1009,7 +1097,7 @@ return {
   --     })
   --   end,
   -- },
-  { "dmmulroy/ts-error-translator.nvim" },
+  { "dmmulroy/ts-error-translator.nvim", ft = { "typescriptreact", "typescript" } },
   -- {
   --   "ObserverOfTime/notifications.nvim",
   --   opts = {
@@ -1085,6 +1173,7 @@ return {
   },
   {
     "voxelprismatic/rabbit.nvim",
+    cmd = "Rabbit",
     opts = {},
   },
   -- {
@@ -1096,13 +1185,13 @@ return {
   -- TODO: Add your plugins here
   -- SergioRibera/cmp-dotenv
   -- cmpletion from envrioment variables
-  {
-    "Aaronik/GPTModels.nvim",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-  },
+  -- {
+  --   "Aaronik/GPTModels.nvim",
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "nvim-telescope/telescope.nvim",
+  --   },
+  -- },
   -- {
   --   "lewis6991/hover.nvim",
   --   config = function()
@@ -1402,34 +1491,34 @@ return {
   --     require("render-markdown").setup({})
   --   end,
   -- },
-  { -- AI Completion
-    "archibate/genius.nvim",
-    requires = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-    },
-    config = function()
-      require("genius").setup({
-        completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
-        -- This plugin supports many backends, openai backend is the default:
-        default_bot = "openai",
-        -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
-        -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
-        --
-        config_openai = {
-          api_key = os.getenv("OPENAI_API_KEY"),
-          infill_options = {
-            max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
-            model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
-            temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
-          },
-        },
-        -- Otherwise, you may run DeepSeek-Coder locally instead:
-        -- default_bot = 'deepseek',
-        -- See sections below for detailed instructions on setting up this model.
-      })
-    end,
-  },
+  -- { -- AI Completion
+  --   "archibate/genius.nvim",
+  --   requires = {
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   config = function()
+  --     require("genius").setup({
+  --       completion_delay_ms = 800, -- microseconds before completion triggers, set this to -1 to disable and only allows manual trigger
+  --       -- This plugin supports many backends, openai backend is the default:
+  --       default_bot = "openai",
+  --       -- You may obtain an API key from OpenAI as long as you have an account: https://platform.openai.com/account/api-keys
+  --       -- Either set the environment variable OPENAI_API_KEY in .bashrc, or set api_key option in the setup here:
+  --       --
+  --       config_openai = {
+  --         api_key = os.getenv("OPENAI_API_KEY"),
+  --         infill_options = {
+  --           max_tokens = 100, -- maximum number of tokens allowed to generate in a single completion
+  --           model = "gpt-3.5-turbo-instruct", -- must be instruct model here, no chat models! you may only replace this with code-davinci-002 for example
+  --           temperature = 0.8, -- temperature varies from 0 to 1, higher means more random (and more funny) results
+  --         },
+  --       },
+  --       -- Otherwise, you may run DeepSeek-Coder locally instead:
+  --       -- default_bot = 'deepseek',
+  --       -- See sections below for detailed instructions on setting up this model.
+  --     })
+  --   end,
+  -- },
   { "wakatime/vim-wakatime", lazy = false },
   {
     "stevearc/oil.nvim",

@@ -87,6 +87,22 @@ end
 
 ---@type Plugin[]
 return {
+  -- {
+  --   "supermaven-inc/supermaven-nvim",
+  --   config = function()
+  --     require("supermaven-nvim").setup({
+  --       keymaps = {
+  --         accept_suggestion = "<Tab>",
+  --         clear_suggestion = "<C-]>",
+  --         accept_word = "<Right>",
+  --       },
+  --       color = {
+  --         suggestion_color = "#c8ffff",
+  --         cterm = 244,
+  --       },
+  --     })
+  --   end,
+  -- },
   {
     "nvimdev/dashboard-nvim",
     opts = function(_, opts)
@@ -807,13 +823,14 @@ return {
         cc.paste_from_clipboard(gs, global_state.redraw_callback())
       end
 
-      opts.commands = vim.tbl_extend("force", opts.commands or {}, {
-        g_copy_to_clipboard = copy_to_clipboard,
-        g_copy_to_clipboard_visual = copy_to_clipboard_visual,
-        g_cut_to_clipboard = cut_to_clipboard,
-        g_cut_to_clipboard_visual = cut_to_clipboard_visual,
-        g_paste_from_clipboard = paste_from_clipboard,
-      })
+      -- FIXME: broken clipboard
+      -- opts.commands = vim.tbl_extend("force", opts.commands or {}, {
+      --   g_copy_to_clipboard = copy_to_clipboard,
+      --   g_copy_to_clipboard_visual = copy_to_clipboard_visual,
+      --   g_cut_to_clipboard = cut_to_clipboard,
+      --   g_cut_to_clipboard_visual = cut_to_clipboard_visual,
+      --   g_paste_from_clipboard = paste_from_clipboard,
+      -- })
 
       opts.window.mappings = vim.tbl_extend("force", opts.window.mappings, {
         ["s"] = "open_split",
@@ -829,9 +846,10 @@ return {
             end
           end
         end,
-        ["y"] = "g_copy_to_clipboard",
-        ["x"] = "g_cut_to_clipboard",
-        ["p"] = "g_paste_from_clipboard",
+        -- FIXME: broken clipboard
+        -- ["y"] = "g_copy_to_clipboard",
+        -- ["x"] = "g_cut_to_clipboard",
+        -- ["p"] = "g_paste_from_clipboard",
         -- run command
         ["i"] = function(state)
           local node = state.tree:get_node()
@@ -1386,15 +1404,15 @@ return {
         },
       }
       --- Example integration with Tabnine and LuaSnip; falling back to inserting tab if neither has a completion
-      vim.keymap.set("i", "<tab>", function()
-        if require("tabnine.keymaps").has_suggestion() then
-          return require("tabnine.keymaps").accept_suggestion()
-        elseif require("luasnip").jumpable(1) then
-          return require("luasnip").jump(1)
-        else
-          return "<tab>"
-        end
-      end, { expr = true })
+      -- vim.keymap.set("i", "<tab>", function()
+      --   if require("tabnine.keymaps").has_suggestion() then
+      --     return require("tabnine.keymaps").accept_suggestion()
+      --   elseif require("luasnip").jumpable(1) then
+      --     return require("luasnip").jump(1)
+      --   else
+      --     return "<tab>"
+      --   end
+      -- end, { expr = true })
 
       -- local lspkind = require("lspkind")
       -- local source_mapping = {

@@ -4,7 +4,11 @@ source ~/dotfiles/config/zsh/zinit/plugins.zsh
 
 source ~/dotfiles/shell/alias.sh
 source ~/dotfiles/shell/asdf.sh
-zsh-defer source ~/dotfiles/shell/envsetup.sh
+# zsh-defer source ~/dotfiles/shell/envsetup.sh
+source ~/dotfiles/shell/envsetup.sh
+
+
+export PATH="$(go env GOPATH)/bin:$PATH"
 
 find-repository-and-move() {
   local repo=$(ghq list | fzf)
