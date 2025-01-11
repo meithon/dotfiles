@@ -6,6 +6,22 @@ local map = vim.keymap.setadded
 return {
   {
     "hrsh7th/nvim-cmp",
+    dependencies = {
+      {
+        "tamago324/cmp-zsh",
+        opts = {
+          zshrc = true, -- Source the zshrc (adding all custom completions). default: false
+          filetypes = { "bash", "zsh" }, -- Filetypes to enable cmp_zsh source. default: {"*"}
+        },
+      },
+      "Shougo/deol.nvim",
+    },
+    opts = function(_, opts)
+      table.insert(opts.sources, { name = "zsh" })
+    end,
+  },
+  {
+    "hrsh7th/nvim-cmp",
     dependencies = { "alexander-born/cmp-bazel" },
     opts = function(_, opts)
       opts.sources = require("cmp").config.sources(vim.list_extend(opts.sources, { { name = "bazel" } }))
@@ -209,7 +225,11 @@ return {
   {
     "Mr-LLLLL/interestingwords.nvim",
     keys = {
-      "<leader>k",
+      {
+        "<leader>k",
+        mode = { "n", "v" },
+        desc = "Show interesting words",
+      },
       "<leader>m",
     },
     config = function()
@@ -225,6 +245,10 @@ return {
           "#007FFF",
           "#9370DB",
           "#9932CC",
+          "#DC143C", -- Crimson
+          "#B22222", -- FireBrick
+          "#CD5C5C", -- Indian Red
+          "#FF4500", -- Orange Red
         },
         search_count = true,
         navigation = true,
@@ -250,14 +274,14 @@ return {
     "triarius/fileline.nvim",
     opts = {},
   },
-  {
-    "ownerRef.nvim",
-    dir = "/Users/mei/workspace/private/ownerRef.nvim",
-    lazy = true,
-    config = function()
-      require("ownerRef").setup()
-    end,
-  },
+  -- {
+  --   "ownerRef.nvim",
+  --   dir = "/Users/mei/workspace/private/ownerRef.nvim",
+  --   lazy = true,
+  --   config = function()
+  --     require("ownerRef").setup()
+  --   end,
+  -- },
   {
     "wallpants/github-preview.nvim",
     cmd = { "GithubPreviewToggle" },
@@ -307,7 +331,38 @@ return {
     ft = { "java" },
     config = function()
       require("java").setup()
-      require("lspconfig").jdtls.setup({})
+      require("lspconfig").jdtls.setup({
+        settings = {
+          java = {
+            configuration = {
+              updateBuildConfiguration = "automatic",
+            },
+            project = {
+              buildFiles = {
+                "BUILD.bazel",
+                "MODULE.bazel",
+              },
+              referencedLibraries = {
+                "bazel-bin/**/*.jar",
+                "bazel-genfiles/**/*.jar",
+              },
+              sourcePaths = {
+                -- ソースコードのパスを追加
+                "src/main/java",
+                -- 外部依存のソースを追加
+                "bazel-buildfarm/external/*/src/main/java",
+                -- 必要に応じて他のソースパスを追加
+              },
+            },
+            sources = {
+              organizeImports = {
+                starThreshold = 9999,
+                staticStarThreshold = 9999,
+              },
+            },
+          },
+        },
+      })
     end,
   },
   { -- Colorize text with ANSI escape sequences (8, 16, 256 or TrueColor)
@@ -1637,15 +1692,67 @@ return {
     --   "BufReadPre path/to/my-vault/**.md",
     --   "BufNewFile path/to/my-vault/**.md",
     -- },
+    --   ObsidianCheck = "obsidian.commands.check",
+    cmd = {
+      "ObsidianToggleCheckbox",
+      "ObsidianToday",
+      "ObsidianYesterday",
+      "ObsidianTomorrow",
+      "ObsidianDailies",
+      "ObsidianNew",
+      "ObsidianOpen",
+      "ObsidianBacklinks",
+      "ObsidianSearch",
+      "ObsidianTags",
+      "ObsidianTemplate",
+      "ObsidianNewFromTemplate",
+      "ObsidianQuickSwitch",
+      "ObsidianLinkNew",
+      "ObsidianLink",
+      "ObsidianLinks",
+      "ObsidianFollowLink",
+      "ObsidianWorkspace",
+      "ObsidianRename",
+      "ObsidianPasteImg",
+      "ObsidianExtractNote",
+      "ObsidianDebug",
+      "ObsidianTOC",
+    },
+    keys = {
+      { "<leader>oo", "<cmd>ObsidianQuickSwitch<cr>", desc = "Open Obsidian" },
+      { "<leader>ot", "<cmd>ObsidianToday<cr>", desc = "Open Obsidian Daily note" },
+    },
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
+    ---@param opts obsidian.config.ClientOpts
     opts = {
       workspaces = {
         {
           name = "personal",
           path = "~/Documents/obsidian-vault",
         },
+      },
+
+      daily_notes = {
+        -- Optional, if you keep daily notes in a separate directory.
+        folder = "summary/daily",
+        -- Optional, if you want to change the date format for the ID of daily notes.
+        date_format = "%Y/%Y-%m-%d",
+        -- Optional, if you want to change the date format of the default alias of daily notes.
+        -- alias_format = "%B %-d, %Y",
+        -- Optional, default tags to add to each new daily note created.
+        default_tags = { "summary/daily" },
+        -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
+        -- template = "templates/tplDaily",
+      },
+      disable_frontmatter = true,
+      templates = {
+        folder = "templates",
+        date_format = "%Y-%m-%d",
+        time_format = "%H:%M",
+        -- A map for custom variables, the key should be the variable and the value a function
+        substitutions = {},
       },
       note_id_func = function(title)
         return title
@@ -2612,6 +2719,20 @@ return {
           require("lspsaga.definition"):init(2, 1)
         end,
         desc = "Peek to t[y]pe definition (Lspsaga)",
+      },
+      {
+        "<leader>li",
+        function()
+          require("lspsaga.callhierarchy"):send_method(2, {})
+        end,
+        desc = "Callhierarchy incoming(Lspsaga)",
+      },
+      {
+        "<leader>lo",
+        function()
+          require("lspsaga.callhierarchy"):send_method(3, {})
+        end,
+        desc = "Callhierarchy outgoing(Lspsaga)",
       },
     },
   },
