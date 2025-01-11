@@ -75,11 +75,11 @@ function search_history() {
     --ansi
     --layout=reverse
     --no-sort
-    --height=60%
+    --height=40%
     --highlight-line
     --tiebreak=chunk,length,index
     --preview='echo {}| syncat -l bash'
-    --preview-window=right:50%:wrap
+    --preview-window=down:20%:wrap
     --prompt='History > '
     --header='[CTRL-Y:copy, CTRL-R:execute, ESC:exit]'
     --bind 'ctrl-y:execute-silent(echo -n {} | pbcopy)+abort'

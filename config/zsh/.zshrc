@@ -32,6 +32,8 @@ source $ZSHRC_DIR/nonlazy.zsh
 zsh-defer source $ZSHRC_DIR/lazy.zsh
 zsh-defer unfunction source
 
+# for cmp-zsh.nvim
+zmodload zsh/zpty
 
 
 

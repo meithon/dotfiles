@@ -87,22 +87,33 @@ end
 
 ---@type Plugin[]
 return {
-  -- {
-  --   "supermaven-inc/supermaven-nvim",
-  --   config = function()
-  --     require("supermaven-nvim").setup({
-  --       keymaps = {
-  --         accept_suggestion = "<Tab>",
-  --         clear_suggestion = "<C-]>",
-  --         accept_word = "<Right>",
-  --       },
-  --       color = {
-  --         suggestion_color = "#c8ffff",
-  --         cterm = 244,
-  --       },
-  --     })
-  --   end,
-  -- },
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      scroll = { enabled = false },
+    },
+  },
+  {
+    "supermaven-inc/supermaven-nvim",
+    config = function()
+      require("supermaven-nvim").setup({
+        keymaps = {
+          accept_suggestion = "<Tab>",
+          clear_suggestion = "<C-]>",
+          -- accept_word = "<Right>",
+        },
+        color = {
+          suggestion_color = "#c8ffff",
+          cterm = 244,
+        },
+      })
+    end,
+  },
   {
     "nvimdev/dashboard-nvim",
     opts = function(_, opts)
@@ -618,7 +629,7 @@ return {
     end,
   },
   { -- Add vitest runner
-    "rcarriga/neotest",
+    "nvim-neotest/neotest",
     dependencies = {
       "marilari88/neotest-vitest",
       -- "rneithon/neotest-vitest",
@@ -1396,13 +1407,68 @@ return {
           -- copilot_cmp_comparators.prioritize or function() end,
           cmp.config.compare.exact,
           cmp.config.compare.offset,
-          cmp.config.compare.locality,
           cmp.config.compare.score,
+          cmp.config.compare.locality,
           cmp.config.compare.recently_used,
           cmp.config.compare.sort_text,
           cmp.config.compare.order,
         },
       }
+
+      opts.mapping = vim.tbl_deep_extend(
+        "force",
+        opts.mapping or {}, -- opts.mappingがnilの場合に備えて
+        cmp.mapping.preset.insert({
+          ["<C-y>"] = cmp.mapping(function()
+            if cmp.visible() then
+              cmp.mapping.close()
+            else
+              cmp.mapping.select_next_item()
+            end
+          end),
+        })
+      )
+      cmp.setup.cmdline(":", {
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Tab>"] = cmp.mapping({
+            c = function()
+              cmp.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+              })
+            end,
+          }),
+        }),
+        sources = cmp.config.sources({
+          { name = "path" },
+        }, {
+          {
+            name = "cmdline",
+            option = {
+              ignore_cmds = { "Man", "!" },
+            },
+          },
+        }),
+      })
+
+      cmp.setup.cmdline("/", {
+        mapping = cmp.mapping.preset.cmdline({
+          ["<Tab>"] = cmp.mapping({
+            c = function()
+              cmp.confirm({
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = true,
+              })
+            end,
+          }),
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp_document_symbol" },
+        }, {
+          { name = "buffer" },
+        }),
+      })
+
       --- Example integration with Tabnine and LuaSnip; falling back to inserting tab if neither has a completion
       -- vim.keymap.set("i", "<tab>", function()
       --   if require("tabnine.keymaps").has_suggestion() then
@@ -1510,28 +1576,6 @@ return {
     --     zsh = "  " .. "ZSH",
     --   }
     --
-    --   cmp.setup.cmdline(":", {
-    --     mapping = cmp.mapping.preset.cmdline({
-    --       ["<Tab>"] = cmp.mapping({
-    --         c = function()
-    --           cmp.confirm({
-    --             behavior = cmp.ConfirmBehavior.Replace,
-    --             select = true,
-    --           })
-    --         end,
-    --       }),
-    --     }),
-    --     sources = cmp.config.sources({
-    --       { name = "path" },
-    --     }, {
-    --       {
-    --         name = "cmdline",
-    --         option = {
-    --           ignore_cmds = { "Man", "!" },
-    --         },
-    --       },
-    --     }),
-    --   })
     --
     --   cmp.setup({
     --     snippet = {
@@ -1762,23 +1806,6 @@ return {
     --     }),
     --   })
     --
-    --   cmp.setup.cmdline("/", {
-    --     mapping = cmp.mapping.preset.cmdline({
-    --       ["<Tab>"] = cmp.mapping({
-    --         c = function()
-    --           cmp.confirm({
-    --             behavior = cmp.ConfirmBehavior.Replace,
-    --             select = true,
-    --           })
-    --         end,
-    --       }),
-    --     }),
-    --     sources = cmp.config.sources({
-    --       { name = "nvim_lsp_document_symbol" },
-    --     }, {
-    --       { name = "buffer" },
-    --     }),
-    --   })
     --
     --   opts.mapping = vim.tbl_extend("force", opts.mapping, {
     --     ["<CR>"] = cmp.mapping({
