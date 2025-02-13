@@ -5,6 +5,126 @@ local map = vim.keymap.setadded
 ---
 return {
   {
+    "yetone/avante.nvim",
+    cmd = {
+      "AvanteAsk",
+      "AvanteBuild",
+      "AvanteChat",
+      "AvanteEdit",
+      "AvanteFocus",
+      "AvanteRefresh",
+      "AvanteSwitchProvider",
+      "AvanteShowRepoMap",
+      "AvanteToggle",
+    },
+    version = false, -- set this if you want to always pull the latest change
+    opts = {
+      provider = "claude",
+      -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
+      -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
+      -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
+      auto_suggestions_provider = "openai",
+      claude = {
+        endpoint = "https://api.anthropic.com",
+        model = "claude-3-5-sonnet-20241022",
+        temperature = 0,
+        max_tokens = 4096,
+      },
+      openai = {
+        endpoint = "https://api.deepseek.com/v1",
+        model = "deepseek-chat",
+        timeout = 30000, -- Timeout in milliseconds
+        temperature = 0,
+        max_tokens = 4096,
+        -- optional
+        api_key_name = "OPENAI_API_KEY", -- default OPENAI_API_KEY if not set
+      },
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make",
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "zbirenbaum/copilot.lua", -- for providers='copilot'
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
+  },
+  { "EdenEast/nightfox.nvim" },
+  -- Disable indent line
+  -- {
+  --   "echasnovski/mini.indentscope",
+  --   --   enabled = false,
+  --   -- opts = function(_, opts)
+  --   --   -- opts.draw.animation = require("mini.indentscope").gen_animation.none()
+  --   --   -- table.insert(opts.draw.animation, require("mini.indentscope").gen_animation.none())
+  --   --   -- vim.tbl_extend(
+  --   --   --   "force",
+  --   --   --   opts,
+  --   --   --   { draw = {
+  --   --   --     animation = require("mini.indentscope").gen_animation.none(),
+  --   --   --   } }
+  --   --   -- )
+  --   -- end,
+  -- },
+  -- Disable indent line, for indent-blankline.nvim
+  {
+    "echasnovski/mini.indentscope",
+    enabled = false,
+    -- opts = {
+    --   draw = {
+    --     animation = require("mini.indentscope").gen_animation.none(),
+    --   },
+    -- },
+  },
+
+  -- {
+  --   "nvim-treesitter/nvim-treesitter-context",
+  --   opts = {
+  --     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  --     multiwindow = false, -- Enable multiwindow support.
+  --     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+  --     min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  --     line_numbers = true,
+  --     multiline_threshold = 20, -- Maximum number of lines to show for a single context
+  --     trim_scope = "outer", -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  --     mode = "cursor", -- Line used to calculate context. Choices: 'cursor', 'topline'
+  --     -- Separator between context and content. Should be a single character string, like '-'.
+  --     -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  --     separator = nil,
+  --     zindex = 20, -- The Z-index of the context window
+  --     on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+  --   },
+  -- },
+  {
     "hrsh7th/nvim-cmp",
     dependencies = {
       {
@@ -337,23 +457,23 @@ return {
             configuration = {
               updateBuildConfiguration = "automatic",
             },
-            project = {
-              buildFiles = {
-                "BUILD.bazel",
-                "MODULE.bazel",
-              },
-              referencedLibraries = {
-                "bazel-bin/**/*.jar",
-                "bazel-genfiles/**/*.jar",
-              },
-              sourcePaths = {
-                -- ソースコードのパスを追加
-                "src/main/java",
-                -- 外部依存のソースを追加
-                "bazel-buildfarm/external/*/src/main/java",
-                -- 必要に応じて他のソースパスを追加
-              },
-            },
+            -- project = {
+            --   buildFiles = {
+            --     "BUILD.bazel",
+            --     "MODULE.bazel",
+            --   },
+            --   referencedLibraries = {
+            --     "bazel-bin/**/*.jar",
+            --     "bazel-genfiles/**/*.jar",
+            --   },
+            --   sourcePaths = {
+            --     -- ソースコードのパスを追加
+            --     "src/main/java",
+            --     -- 外部依存のソースを追加
+            --     "bazel-buildfarm/external/*/src/main/java",
+            --     -- 必要に応じて他のソースパスを追加
+            --   },
+            -- },
             sources = {
               organizeImports = {
                 starThreshold = 9999,
@@ -1334,28 +1454,137 @@ return {
   {
     "luckasRanarison/tailwind-tools.nvim",
     dependencies = { "nvim-treesitter/nvim-treesitter" },
+    cmd = {
+      "TailwindConcealEnable",
+      "TailwindConcealDisable",
+      "TailwindConcealToggle",
+      "TailwindColorEnable",
+      "TailwindColorDisable",
+      "TailwindColorToggle",
+      "TailwindSort",
+      "TailwindSortSelection",
+      "TailwindNextClass",
+    },
+    ft = {
+      "javascriptreact",
+      "typescriptreact",
+      "html",
+    },
+
     opts = {}, -- your configuration
   },
   {
     -- CSV
     "emmanueltouzery/decisive.nvim",
   },
-  -- {
-  --   "ramilito/kubectl.nvim",
-  --   dependencies = { "nvim-lua/plenary.nvim" },
-  --   keys = {
-  --     {
-  --       "<leader>k",
-  --       function()
-  --         require("kubectl").open()
-  --       end,
-  --       desc = "Kubectl",
-  --     },
-  --   },
-  --   config = function()
-  --     require("kubectl").setup()
-  --   end,
-  -- },
+  {
+    "ramilito/kubectl.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "KubectlOpen" }, -- Simplified command declaration
+    config = function()
+      require("kubectl").setup()
+
+      -- Create autogroup for kubectl mappings
+      local group = vim.api.nvim_create_augroup("kubectl_mappings", { clear = true })
+
+      -- Set up autocmd for kubectl-specific mappings
+      vim.api.nvim_create_autocmd("FileType", {
+        group = group,
+        pattern = "k8s_*",
+        callback = function(ev)
+          local k = vim.keymap.set
+          local opts = { buffer = ev.buf }
+          k("n", "q", "<cmd>quit<cr>", opts)
+
+          -- Global
+          -- k("n", "g?", "<Plug>(kubectl.help)", opts) -- Help float
+          -- k("n", "gr", "<Plug>(kubectl.refresh)", opts) -- Refresh view
+          -- k("n", "gs", "<Plug>(kubectl.sort)", opts) -- Sort by column
+          k("n", "D", "<Plug>(kubectl.delete)", opts) -- Delete resource
+          k("n", "d", "<Plug>(kubectl.describe)", opts) -- Describe resource
+          k("n", "y", "<Plug>(kubectl.yaml)", opts) -- View yaml
+          k("n", "e", "<Plug>(kubectl.edit)", opts) -- Edit resource
+          -- k("n", "<C-l>", "<Plug>(kubectl.filter_label)", opts) -- Filter labels
+          -- k("n", "<BS>", "<Plug>(kubectl.go_up)", opts) -- Go back to previous view
+          -- k("v", "<C-f>", "<Plug>(kubectl.filter_term)", opts) -- Filter selected text
+          -- k("n", "<CR>", "<Plug>(kubectl.select)", opts) -- Resource select action (different on each view)
+          -- k("n", "<Tab>", "<Plug>(kubectl.tab)", opts) -- Tab completion (ascending, when applicable)
+          -- k("n", "<S-Tab>", "<Plug>(kubectl.shift_tab)", opts) -- Tab completion (descending, when applicable)
+          -- k("n", "", "<Plug>(kubectl.quit)", opts) -- Close view (when applicable)
+          -- k("n", "gk", "<Plug>(kubectl.kill)", opts) -- Pod/portforward kill
+          -- k("n", "<M-h>", "<Plug>(kubectl.toggle_headers)", opts) -- Toggle headers
+
+          -- Views
+          k("n", "a", "<Plug>(kubectl.alias_view)", opts) -- Aliases view
+          -- k("n", "<C-x>", "<Plug>(kubectl.contexts_view)", opts) -- Contexts view
+          -- k("n", "<C-f>", "<Plug>(kubectl.filter_view)", opts) -- Filter view
+          -- k("n", "<C-n>", "<Plug>(kubectl.namespace_view)", opts) -- Namespaces view
+          -- k("n", "gP", "<Plug>(kubectl.portforwards_view)", opts) -- Portforwards view
+          -- k("n", "1", "<Plug>(kubectl.view_deployments)", opts) -- Deployments view
+          -- k("n", "2", "<Plug>(kubectl.view_pods)", opts) -- Pods view
+          -- k("n", "3", "<Plug>(kubectl.view_configmaps)", opts) -- ConfigMaps view
+          -- k("n", "4", "<Plug>(kubectl.view_secrets)", opts) -- Secrets view
+          -- k("n", "5", "<Plug>(kubectl.view_services)", opts) -- Services view
+          -- k("n", "6", "<Plug>(kubectl.view_ingresses)", opts) -- Ingresses view
+          -- k("n", "", "<Plug>(kubectl.view_api_resources)", opts) -- API-Resources view
+          -- k("n", "", "<Plug>(kubectl.view_clusterrolebinding)", opts) -- ClusterRoleBindings view
+          -- k("n", "", "<Plug>(kubectl.view_crds)", opts) -- CRDs view
+          -- k("n", "", "<Plug>(kubectl.view_cronjobs)", opts) -- CronJobs view
+          -- k("n", "", "<Plug>(kubectl.view_daemonsets)", opts) -- DaemonSets view
+          -- k("n", "", "<Plug>(kubectl.view_events)", opts) -- Events view
+          -- k("n", "", "<Plug>(kubectl.view_helm)", opts) -- Helm view
+          -- k("n", "", "<Plug>(kubectl.view_jobs)", opts) -- Jobs view
+          -- k("n", "", "<Plug>(kubectl.view_nodes)", opts) -- Nodes view
+          -- k("n", "", "<Plug>(kubectl.view_overview)", opts) -- Overview view
+          -- k("n", "", "<Plug>(kubectl.view_pv)", opts) -- PersistentVolumes view
+          -- k("n", "", "<Plug>(kubectl.view_pvc)", opts) -- PersistentVolumeClaims view
+          -- k("n", "", "<Plug>(kubectl.view_sa)", opts) -- ServiceAccounts view
+          -- k("n", "", "<Plug>(kubectl.view_top_nodes)", opts) -- Top view for nodes
+          -- k("n", "", "<Plug>(kubectl.view_top_pods)", opts) -- Top view for pods
+
+          -- -- Deployment/DaemonSet actions
+          -- k("n", "grr", "<Plug>(kubectl.rollout_restart)", opts) -- Rollout restart
+          -- k("n", "gss", "<Plug>(kubectl.scale)", opts) -- Scale workload
+          -- k("n", "gi", "<Plug>(kubectl.set_image)", opts) -- Set image (only if 1 container)
+          --
+          -- -- Pod/Container logs
+          -- k("n", "gl", "<Plug>(kubectl.logs)", opts) -- Logs view
+          -- k("n", "gh", "<Plug>(kubectl.history)", opts) -- Change logs --since= flag
+          -- k("n", "f", "<Plug>(kubectl.follow)", opts) -- Follow logs
+          -- k("n", "gw", "<Plug>(kubectl.wrap)", opts) -- Toggle wrap log lines
+          -- k("n", "gp", "<Plug>(kubectl.prefix)", opts) -- Toggle container name prefix
+          -- k("n", "gt", "<Plug>(kubectl.timestamps)", opts) -- Toggle timestamps prefix
+          -- k("n", "gpp", "<Plug>(kubectl.previous_logs)", opts) -- Toggle show previous logs
+          --
+          -- -- Node actions
+          -- k("n", "gC", "<Plug>(kubectl.cordon)", opts) -- Cordon node
+          -- k("n", "gU", "<Plug>(kubectl.uncordon)", opts) -- Uncordon node
+          -- k("n", "gR", "<Plug>(kubectl.drain)", opts) -- Drain node
+          --
+          -- -- Top actions
+          -- k("n", "gn", "<Plug>(kubectl.top_nodes)", opts) -- Top nodes
+          -- k("n", "gp", "<Plug>(kubectl.top_pods)", opts) -- Top pods
+          --
+          -- -- CronJob actions
+          -- k("n", "gss", "<Plug>(kubectl.suspend_cronjob)", opts) -- Suspend CronJob
+          -- k("n", "gc", "<Plug>(kubectl.create_job)", opts) -- Create Job from CronJob
+          --
+          -- k("n", "gp", "<Plug>(kubectl.portforward)", opts) -- Pods/Services portforward
+          -- k("n", "gx", "<Plug>(kubectl.browse)", opts) -- Ingress view
+          -- k("n", "gy", "<Plug>(kubectl.yaml)", opts) -- Helm view
+        end,
+      })
+
+      -- Create the KubectlOpen command
+      vim.api.nvim_create_user_command("KubectlOpen", function()
+        require("kubectl").open()
+      end, {})
+    end,
+  },
+  { -- for command input in nvim
+    -- nvim -c 'lua require("boot").setup()' -c 'your command'
+    "piperinnshall/boot.nvim",
+  },
   -- {
   --   "SuperBo/fugit2.nvim",
   --   opts = {
@@ -1386,6 +1615,7 @@ return {
   -- },
   {
     "bennypowers/nvim-regexplainer",
+    event = "BufReadPost",
     config = function()
       require("regexplainer").setup({
         auto = false,
@@ -1427,6 +1657,20 @@ return {
   },
   {
     "stevearc/aerial.nvim",
+    cmd = {
+      "AerialToggle",
+      "AerialOpen",
+      "AerialOpenAll",
+      "AerialClose",
+      "AerialCloseAll",
+      "AerialNext",
+      "AerialPrev",
+      "AerialGo",
+      "AerialInfo",
+      "AerialNavToggle",
+      "AerialNavOpen",
+      "AerialNavClose",
+    },
     opts = {},
     -- Optional dependencies
     dependencies = {
@@ -1966,15 +2210,10 @@ return {
   --   },
   -- },
   -- lazy.nvim
-  {
+  { -- Chat Gpt tool
     "robitx/gp.nvim",
     config = function()
       require("gp").setup()
-
-      -- or setup with your own config (see Install > Configuration in Readme)
-      -- require("gp").setup(config)
-
-      -- shortcuts might be setup here (see Usage > Shortcuts in Readme)
     end,
   },
   {
@@ -2388,12 +2627,12 @@ return {
     ft = "qf",
     dependencies = {
       "nvim-treesitter/nvim-treesitter",
-      {
-        "junegunn/fzf",
-        build = function()
-          vim.fn["fzf#install"]()
-        end,
-      },
+      -- {
+      --   "junegunn/fzf",
+      --   -- build = function()
+      --   --   vim.fn["fzf#install"]()
+      --   -- end,
+      -- },
     },
   },
   { -- auto 改行
@@ -2829,6 +3068,9 @@ return {
       require("neogit").setup(opts)
       -- map("n", "gh", "<cmd>Neogit<cr>", { desc = "Open git tool interface" })
     end,
+    cmd = {
+      "Neogit",
+    },
     keys = {
       { "gh", "<cmd>Neogit<cr>", desc = "Open git tool interface" },
     },

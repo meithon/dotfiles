@@ -177,11 +177,13 @@ zinit wait"1" lucid as"program" for \
   LuRsT/hr \
     has"gpg" \
   dylanaraps/pash \
+  ;
+
+zinit lucid for \
     make"!" atclone"./direnv hook zsh > zhook.zsh" \
     atpull"%atclone" src"zhook.zsh" \
   direnv/direnv \
   ;
-
 
 
 

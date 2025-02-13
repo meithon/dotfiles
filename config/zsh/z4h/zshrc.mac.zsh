@@ -61,13 +61,13 @@ path=(~/bin $path)
 export GPG_TTY=$TTY
 
 # Source additional local files if they exist.
-z4h source ~/.env.zsh
-z4h source ~/dotfiles/shell/alias.sh
-
-
-z4h source larkery/zsh-histdb/zsh-histdb.plugin.zsh
-z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
-z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
+# z4h source ~/.env.zsh
+# z4h source ~/dotfiles/shell/alias.sh
+#
+#
+# z4h source larkery/zsh-histdb/zsh-histdb.plugin.zsh
+# z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
+# z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
 
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
