@@ -47,22 +47,23 @@ function search_history() {
   local sql_query
   if [[ -z "$_per_directory_history_is_global" ]] || [[ $_per_directory_history_is_global -eq 1 ]]; then
     sql_query="
-      select commands.argv from history
-      left join commands on history.command_id = commands.rowid
-      where commands.argv != ''
-      group by commands.argv
-      order by max(history.start_time) desc, count(*) desc
+      SELECT commands.argv 
+      FROM commands 
+      INNER JOIN history ON history.command_id = commands.rowid
+      WHERE commands.argv != ''
+      GROUP BY commands.argv
+      ORDER BY MAX(history.start_time) DESC, COUNT(*) DESC
     "
   else
-    # グローバル履歴から検索
     sql_query="
-      select commands.argv from history
-      left join commands on history.command_id = commands.rowid
-      left join places on history.place_id = places.rowid
-      where places.dir = '$(sql_escape $PWD)'
-        and commands.argv != ''
-      group by commands.argv
-      order by max(history.start_time) desc, count(*) desc
+      SELECT commands.argv 
+      FROM commands 
+      INNER JOIN history ON history.command_id = commands.rowid
+      INNER JOIN places ON history.place_id = places.rowid
+      WHERE places.dir = '$(sql_escape $PWD)'
+        AND commands.argv != ''
+      GROUP BY commands.argv
+      ORDER BY MAX(history.start_time) DESC, COUNT(*) DESC
     "
   fi
 

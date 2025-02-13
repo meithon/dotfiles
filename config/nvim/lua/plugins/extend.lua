@@ -88,6 +88,49 @@ end
 ---@type Plugin[]
 return {
   {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "nightfox",
+    },
+  },
+  {
+    "kiyoon/treesitter-indent-object.nvim",
+    keys = {
+      -- {
+      --   "ai",
+      --   function()
+      --     require("treesitter_indent_object.textobj").select_indent_outer()
+      --   end,
+      --   mode = { "x", "o" },
+      --   desc = "Select context-aware indent (outer)",
+      -- },
+      {
+        "vA",
+        function()
+          require("treesitter_indent_object.textobj").select_indent_outer(true)
+        end,
+        mode = { "n", "x" },
+        desc = "Select context-aware indent (outer, line-wise)",
+      },
+      -- {
+      --   "ii",
+      --   function()
+      --     require("treesitter_indent_object.textobj").select_indent_inner()
+      --   end,
+      --   mode = { "x", "o" },
+      --   desc = "Select context-aware indent (inner, partial range)",
+      -- },
+      -- {
+      --   "iI",
+      --   function()
+      --     require("treesitter_indent_object.textobj").select_indent_inner(true, "V")
+      --   end,
+      --   mode = { "x", "o" },
+      --   desc = "Select context-aware indent (inner, entire range) in line-wise visual mode",
+      -- },
+    },
+  },
+  {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
@@ -516,55 +559,108 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     opts = function(_, opts)
-      function codeCompanion()
-        local M = require("lualine.component"):extend()
-
-        M.processing = false
-        M.spinner_index = 1
-
-        local spinner_symbols = {
-          "⠋",
-          "⠙",
-          "⠹",
-          "⠸",
-          "⠼",
-          "⠴",
-          "⠦",
-          "⠧",
-          "⠇",
-          "⠏",
-        }
-        local spinner_symbols_len = 10
-
-        -- Initializer
-        function M:init(options)
-          M.super.init(self, options)
-
-          local group = vim.api.nvim_create_augroup("CodeCompanionHooks", {})
-
-          vim.api.nvim_create_autocmd({ "User" }, {
-            pattern = "CodeCompanionRequest",
-            group = group,
-            callback = function(request)
-              self.processing = (request.data.status == "started")
-            end,
-          })
-        end
-
-        -- Function that runs every time statusline is updated
-        function M:update_status()
-          if self.processing then
-            self.spinner_index = (self.spinner_index % spinner_symbols_len) + 1
-            return spinner_symbols[self.spinner_index]
-          else
-            return nil
-          end
-        end
-
-        return M
-      end
+      -- function codeCompanion()
+      --   local M = require("lualine.component"):extend()
+      --
+      --   M.processing = false
+      --   M.spinner_index = 1
+      --
+      --   local spinner_symbols = {
+      --     "⠋",
+      --     "⠙",
+      --     "⠹",
+      --     "⠸",
+      --     "⠼",
+      --     "⠴",
+      --     "⠦",
+      --     "⠧",
+      --     "⠇",
+      --     "⠏",
+      --   }
+      --   local spinner_symbols_len = 10
+      --
+      --   -- Initializer
+      --   function M:init(options)
+      --     M.super.init(self, options)
+      --
+      --     local group = vim.api.nvim_create_augroup("CodeCompanionHooks", {})
+      --
+      --     vim.api.nvim_create_autocmd({ "User" }, {
+      --       pattern = "CodeCompanionRequest",
+      --       group = group,
+      --       callback = function(request)
+      --         self.processing = (request.data.status == "started")
+      --       end,
+      --     })
+      --   end
+      --
+      --   -- Function that runs every time statusline is updated
+      --   function M:update_status()
+      --     if self.processing then
+      --       self.spinner_index = (self.spinner_index % spinner_symbols_len) + 1
+      --       return spinner_symbols[self.spinner_index]
+      --     else
+      --       return nil
+      --     end
+      --   end
+      --
+      --   return M
+      -- end
+      -- opts.sections.lualine_c = {
+      --   codeCompanion(),
+      -- }
+      opts.winbar = {
+        lualine_c = { -- lualine_{a,b} だと背景が強調されるので、あえてcを使用
+          {
+            "filename",
+            file_status = false,
+            newfile_status = false,
+            -- 0: Just the filename
+            -- 1: Relative path
+            -- 2: Absolute path
+            -- 3: Absolute path, with tilde as the home directory
+            -- 4: Filename and parent dir, with tilde as the home directory
+            path = 3,
+            -- shorting_target = 80,
+          },
+        },
+      }
       opts.sections.lualine_c = {
-        codeCompanion(),
+        require("lazyvim.util.lualine").root_dir(),
+        {
+          "diagnostics",
+          symbols = {
+            error = icons.diagnostics.Error,
+            warn = icons.diagnostics.Warn,
+            info = icons.diagnostics.Info,
+            hint = icons.diagnostics.Hint,
+          },
+        },
+        { -- display code context
+          "navic",
+          color_correction = "dynamic",
+        },
+      }
+    end,
+  },
+  { -- not extend but used by lualine
+    "SmiteshP/nvim-navic",
+    lazy = true,
+    init = function()
+      vim.g.navic_silence = true
+      LazyVim.lsp.on_attach(function(client, buffer)
+        if client.supports_method("textDocument/documentSymbol") then
+          require("nvim-navic").attach(client, buffer)
+        end
+      end)
+    end,
+    opts = function()
+      return {
+        separator = " ",
+        highlight = true,
+        depth_limit = 8,
+        icons = LazyVim.config.icons.kinds,
+        lazy_update_context = true,
       }
     end,
   },
@@ -705,8 +801,29 @@ return {
     end,
   },
   {
+    "samodostal/image.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+  },
+  { -- for neo-tree image preview
+    "adelarsq/image_preview.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("image_preview").setup()
+    end,
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     opts = function(_, opts)
+      -- opts.filesystem.window.mappings["<leader>p"] = "image_wezterm"
+      -- opts.filesystem.commands.image_wezterm = function(state)
+      --   local node = state.tree:get_node()
+      --   if node.type == "file" then
+      --     require("image_preview").PreviewImage(node.path)
+      --   end
+      -- end
+
       local cc = require("neo-tree.sources.common.commands")
       local renderer = require("neo-tree.ui.renderer")
       local fs_scan = require("neo-tree.sources.filesystem.lib.fs_scan")
@@ -886,6 +1003,12 @@ return {
           end
           require("telescope.builtin").find_files({ cwd = dir })
         end,
+        ["<leader>p"] = function(state)
+          local node = state.tree:get_node()
+          if node.type == "file" then
+            require("image_preview").PreviewImage(node.path)
+          end
+        end,
 
         -- ["h"] = function(state)
         --   local node = state.tree:get_node()
@@ -1008,15 +1131,32 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = "davidosomething/format-ts-errors.nvim",
     ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-    keys = {
-      {
-        "gd",
-        [[<cmd>require("telescope.builtin").lsp_definitions({ reuse_win = false })<cr>]],
-        mode = "n",
-        desc = "Goto Definition",
-      },
-    },
     opts = function(_, opts)
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+      keys[#keys + 1] = {
+        "gd",
+        function()
+          require("telescope.builtin").lsp_definitions({ reuse_win = false })
+        end,
+        desc = "Goto Definition",
+        has = "definition",
+      }
+
+      keys[#keys + 1] = {
+        "gI",
+        function()
+          require("telescope.builtin").lsp_implementations({ reuse_win = false })
+        end,
+        desc = "Goto Implementation",
+      }
+      keys[#keys + 1] = {
+        "gy",
+        function()
+          require("telescope.builtin").lsp_type_definitions({ reuse_win = false })
+        end,
+        desc = "Goto T[y]pe Definition",
+      }
+
       opts.servers.tsserver.handlers = {
         ["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
           if result.diagnostics == nil then
@@ -1213,59 +1353,6 @@ return {
     opts = {},
   },
   {
-    "kiyoon/treesitter-indent-object.nvim",
-    keys = {
-      {
-        "ai",
-        function()
-          require("treesitter_indent_object.textobj").select_indent_outer()
-        end,
-        mode = { "x", "o" },
-        desc = "Select context-aware indent (outer)",
-      },
-      {
-        "aI",
-        function()
-          require("treesitter_indent_object.textobj").select_indent_outer(true)
-        end,
-        mode = { "x", "o" },
-        desc = "Select context-aware indent (outer, line-wise)",
-      },
-      {
-        "ii",
-        function()
-          require("treesitter_indent_object.textobj").select_indent_inner()
-        end,
-        mode = { "x", "o" },
-        desc = "Select context-aware indent (inner, partial range)",
-      },
-      {
-        "iI",
-        function()
-          require("treesitter_indent_object.textobj").select_indent_inner(true, "V")
-        end,
-        mode = { "x", "o" },
-        desc = "Select context-aware indent (inner, entire range) in line-wise visual mode",
-      },
-    },
-  },
-  -- Disable indent line
-  -- {
-  --   "echasnovski/mini.indentscope",
-  --   --   enabled = false,
-  --   -- opts = function(_, opts)
-  --   --   -- opts.draw.animation = require("mini.indentscope").gen_animation.none()
-  --   --   -- table.insert(opts.draw.animation, require("mini.indentscope").gen_animation.none())
-  --   --   -- vim.tbl_extend(
-  --   --   --   "force",
-  --   --   --   opts,
-  --   --   --   { draw = {
-  --   --   --     animation = require("mini.indentscope").gen_animation.none(),
-  --   --   --   } }
-  --   --   -- )
-  --   -- end,
-  -- },
-  {
     "akinsho/bufferline.nvim",
     opts = function(_, opts)
       -- table.insert(opts.options, { show_close_icon = false })
@@ -1337,17 +1424,17 @@ return {
         desc = "Find Dotfiles",
       },
     },
-    init = function()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = {
-        "gd",
-        function()
-          require("telescope.builtin").lsp_definitions({ reuse_win = false })
-        end,
-        mode = "n",
-        desc = "Goto Definition",
-      }
-    end,
+    -- init = function()
+    --   local keys = require("lazyvim.plugins.lsp.keymaps").get()
+    --   keys[#keys + 1] = {
+    --     "gd",
+    --     function()
+    --       require("telescope.builtin").lsp_definitions({ reuse_win = false })
+    --     end,
+    --     mode = "n",
+    --     desc = "Goto Definition",
+    --   }
+    -- end,
     -- change some options
     opts = function(_, opts)
       -- Useful for easily creating commands

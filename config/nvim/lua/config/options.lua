@@ -7,7 +7,7 @@ end
 
 local opt = vim.opt
 opt.splitkeep = "cursor"
-vim.cmd("set nospell")
+opt.spell = false
 
 vim.g.neovide_transparency = 0.8
 vim.g.transparency = 0.3
