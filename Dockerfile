@@ -38,6 +38,15 @@ COPY . dotfiles/
 
 
 ENV TERM=xterm-256color
-RUN cd dotfiles && ./install.sh -y
+WORKDIR /root/dotfiles
+# RUN ./install.sh -y
+
+SHELL ["/bin/bash", "-c"]
+
+RUN ./install/deploy_dotfiles.sh
+RUN ./install/install_tools.sh
+RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_asdf.sh
+RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_rust.sh
+RUN nvim --headless "+Lazy! sync" "+lua print('Lazy sync completed')" +qa
 
 CMD ["/bin/bash"]

@@ -15,6 +15,7 @@ function __bind-interactive-directory-search() {
   zle -N interactive-directory-search
   bindkey -M viins '^g' interactive-directory-search
   bindkey -M vicmd '^g' interactive-directory-search
+  bindkey '^g' interactive-directory-search
 }
 
 interactive-directory-tmux() {
@@ -41,6 +42,9 @@ interactive-directory-tmux() {
     return 1
   fi
 }
+
+# これを指定すると下部に固定される
+export _ZO_FZF_OPTS="--layout=default"
 
 zle -N interactive-directory-tmux
 

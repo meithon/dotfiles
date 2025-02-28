@@ -990,9 +990,18 @@ return {
           local path = node:get_id()
           local dir = path
           if not vim.fn.isdirectory(path) then
-            local dir = vim.fs.dirname(path)
+            dir = vim.fs.dirname(path)
           end
           vim.cmd('ToggleTerm dir="' .. dir .. '"')
+        end,
+        ["sg"] = function(state)
+          local node = state.tree:get_node()
+          local path = node:get_id()
+          local dir = path
+          if not vim.fn.isdirectory(path) then
+            dir = vim.fs.dirname(path)
+          end
+          vim.cmd("Telescope live_grep cwd=" .. dir)
         end,
         ["F"] = function(state)
           local node = state.tree:get_node()

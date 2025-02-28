@@ -8,7 +8,10 @@ add_path() {
 
 add_path 'asdf where rust' /bin
 add_path 'asdf where golang' /packages/bin
+add_path 'asdf where nodejs' /bin
 add_path '' ~/.cargo/bin
 add_path 'go env GOPATH' /bin
 
 export JAVA_HOME=$(asdf where java)
+
+export EDITOR=nvim

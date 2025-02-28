@@ -6,12 +6,15 @@
 
 # Periodic auto-update on Zsh startup: 'ask' or 'no'.
 # You can manually run `z4h update` to update everything.
-zstyle ':z4h:' auto-update      'ask'
+zstyle ':z4h:' auto-update      'no'
 # Ask whether to auto-update this often; has no effect if auto-update is 'no'.
 zstyle ':z4h:' auto-update-days '28'
 
 # Keyboard type: 'mac' or 'pc'.
 zstyle ':z4h:bindkey' keyboard  'mac'
+
+# Don't start tmux.
+zstyle ':z4h:' start-tmux       no
 
 # Mark up shell's output with semantic information.
 zstyle ':z4h:' term-shell-integration 'yes'
@@ -28,7 +31,6 @@ zstyle ':z4h:direnv'         enable 'yes'
 # Show "loading" and "unloading" notifications from direnv.
 zstyle ':z4h:direnv:success' notify 'yes'
 
-# Enable ('yes') or disable ('no') automatic teleportation of z4h over
 # SSH when connecting to these hosts.
 zstyle ':z4h:ssh:example-hostname1'   enable 'yes'
 zstyle ':z4h:ssh:*.example-hostname2' enable 'no'
@@ -39,20 +41,53 @@ zstyle ':z4h:ssh:*'                   enable 'no'
 # enabled hosts.
 zstyle ':z4h:ssh:*' send-extra-files '~/.nanorc' '~/.env.zsh'
 
+# Instruct zsh4humans to use fzf from PATH.
+zstyle ':z4h:*' fzf-command fzf
+
 # Clone additional Git repositories from GitHub.
 #
 # This doesn't do anything apart from cloning the repository and keeping it
 # up-to-date. Cloned files can be used after `z4h init`. This is just an
 # example. If you don't plan to use Oh My Zsh, delete this line.
 z4h install ohmyzsh/ohmyzsh || return
-z4h install larkery/zsh-histdb || return
-z4h install paulmelnikow/zsh-startup-timer
+
+
+
+function z4h-postinstall:replace-with-github-clone() {
+  [[ -n $Z4H_PACKAGE_DIR && -n $Z4H_PACKAGE_NAME ]] && 'command' -v git 1>/dev/null || return 1
+
+  'command' 'rm' -rf $Z4H_PACKAGE_DIR
+
+  'command' 'git' clone --recurse-submodules --single-branch --depth 1 https://github.com/$Z4H_PACKAGE_NAME $Z4H_PACKAGE_DIR
+}
+# z4h install olets/zsh-abbr || return
+# zstyle :z4h:olets/zsh-abbr postinstall z4h-postinstall:replace-with-github-clone || return
+
+z4h install momo-lab/zsh-abbrev-alias
+z4h install zuxfoucault/colored-man-pages_mod 
+z4h install hlissner/zsh-autopair
+# warhol adds some color-related environment variables, functions and helper scripts to your environment.
+z4h install unixorn/warhol.plugin.zsh 
+
+z4h install larkery/zsh-histdb 
+z4h install Dbz/kube-aliases
+z4h install wintermi/zsh-brew
+
+# z4h install D3STY/cros-auto-notify-zsh
+z4h install t413/zsh-background-notify
+z4h install jimhester/per-directory-history
+
+# zstyle :z4h:momo-lab/zsh-abbrev-alias postinstall z4h-postinstall:replace-with-github-clone || return
+# z4h install ohmyzsh/ohmyzsh/plugins/colored-man-pages
+#
+#
 
 # Install or update core components (fzf, zsh-autosuggestions, etc.) and
 # initialize Zsh. After this point console I/O is unavailable until Zsh
 # is fully initialized. Everything that requires user interaction or can
 # perform network I/O must be done above. Everything else is best done below.
 z4h init || return
+
 
 # Extend PATH.
 path=(~/bin $path)
@@ -61,21 +96,27 @@ path=(~/bin $path)
 export GPG_TTY=$TTY
 
 # Source additional local files if they exist.
-# z4h source ~/.env.zsh
-# z4h source ~/dotfiles/shell/alias.sh
-#
-#
-# z4h source larkery/zsh-histdb/zsh-histdb.plugin.zsh
-# z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
-# z4h source ~/dotfiles/config/zsh/plugin/histdb.zsh
+z4h source ~/.env.zsh
 
-
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
 # Use additional Git repositories pulled in with `z4h install`.
 #
 # This is just an example that you should delete. It does nothing useful.
 # z4h source ohmyzsh/ohmyzsh/lib/diagnostics.zsh  # source an individual file
 # z4h load   ohmyzsh/ohmyzsh/plugins/emoji-clock  # load a plugin
+# z4h source olets/zsh-abbr/zsh-abbr.zsh
+
+z4h source momo-lab/zsh-abbrev-alias/abbrev-alias.plugin.zsh
+z4h source zuxfoucault/colored-man-pages_mod/colored-man-pages_mod.plugin.zsh
+z4h source hlissner/zsh-autopair/autopair.zsh
+# z4h source unixorn/warhol.plugin.zsh/warhol.plugin.zsh # colorize commands
+# z4h source larkery/zsh-histdb/zsh-histdb.plugin.zsh
+z4h source Dbz/kube-aliases/kube-aliases.plugin.zsh
+z4h source wintermi/zsh-brew/zsh-brew.plugin.zsh
+# z4h source D3STY/cros-auto-notify-zsh
+z4h source t413/zsh-background-notify/bgnotify.plugin.zsh
+
+z4h source jimhester/per-directory-history/per-directory-history.plugin.zsh
+export PER_DIRECTORY_HISTORY_TOGGLE='^V'
 
 # Define key bindings.
 z4h bindkey undo Ctrl+/   Shift+Tab  # undo the last command line change
@@ -89,19 +130,49 @@ z4h bindkey z4h-cd-down    Shift+Down   # cd into a child directory
 # Autoload functions.
 autoload -Uz zmv
 
-# Define functions and completions.
-function md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
-compdef _directories md
 
 # Define named directories: ~w <=> Windows home directory on WSL.
 [[ -z $z4h_win_home ]] || hash -d w=$z4h_win_home
 
-# Define aliases.
-alias tree='tree -a -I .git'
 
-# Add flags to existing aliases.
-alias ls="${aliases[ls]:-ls} -A"
-alias ll='lsd -l'
+
+
+
+# FIXME: vi-modeを有効にするとfzf-tab, historyが動かなくなる
+# enable vi mode
+# bindkey -v
+# vi-modeを有効するとc-a c-eが動かなくなる
+# bindkey '^A' beginning-of-line
+# bindkey '^E' end-of-line
+
+
+alias clear=z4h-clear-screen-soft-bottom
+
+eval "$(devbox global shellenv)"
+
+
+source ~/.config/zsh/z4h/alias.zsh
+source ~/.config/zsh/z4h/plugins.zsh
+
+source ~/dotfiles/zsh/tmux-rename.zsh
+
+source ~/dotfiles/shell/alias.sh
+source ~/dotfiles/shell/envsetup.sh
+
+
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+alias k='kubecolor'
+alias kubectl='kubecolor'
+source <(kubectl completion zsh);compdef kubecolor="kubectl"
+source <(devbox completion zsh)
+fpath=($(devbox global path)/.devbox/nix/profile/default-6-link/share/zsh/site-functions $fpath)
+
+
+# homebrew completion
+autoload -Uz compinit
+compinit
+
 
 # Set shell options: http://zsh.sourceforge.net/Doc/Release/Options.html.
 setopt glob_dots     # no special treatment for file names with a leading dot

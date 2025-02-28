@@ -60,3 +60,17 @@ viob() {
   fi
   vi "$inbox_dir/$note_name"
 }
+
+find-repository-and-move() {
+  local repo=$(ghq list | fzf)
+  cd ~/ghq/$repo
+  echo moved to \"$repo\"
+}
+
+alias repos=find-repository-and-move
+alias -g rps='repos'
+alias kx='kubectx'
+
+function ain() {
+  nvim -c "CodeCompanionChat" -c "bdelete 1"
+}
