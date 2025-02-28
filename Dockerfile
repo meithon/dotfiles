@@ -47,6 +47,6 @@ RUN ./install/deploy_dotfiles.sh
 RUN ./install/install_tools.sh
 RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_asdf.sh
 RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_rust.sh
-RUN nvim --headless "+Lazy! sync" "+lua print('Lazy sync completed')" +qa
+# RUN nvim --headless "+Lazy! sync" "+lua print('Lazy sync completed')" +qa
 
 CMD ["/bin/bash"]
