@@ -58,49 +58,49 @@ main() {
   . ~/dotfiles/shell/alias.sh
 }
 
-trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
+# trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
 
-if [ -z "${DOTPATH:-}" ]; then
-  DOTPATH=$HOME/dotfiles
-  export DOTPATH
-fi
-
-# set dotfiles path as default variable
-set -euo pipefail
-
-# load lib functions
-# use colors on terminal
-tput=$(which tput)
-if [ -n "$tput" ] && [ -t 1 ]; then
-  if ! ncolors=$($tput colors 2>/dev/null); then
-    # tput execution failed, fallback to ANSI escape codes
-    RED="\033[0;31m"
-    GREEN="\033[0;32m"
-    YELLOW="\033[0;33m"
-    BOLD="\033[1m"
-    NORMAL="\033[0m"
-  elif [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
-    RED="$($tput setaf 1)"
-    GREEN="$($tput setaf 2)"
-    YELLOW="$($tput setaf 3)"
-    BOLD="$($tput bold)"
-    NORMAL="$($tput sgr0)"
-  else
-    # Terminal doesn't support enough colors
-    RED=""
-    GREEN=""
-    YELLOW=""
-    BOLD=""
-    NORMAL=""
-  fi
-else
-  # tput is not available, use ANSI escape codes
-  RED="\033[0;31m"
-  GREEN="\033[0;32m"
-  YELLOW="\033[0;33m"
-  BOLD="\033[1m"
-  NORMAL="\033[0m"
-fi
+# if [ -z "${DOTPATH:-}" ]; then
+#   DOTPATH=$HOME/dotfiles
+#   export DOTPATH
+# fi
+#
+# # set dotfiles path as default variable
+# set -euo pipefail
+#
+# # load lib functions
+# # use colors on terminal
+# tput=$(which tput)
+# if [ -n "$tput" ] && [ -t 1 ]; then
+#   if ! ncolors=$($tput colors 2>/dev/null); then
+#     # tput execution failed, fallback to ANSI escape codes
+#     RED="\033[0;31m"
+#     GREEN="\033[0;32m"
+#     YELLOW="\033[0;33m"
+#     BOLD="\033[1m"
+#     NORMAL="\033[0m"
+#   elif [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
+#     RED="$($tput setaf 1)"
+#     GREEN="$($tput setaf 2)"
+#     YELLOW="$($tput setaf 3)"
+#     BOLD="$($tput bold)"
+#     NORMAL="$($tput sgr0)"
+#   else
+#     # Terminal doesn't support enough colors
+#     RED=""
+#     GREEN=""
+#     YELLOW=""
+#     BOLD=""
+#     NORMAL=""
+#   fi
+# else
+#   # tput is not available, use ANSI escape codes
+#   RED="\033[0;31m"
+#   GREEN="\033[0;32m"
+#   YELLOW="\033[0;33m"
+#   BOLD="\033[1m"
+#   NORMAL="\033[0m"
+# fi
 
 ### functions
 # info: output terminal green
@@ -233,7 +233,7 @@ deploy_dotfiles() {
 
   create_symlink "pre-commit" ".git/hooks/pre-commit"
 
-  shopt -s dotglob
+  # shopt -s dotglob
   for file in ~/dotfiles/home/*; do
     create_symlink "$file" ~/
   done
