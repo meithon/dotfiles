@@ -1,3 +1,87 @@
+# :: launch
+:: default: yabai -m config top_padding 6; echo >  /tmp/skhd_input_display
+:: move :   yabai -m config top_padding 32; echo "Move" >  /tmp/skhd_input_display
+:: leader : echo 'Leader' >  /tmp/skhd_input_display
+:: float : yabai -m window --toggle float  --grid 4:4:1:1:2:2; echo "Float" >  /tmp/skhd_input_display
+#
+# alt - l ; launch
+alt - g ; move
+#
+# launch < a : open -a "Safari"
+# launch < b : open -a "Visual Studio Code"
+# launch < escape ; default
+#
+move < space ; leader
+leader < escape ; default
+leader < return ; default
+leader < k: skhd -k "m"; open -a "Kitty"; 
+leader < f: skhd -k "m"; open -a "Firefox Developer Edition"; move
+leader < o: skhd -k "m"; open -a "Obsidian"
+leader < s: skhd -k "m"; open -a "Slack"
+leader < m ; move
+
+
+
+move < h: yabai -m window --focus west || yabai -m display --focus west || yabai -m space --focus west
+move < l: yabai -m window --focus east || yabai -m display --focus east || yabai -m space --focus east
+move < j: yabai -m window --focus south || yabai -m display --focus south
+move < k: yabai -m window --focus north || yabai -m display --focus north
+
+move < y : yabai -m window --resize left:-400:0 || yabai -m window --resize right:-800:0
+move < u : yabai -m window --resize bottom:0:400 || yabai -m window --resize top:0:800
+move < i : yabai -m window --resize top:0:-400 || yabai -m window --resize bottom:0:-800
+move < o : yabai -m window --resize right:400:0 || yabai -m window --resize left:800:0
+
+
+move < q : osascript -e 'tell application "System Events" to set frontApp to name of first application process whose frontmost is true' | xargs -I{} osascript -e 'quit app "{}"'
+move < x : CURRENT_SPACE_INDEX=$(yabai -m query --spaces --space | jq '.index') && yabai -m window --space prev; yabai -m space --destroy $CURRENT_SPACE_INDEX && yabai -m space --focus $(expr $CURRENT_SPACE_INDEX - 1)
+
+
+move < c : yabai -m space --create && \
+	index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+	yabai -m space --focus "${index}"
+
+move < shift - c : yabai -m space --create && \
+	index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+	yabai -m window --space "${index}" && \
+	yabai -m space --focus "${index}"
+
+move < shift - n : yabai -m window --space next && yabai -m window --focus next || yabai -m space --focus next
+move < shift - p : yabai -m window --space prev && yabai -m window --focus prev || yabai -m space --focus prev
+
+move < f: yabai -m window --toggle zoom-fullscreen
+move < r: yabai -m window --toggle split
+
+move < shift - h : yabai -m window --warp west || (yabai -m window --display west && yabai -m display --focus west)
+move < shift - l : yabai -m window --warp east || (yabai -m window --display east && yabai -m display --focus east)
+move < shift - j : yabai -m window --warp south
+move < shift - k : yabai -m window --warp north
+
+
+
+
+move < escape ; default
+move < return ; default
+move < n : yabai -m space --focus next || \
+	index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[0].index')" && \
+	yabai -m space --focus "${index}"
+move < p : yabai -m space --focus prev || \
+	index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
+	yabai -m space --focus "${index}"
+
+
+move < t ; float
+float < t : skhd -k "m"; yabai -m window --toggle float --grid 4:4:1:1:2:2
+float < l : yabai -m window --move rel:320:0
+float < h : yabai -m window --move rel:-320:0
+float < j : yabai -m window --move rel:0:240
+float < k : yabai -m window --move rel:0:-240
+float < m ; move
+float < escape ; default
+float < return ; default
+#
+
+
 ### vim like keybind
 # focus window
 alt - h: yabai -m window --focus west || yabai -m display --focus west || yabai -m space --focus west
@@ -5,15 +89,12 @@ alt - l: yabai -m window --focus east || yabai -m display --focus east || yabai 
 alt - j: yabai -m window --focus south || yabai -m display --focus south
 alt - k: yabai -m window --focus north || yabai -m display --focus north
 
-shift + alt - h : yabai -m window --warp west || \
-	(yabai -m window --display west && yabai -m display --focus west)
-
-shift + alt - l : yabai -m window --warp east || \
-	(yabai -m window --display east && yabai -m display --focus east)
-# shift + alt - h : yabai -m window --warp west || yabai -m display --warp west
-# shift + alt - l : yabai -m window --warp east || yabai -m display --warp east
+shift + alt - h : yabai -m window --warp west || (yabai -m window --display west && yabai -m display --focus west)
+shift + alt - l : yabai -m window --warp east || (yabai -m window --display east && yabai -m display --focus east)
 shift + alt - j : yabai -m window --warp south
 shift + alt - k : yabai -m window --warp north
+# shift + alt - h : yabai -m window --warp west || yabai -m display --warp west
+# shift + alt - l : yabai -m window --warp east || yabai -m display --warp east
 # resize
 alt - y : yabai -m window --resize left:-800:0 || yabai -m window --resize right:-800:0
 alt - u : yabai -m window --resize bottom:0:800 || yabai -m window --resize top:0:800

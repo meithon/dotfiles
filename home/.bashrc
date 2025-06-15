@@ -15,4 +15,3 @@
 . ~/dotfiles/shell/asdf.sh
 . ~/dotfiles/shell/envsetup.sh
 
-PATH=~/.console-ninja/.bin:$PATH

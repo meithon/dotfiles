@@ -93,3 +93,18 @@ end
 --     end
 --   end
 -- })
+vim.api.nvim_create_autocmd("BufReadPost", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+})
+
+-- init.lua
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "kotlin",
+  callback = function()
+    vim.bo.shiftwidth = 4
+    vim.bo.tabstop = 4
+  end,
+})

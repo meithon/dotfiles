@@ -88,6 +88,93 @@ end
 ---@type Plugin[]
 return {
   {
+    "stevearc/conform.nvim",
+    optional = true,
+    opts = {
+      formatters_by_ft = { kotlin = { "ktfmt" } },
+    },
+  },
+  {
+    "stevearc/conform.nvim",
+    -- dependencies = { "mason.nvim" },
+    -- lazy = true,
+    -- cmd = "ConformInfo",
+    -- keys = {
+    --   {
+    --     "<leader>cF",
+    --     function()
+    --       require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
+    --     end,
+    --     mode = { "n", "v" },
+    --     desc = "Format Injected Langs",
+    --   },
+    -- },
+    init = function()
+      -- Install the conform formatter on VeryLazy
+      LazyVim.on_very_lazy(function()
+        LazyVim.format.register({
+          name = "conform.nvim",
+          priority = 100,
+          primary = true,
+          format = function(buf)
+            require("conform").format({ bufnr = buf , async= true})
+          end,
+          sources = function(buf)
+            local ret = require("conform").list_formatters(buf)
+            ---@param v conform.FormatterInfo
+            return vim.tbl_map(function(v)
+              return v.name
+            end, ret)
+          end,
+        })
+      end)
+    end,
+    -- opts = function()
+    --   local plugin = require("lazy.core.config").plugins["conform.nvim"]
+    --   if plugin.config ~= M.setup then
+    --     LazyVim.error({
+    --       "Don't set `plugin.config` for `conform.nvim`.\n",
+    --       "This will break **LazyVim** formatting.\n",
+    --       "Please refer to the docs at https://www.lazyvim.org/plugins/formatting",
+    --     }, { title = "LazyVim" })
+    --   end
+    --   ---@type conform.setupOpts
+    --   local opts = {
+    --     default_format_opts = {
+    --       timeout_ms = 3000,
+    --       async = false, -- not recommended to change
+    --       quiet = false, -- not recommended to change
+    --       lsp_format = "fallback", -- not recommended to change
+    --     },
+    --     formatters_by_ft = {
+    --       lua = { "stylua" },
+    --       fish = { "fish_indent" },
+    --       sh = { "shfmt" },
+    --     },
+    --     -- The options you set here will be merged with the builtin formatters.
+    --     -- You can also define any custom formatters here.
+    --     ---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
+    --     formatters = {
+    --       injected = { options = { ignore_errors = true } },
+    --       -- # Example of using dprint only when a dprint.json file is present
+    --       -- dprint = {
+    --       --   condition = function(ctx)
+    --       --     return vim.fs.find({ "dprint.json" }, { path = ctx.filename, upward = true })[1]
+    --       --   end,
+    --       -- },
+    --       --
+    --       -- # Example of using shfmt with extra args
+    --       -- shfmt = {
+    --       --   prepend_args = { "-i", "2", "-ci" },
+    --       -- },
+    --     },
+    --   }
+    --   return opts
+    -- end,
+    -- config = M.setup,
+  },
+  { "EdenEast/nightfox.nvim" },
+  {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = "nightfox",
@@ -161,25 +248,26 @@ return {
     "nvimdev/dashboard-nvim",
     opts = function(_, opts)
       local logo = [[
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                      
-       ████ ██████           █████      ██                      
-      ███████████             █████                              
-      █████████ ███████████████████ ███   ███████████    
-     █████████  ███    █████████████ █████ ██████████████    
-    █████████ ██████████ █████████ █████ █████ ████ █████    
-  ███████████ ███    ███ █████████ █████ █████ ████ █████   
- ██████  █████████████████████ ████ █████ █████ ████ ██████  
-                                                                        
-                                                                        
-                                                                        
-      ]]
+
+
+
+
+                                                                     
+        ████ ██████           █████      ██                    
+       ███████████             █████                            
+       █████████ ███████████████████ ███   ███████████  
+      █████████  ███    █████████████ █████ ██████████████  
+     █████████ ██████████ █████████ █████ █████ ████ █████  
+   ███████████ ███    ███ █████████ █████ █████ ████ █████ 
+  ██████  █████████████████████ ████ █████ █████ ████ ██████
+
+
+
+       ]]
 
       logo = string.rep("\n", 8) .. logo .. "\n\n"
       opts.config.header = vim.split(logo, "\n")
+      vim.api.nvim_set_hl(0, "DashboardHeader", { fg = "#5cf200" })
     end,
   },
   {
@@ -641,6 +729,9 @@ return {
           color_correction = "dynamic",
         },
       }
+      opts.sections.lualine_x = {
+        require("codex").status(), -- drop in to your lualine sections
+      }
     end,
   },
   { -- not extend but used by lualine
@@ -665,17 +756,17 @@ return {
     end,
   },
   -- word highlight
-  {
-    "RRethy/vim-illuminate",
-    config = function()
-      vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
-      vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
-      vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
-    end,
-    opts = function(_, opts)
-      opts.delay = 0
-    end,
-  },
+  -- { -- FIXME: method textDocument/documentHighlight is not supported by any of the servers registered for the current buffer
+  --   "RRethy/vim-illuminate",
+  --   config = function()
+  --     vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
+  --     vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
+  --     vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
+  --   end,
+  --   opts = function(_, opts)
+  --     opts.delay = 0
+  --   end,
+  -- },
   {
     "gbprod/yanky.nvim",
     dependencies = { { "kkharji/sqlite.lua", enabled = not jit.os:find("Windows") } },
@@ -732,67 +823,75 @@ return {
       "thenbe/neotest-playwright",
     },
     opts = function(_, opts)
-      table.insert(opts.adapters, require("neotest-vitest"))
       table.insert(
         opts.adapters,
-        require("neotest-playwright").adapter({
-          options = {
-            persist_project_selection = false,
-
-            enable_dynamic_test_discovery = true,
-
-            preset = "debug", -- "none" | "headed" | "debug"
-
-            get_playwright_binary = function()
-              --   return vim.loop.cwd() + "/node_modules/.bin/playwright"
-              return find_node_modules() .. "/.bin/playwright"
-            end,
-
-            get_playwright_config = function()
-              -- return vim.loop.cwd() + "/packages/e2e-test/playwright.config.ts"
-              return "/Users/mei/workspace/work/tobari/packages/e2e-test/playwright.config.ts"
-            end,
-
-            -- Controls the location of the spawned test process.
-            -- Has no affect on neither the location of the binary nor the location of the config file.
-            -- get_cwd = function()
-            --   return vim.loop.cwd()
-            -- end,
-
-            -- env = { },
-
-            -- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
-            extra_args = {
-              "--trace=retain-on-failure",
-            },
-
-            -- Filter directories when searching for test files. Useful in large projects (see performance notes).
-            -- filter_dir = function(name, rel_path, root)
-            --   return name ~= "node_modules"
-            -- end,
-
-            ---Filter directories when searching for test files
-            -- @ async
-            -- @ param name string Name of directory
-            -- @ param rel_path string Path to directory, relative to root
-            -- @ param root string Root directory of project
-            -- @ return boolean
-            -- filter_dir = function(name, rel_path, root)
-            --   local full_path = root .. "/" .. rel_path
-            --
-            --   if root:match("tobari") then
-            --     if full_path:match("^packages/e2e-test") then
-            --       return true
-            --     else
-            --       return false
-            --     end
-            --   else
-            --     return name ~= "node_modules"
-            --   end
-            -- end,
-          },
+        require("neotest-vitest")({
+          ---Filter directories when searching for test files
+          ---@async
+          ---@param name string Name of directory
+          ---@param rel_path string Path to directory, relative to root
+          ---@param root string Root directory of project
+          ---@return boolean
+          filter_dir = function(name, rel_path, root)
+            return name ~= "node_modules"
+          end,
         })
       )
+      -- table.insert(
+      --   opts.adapters,
+      --   require("neotest-playwright").adapter({
+      --     options = {
+      --       persist_project_selection = false,
+      --
+      --       enable_dynamic_test_discovery = true,
+      --
+      --       preset = "debug", -- "none" | "headed" | "debug"
+      --
+      --       get_playwright_binary = function()
+      --         --   return vim.loop.cwd() + "/node_modules/.bin/playwright"
+      --         return find_node_modules() .. "/.bin/playwright"
+      --       end,
+      --
+      --       -- Controls the location of the spawned test process.
+      --       -- Has no affect on neither the location of the binary nor the location of the config file.
+      --       -- get_cwd = function()
+      --       --   return vim.loop.cwd()
+      --       -- end,
+      --
+      --       -- env = { },
+      --
+      --       -- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
+      --       extra_args = {
+      --         "--trace=retain-on-failure",
+      --       },
+      --
+      --       -- Filter directories when searching for test files. Useful in large projects (see performance notes).
+      --       -- filter_dir = function(name, rel_path, root)
+      --       --   return name ~= "node_modules"
+      --       -- end,
+      --
+      --       ---Filter directories when searching for test files
+      --       -- @ async
+      --       -- @ param name string Name of directory
+      --       -- @ param rel_path string Path to directory, relative to root
+      --       -- @ param root string Root directory of project
+      --       -- @ return boolean
+      --       -- filter_dir = function(name, rel_path, root)
+      --       --   local full_path = root .. "/" .. rel_path
+      --       --
+      --       --   if root:match("tobari") then
+      --       --     if full_path:match("^packages/e2e-test") then
+      --       --       return true
+      --       --     else
+      --       --       return false
+      --       --     end
+      --       --   else
+      --       --     return name ~= "node_modules"
+      --       --   end
+      --       -- end,
+      --     },
+      --   })
+      -- )
       table.insert(opts, {
         consumers = {
           playwright = require("neotest-playwright").consumers,
@@ -1385,13 +1484,13 @@ return {
       "jvgrootveld/telescope-zoxide",
     },
     keys = {
-      -- add a keymap to browse plugin files
-      -- stylua: ignore
-      {
-        "<leader>fP",
-        function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
-        desc = "Find Plugin File",
-      },
+       -- add a keymap to browse plugin files
+       -- stylua: ignore
+       {
+         "<leader>fP",
+         function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+         desc = "Find Plugin File",
+       },
       {
         "<leader>fg",
         function()
