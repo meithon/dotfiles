@@ -47,6 +47,11 @@ RUN ./install/deploy_dotfiles.sh
 RUN ./install/install_tools.sh
 RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_asdf.sh
 RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_rust.sh
+
 # RUN nvim --headless "+Lazy! sync" "+lua print('Lazy sync completed')" +qa
+RUN ./install.sh
+RUN ln -s /root/.zshrc /root/dotfiles/hone/.zshrc 
+RUN ln -s /root/.zshenv /root/dotfiles/hone/.zshenv
+RUN zsh -c "source ~/.zshrc"
 
 CMD ["/bin/bash"]

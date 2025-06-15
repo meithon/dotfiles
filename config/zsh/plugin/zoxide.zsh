@@ -2,8 +2,9 @@ interactive-directory-search() {
   local dir=$(zoxide query --interactive)
 
   if [ -n "$dir" ]; then
-    BUFFER+="cd $dir"
-    zle accept-line
+    # BUFFER+="cd $dir"
+    cd "$dir"
+    zle reset-prompt
   else
     return 1
   fi
@@ -50,3 +51,5 @@ zle -N interactive-directory-tmux
 
 # キーバインドの設定例（Ctrl+G）
 bindkey '^G' interactive-directory-tmux
+
+eval "$(zoxide init zsh)"

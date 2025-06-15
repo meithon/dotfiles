@@ -64,6 +64,8 @@ if not vim.g.vscode then
   return
 end
 
+local vscode = require('vscode')
+
 local vscode_command = function(cmd)
   -- return map("<cmd>call VSCodeNotify('" .. cmd .. "')<cr>")
   return "<cmd>call VSCodeNotify('" .. cmd .. "')<cr>"
@@ -125,7 +127,23 @@ map("n", "]d", vscode_command("editor.action.marker.nextInFiles"))
 map("n", "cr", vscode_command("editor.action.rename"))
 
 -- move
-map("n", "<Leader>e", vscode_command("workbench.explorer.fileView.focus"))
+-- move
+local is_open = true
+local function toggleFileView()
+  if is_open then
+    vscode.action("workbench.action.toggleSidebarVisibility")
+    is_open = false
+  else
+    vscode.action("workbench.explorer.fileView.focus")
+    is_open = true
+  end
+end
+toggleFileView()
+map("n", "<Leader>e", function()
+  local vscode = require('vscode')
+  toggleFileView()
+end)
+
 map("n", "<leader>bo", vscode_command("workbench.action.closeOtherEditors"))
 map(
   "n",
@@ -136,8 +154,8 @@ map(
 )
 ---- git
 --
-map("n", "]h", vscode_command("workbench.action.editor.nextChange"))
-map("n", "[h", vscode_command("workbench.action.editor.prevChange"))
+map("n", "]g", vscode_command("workbench.action.editor.nextChange"))
+map("n", "[g", vscode_command("workbench.action.editor.previousChange"))
 map("n", "<leader>gs", vscode_command("workbench.view.scm"))
 
 ----test
@@ -159,3 +177,24 @@ map("n", "<leader>tr", vscode_command("testing.runAtCursor"))
 -- ["n|<Leader>gd"] = vscode_range_command("GitDiff", "git.openChange"),
 -- ["n|<Leader>gh"] = vscode_range_command("GitDiff", "git.openChange"),
 -- ["n|K"] = map_cr("call VSCodeNotify('editor.action.showHover')"),
+
+
+vim.keymap.set({ "n", "x", "i" }, "<C-n>", function()
+  vscode.with_insert(function()
+    vscode.action("editor.action.addSelectionToNextFindMatch")
+  end)
+end)
+vim.api.nvim_create_autocmd("ModeChanged", {
+    pattern = "*",
+    callback = function()
+        local mode = vim.api.nvim_get_mode().mode
+        if mode == "i" then
+            require('vscode').action("neovim-ui-indicator.insert")
+        elseif mode == "v" then
+            require('vscode').action("neovim-ui-indicator.visual")
+        elseif mode == "n" then
+            require('vscode').action("neovim-ui-indicator.normal")
+        end
+    end,
+})
+require('vscode').action("neovim-ui-indicator.cursorCenter")

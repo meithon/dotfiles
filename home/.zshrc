@@ -2,6 +2,18 @@ source ~/dotfiles/config/zsh/z4h/core/zshrc
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH=$PATH:/Users/mei/workspace/work/build-system/remote-execution/remote-execution-tools/bin
+export PATH=$PATH:/Users/mei/go/bin
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-22.jdk/Contents/Home
+
+awsp() {
+  local profile=$(aws configure list-profiles | fzf --preview 'aws --profile {} sts get-caller-identity' --height 40%)
+  if [ -n "$profile" ]; then
+    export AWS_PROFILE=$profile
+    echo "Switched to AWS Profile: $profile"
+    aws sts get-caller-identity
+  fi
+}
 
 # source ~/dotfiles/config/zsh/zinit/.zshrc
 #
@@ -57,4 +69,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 #
 
 
-PATH=~/.console-ninja/.bin:$PATH
+
+eval "$(direnv hook zsh)"

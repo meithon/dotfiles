@@ -56,14 +56,25 @@ function search_history() {
     "
   else
     sql_query="
-      SELECT commands.argv 
-      FROM commands 
-      INNER JOIN history ON history.command_id = commands.rowid
-      INNER JOIN places ON history.place_id = places.rowid
-      WHERE places.dir = '$(sql_escape $PWD)'
-        AND commands.argv != ''
-      GROUP BY commands.argv
-      ORDER BY MAX(history.start_time) DESC, COUNT(*) DESC
+      WITH filtered_places AS (
+        SELECT rowid AS place_rowid
+        FROM places
+        WHERE dir = '$(sql_escape $PWD)'
+      ),
+      filtered_history AS (
+        SELECT
+          command_id,
+          MAX(start_time) AS max_time,
+          COUNT(*) AS cnt
+        FROM history
+        WHERE place_id IN (SELECT place_rowid FROM filtered_places)
+        GROUP BY command_id
+      )
+      SELECT commands.argv
+      FROM filtered_history
+      JOIN commands ON commands.rowid = filtered_history.command_id
+      WHERE commands.argv != ''
+      ORDER BY filtered_history.max_time DESC, filtered_history.cnt DESC
     "
   fi
 
@@ -91,19 +102,34 @@ function search_history() {
     --color='header:italic:underline'
   )
 
-  local history_data="$(
-    _histdb_query -json "$sql_query"
-  )"
-  local processed_data
-  processed_data=$(
-    jq -j '.[].argv | gsub("\n$";"") + "\u0000"' <<<"$history_data" |
-      perl -pe 's/\x00/;\n\x1E/g' |
-      perl -pe 's/\x1E//' |
-      syncat --language bash |
-      perl -0777 -pe 's/;\n+/\x00/g'
-  )
-
-  local selected_command="$(echo "$processed_data" | fzf "${fzf_opts[@]}")"
+  # local selected_command=$(
+  #   _histdb_query -line "$sql_query" |
+  #     grep '^argv = ' |
+  #     sed 's/^argv = //' |
+  #     grep -v '^$' |
+  #     fzf "${fzf_opts[@]}"
+  # )
+  # local history_data="$(
+  #   _histdb_query -json "$sql_query"
+  # )"
+  # local processed_data
+  # processed_data=$(
+  #   jq -j '.[].argv | gsub("\n$";"") + "\u0000"' <<<"$history_data" |
+  #     perl -pe 's/\x00/;\n\x1E/g' |
+  #     perl -pe 's/\x1E//' |
+  #     syncat --language bash |
+  #     perl -0777 -pe 's/;\n+/\x00/g'
+  # )
+  #
+  # local selected_command="$(echo "$processed_data" | fzf "${fzf_opts[@]}")"
+  #
+  # PERF: stream processing
+  local selected_command=$(_histdb_query -json "$sql_query" |
+    jq -r '.[]|.argv + "\u0000"' |
+    perl -pe 's/\x00/;\n/g' |
+    syncat --language bash |
+    perl -pe 's/;\n+/\x00/g' |
+    fzf "${fzf_opts[@]}")
 
   BUFFER=$(echo $selected_command)
   CURSOR=$#BUFFER
@@ -116,3 +142,61 @@ function zvm_after_init() {
   bindkey -M viins '^R' search_history
 }
 unsetopt HIST_REDUCE_BLANKS # 空白の削除を無効化（改行を保持したい場合）
+
+typeset -g HISTDB_ISEARCH_INPUT
+typeset -g HISTDB_ISEARCH_N
+typeset -g HISTDB_ISEARCH_MATCH
+
+# TODO Underlining the match string
+# TODO Fill out the keymap properly
+# TODO Show more info about match (n, date, pwd, host)
+# TODO Accept match and exit
+# TODO Keys to switch to dir
+# TODO Keys to limit match?
+
+# make a keymap for histdb isearch
+bindkey -N histdb-isearch main
+
+_histdb_isearch_query() {
+  if [[ -z $HISTDB_ISEARCH_INPUT ]]; then
+    HISTDB_ISEARCH_MATCH=""
+    return
+  fi
+  local query="select commands.argv from history left join commands
+on history.command_id = commands.rowid
+where commands.argv like '%$(sql_escape ${HISTDB_ISEARCH_INPUT})%'
+order by history.rowid desc
+limit 1
+offset ${HISTDB_ISEARCH_N}"
+  HISTDB_ISEARCH_MATCH=$(_histdb_query "$query")
+}
+
+_histdb_isearch_display() {
+  BUFFER="${HISTDB_ISEARCH_MATCH}"
+  POSTDISPLAY="
+histdb: ${HISTDB_ISEARCH_INPUT} "
+}
+
+# define a self-insert command for it (requires other code)
+self-insert-histdb-isearch() {
+  HISTDB_ISEARCH_INPUT="${HISTDB_ISEARCH_INPUT}${KEYS}"
+  _histdb_isearch_query
+  _histdb_isearch_display
+}
+
+zle -N self-insert-histdb-isearch
+
+_histdb-isearch() {
+  HISTDB_ISEARCH_INPUT="${BUFFER}"
+  HISTDB_ISEARCH_N=0
+  BUFFER=""
+  zle -K histdb-isearch
+  _histdb_isearch_query
+  _histdb_isearch_display
+}
+
+zle -N _histdb-isearch
+
+bindkey '^R' _histdb-isearch
+
+# ctrl-d:execute(source ~/.zinit/plugins/larkery---zsh-histdb/sqlite-history.zsh && histdb --forget {}

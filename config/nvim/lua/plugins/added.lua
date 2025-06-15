@@ -3,7 +3,85 @@ local map = vim.keymap.setadded
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
 ---
+---
 return {
+  {
+    "alexandrosalexiou/kotlin.nvim",
+  },
+  {
+    "pwntester/octo.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+      -- OR 'ibhagwan/fzf-lua',
+      -- OR 'folke/snacks.nvim',
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("octo").setup()
+    end,
+  },
+  {
+    "Davidyz/VectorCode",
+    version = "*", -- optional, depending on whether you're on nightly or release
+    build = "pipx upgrade vectorcode", -- optional but recommended. This keeps your CLI up-to-date.
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
+    "johnseth97/codex.nvim",
+    lazy = true,
+    keys = {
+      {
+        "<leader>y",
+        function()
+          require("codex").toggle()
+        end,
+        desc = "Toggle Codex popup",
+      },
+    },
+    opts = {
+      keymaps = {}, -- disable internal mapping
+      border = "rounded", -- or 'double'
+      width = 0.8,
+      height = 0.8,
+      autoinstall = true,
+    },
+  },
+  {
+    "Snyssfx/goerr-nvim",
+  },
+  {
+    "benomahony/uv.nvim",
+    config = function()
+      require("uv").setup()
+    end,
+  },
+  {
+    "ravitemer/mcphub.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
+    },
+    -- comment the following line to ensure hub will be ready at the earliest
+    cmd = "MCPHub", -- lazy load by default
+    build = "npm install -g mcp-hub@latest", -- Installs required mcp-hub npm module
+    -- uncomment this if you don't want mcp-hub to be available globally or can't use -g
+    -- build = "bundled_build.lua", -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
+    config = function()
+      require("mcphub").setup({
+        auto_approve = true,
+        -- use_bundled_binary = true,
+        extensions = {
+          avante = {},
+          codecompanion = {
+            -- Show the mcp tool result in the chat buffer
+            -- NOTE:if the result is markdown with headers, content after the headers wont be sent by codecompanion
+            show_result_in_chat = false,
+            make_vars = true, -- make chat #variables from MCP server resources
+          },
+        },
+      })
+    end,
+  },
   {
     "yetone/avante.nvim",
     cmd = {
@@ -457,23 +535,23 @@ return {
             configuration = {
               updateBuildConfiguration = "automatic",
             },
-            -- project = {
-            --   buildFiles = {
-            --     "BUILD.bazel",
-            --     "MODULE.bazel",
-            --   },
-            --   referencedLibraries = {
-            --     "bazel-bin/**/*.jar",
-            --     "bazel-genfiles/**/*.jar",
-            --   },
-            --   sourcePaths = {
-            --     -- ソースコードのパスを追加
-            --     "src/main/java",
-            --     -- 外部依存のソースを追加
-            --     "bazel-buildfarm/external/*/src/main/java",
-            --     -- 必要に応じて他のソースパスを追加
-            --   },
-            -- },
+            project = {
+              buildFiles = {
+                "BUILD.bazel",
+                "MODULE.bazel",
+              },
+              referencedLibraries = {
+                "bazel-bin/**/*.jar",
+                "bazel-genfiles/**/*.jar",
+              },
+              sourcePaths = {
+                -- ソースコードのパスを追加
+                "src/main/java",
+                -- 外部依存のソースを追加
+                "bazel-buildfarm/external/*/src/main/java",
+                -- 必要に応じて他のソースパスを追加
+              },
+            },
             sources = {
               organizeImports = {
                 starThreshold = 9999,
@@ -658,6 +736,7 @@ return {
       "CodeCompanionChat",
       "CodeCompanionActions",
       "CodeCompanionCmd",
+      "CodeCompanionHistory",
     },
     keys = {
       { "<C-a>", mode = { "n", "v" } },
@@ -669,91 +748,192 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "nvim-telescope/telescope.nvim", -- Optional
+      "folke/noice.nvim",
       {
         "stevearc/dressing.nvim", -- Optional: Improves the default Neovim UI
         opts = {},
       },
-      -- {
-      --   "echasnovski/mini.diff",
-      --   version = "*",
-      --   opts = {
-      --     mappings = {
-      --       mappings = {
-      --         -- Apply hunks inside a visual/operator region
-      --         apply = "",
-      --
-      --         -- Reset hunks inside a visual/operator region
-      --         reset = "",
-      --
-      --         -- Hunk range textobject to be used inside operator
-      --         -- Works also in Visual mode if mapping differs from apply and reset
-      --         textobject = "",
-      --
-      --         -- Go to hunk range in corresponding direction
-      --         goto_first = "",
-      --         goto_prev = "",
-      --         goto_next = "",
-      --         goto_last = "",
-      --       },
-      --     },
-      --   },
-      -- },
+      "ravitemer/mcphub.nvim",
+      "ravitemer/codecompanion-history.nvim",
+      {
+        "echasnovski/mini.diff",
+        opts = {},
+        --   version = "*",
+        --   opts = {
+        --     mappings = {
+        --       mappings = {
+        --         -- Apply hunks inside a visual/operator region
+        --         apply = "",
+        --
+        --         -- Reset hunks inside a visual/operator region
+        --         reset = "",
+        --
+        --         -- Hunk range textobject to be used inside operator
+        --         -- Works also in Visual mode if mapping differs from apply and reset
+        --         textobject = "",
+        --
+        --         -- Go to hunk range in corresponding direction
+        --         goto_first = "",
+        --         goto_prev = "",
+        --         goto_next = "",
+        --         goto_last = "",
+        --       },
+        --     },
+        --   },
+        -- },
+      },
     },
+    init = function()
+      require("plugins.ai.extensions.companion-notification").init()
+    end,
     config = function()
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
 
       vim.api.nvim_set_keymap("n", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("n", "<Leader>a", "<cmd>CodeCompanion<cr>", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("v", "<Leader>a", "<cmd>CodeCompanion<cr>", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("n", "<Leader>a", ":CodeCompanion ", { noremap = true, silent = true })
+      vim.api.nvim_set_keymap("v", "<Leader>a", ":CodeCompanion ", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
-      require("codecompanion").setup({
+      local opts = {
+        adapters = {
+    openai = function()
+      return require("codecompanion.adapters").extend("openai", {
+        schema = {
+          model = {
+            default = "gpt-4o",
+          },
+        },
+      })
+    end,
+  },
         strategies = {
           chat = {
-            adapter = "anthropic",
+            adapter = "openai",
+            tools = {
+              opts = { -- FIXME: なんか動かねえ
+                auto_submit_errors = true, -- Send any errors to the LLM automatically?
+                auto_submit_success = true, -- Send any successful output to the LLM automatically?
+              },
+              ["mcp"] = {
+                -- calling it in a function would prevent mcphub from being loaded before it's needed
+                callback = function()
+                  return require("mcphub.extensions.codecompanion")
+                end,
+                description = "Call tools and resources from the MCP Servers",
+              },
+              ["cmd_runner"] = {
+                opts = {
+                  requires_approval = false,
+                },
+              },
+            },
+            slash_commands = {
+              ["git_files"] = {
+                description = "List git files",
+                ---@param chat CodeCompanion.Chat
+                callback = function(chat)
+                  local handle = io.popen("git ls-files")
+                  if handle ~= nil then
+                    local result = handle:read("*a")
+                    handle:close()
+                    chat:add_reference({ role = "user", content = result }, "git", "<git_files>")
+                  else
+                    return vim.notify("No git files available", vim.log.levels.INFO, { title = "CodeCompanion" })
+                  end
+                end,
+                opts = {
+                  contains_code = false,
+                },
+              },
+            },
           },
           inline = {
-            adapter = "anthropic",
-            -- adapter = "copilot",
+            keymaps = {
+              accept_change = {
+                modes = { n = "ga" },
+                description = "Accept the suggested change",
+              },
+              reject_change = {
+                modes = { n = "gr" },
+                description = "Reject the suggested change",
+              },
+            },
           },
-          agent = {
-            adapter = "anthropic",
-          },
+          -- inline = {
+          --   adapter = "openai",
+          --   -- adapter anthropic= "copilot",
+          -- },
+          -- agent = {
+          --   adapter = "openai",
+          -- },
         },
         display = {
           diff = {
-            provider = "mini_diff",
-          },
-          chat = {
-            render_headers = false,
+            enabled = true,
+            close_chat_at = 240, -- Close an open chat buffer if the total columns of your display are less than...
+            layout = "vertical", -- vertical|horizontal split for default provider
+            opts = { "internal", "filler", "closeoff", "algorithm:patience", "followwrap", "linematch:120" },
+            provider = "mini_diff", -- default|mini_diff
           },
         },
-        opts = {
-          -- log_level = "ERROR", -- TRACE|DEBUG|ERROR|INFO
-          language = "Japanese", -- The language used for LLM responses
+      }
 
-          -- If this is false then any default prompt that is marked as containing code
-          -- will not be sent to the LLM. Please note that whilst I have made every
-          -- effort to ensure no code leakage, using this is at your own risk
-          ---@type boolean|function
-          ---@return boolean
-          send_code = true,
+      opts.prompt_library = {
+        ["Summarize"] = {
+          strategy = "chat",
+          description = "Some cool custom prompt you can do",
+          prompts = {
+            {
+              role = "system",
+              content = [[
 
-          -- job_start_delay = 1500, -- Delay in milliseconds between cmd tools
-          -- submit_delay = 2000, -- Delay in milliseconds before auto-submitting the chat buffer
+1. 依頼は、与えられたテキストから情報のマインドマップを作成することです。まず、テキストの内容を分析し、主要なトピックと概念を抽出する必要があります。
+主要なトピックとサブトピックを抽出してみましょう
 
-          ---This is the default prompt which is sent with every request in the chat
-          ---strategy. It is primarily based on the GitHub Copilot Chat's prompt
-          ---but with some modifications. You can choose to remove this via
-          ---your own config but note that LLM results may not be as good
-          ---@param opts table
-          ---@return string
-          system_prompt = function(opts)
-            local language = opts.language or "English"
-            return string.format(
-              [[You are an AI programming assistant named "CodeCompanion". You are currently plugged into the Neovim text editor on a user's machine.
+2. 既存のマインドマップをさらに拡張していきます。元のテキストをさらに細かく分析し、追加できる情報を抽出し、マインドマップの各セクションを充実させていきます。
+
+3. 最も重要で本質的な内容が階層の上位（親ノード）に来るように再構成してください
+
+4. 子ノードを支持する根拠や補足情報を与えられたマークダウンテキストから探し、さらに子ノードとして追加してください
+
+出力フォーマットはmarkdownでlistを使用してください
+                ]],
+            },
+            {
+              role = "user",
+              content = "",
+            },
+          },
+        },
+      }
+
+      opts.opts = {
+        -- log_level = "ERROR", -- TRACE|DEBUG|ERROR|INFO
+        language = "Japanese", -- The language used for LLM responses
+
+        auto_submit = true,
+        -- If this is false then any default prompt that is marked as containing code
+        -- will not be sent to the LLM. Please note that whilst I have made every
+        -- effort to ensure no code leakage, using this is at your own risk
+        ---@type boolean|function
+        ---@return boolean
+        send_code = true,
+
+        -- job_start_delay = 1500, -- Delay in milliseconds between cmd tools
+        -- submit_delay = 2000, -- Delay in milliseconds before auto-submitting the chat buffer
+
+        ---This is the default prompt which is sent with every request in the chat
+        ---strategy. It is primarily based on the GitHub Copilot Chat's prompt
+        ---but with some modifications. You can choose to remove this via
+        ---your own config but note that LLM results may not be as good
+        ---@param opts table
+        ---@return string
+        system_prompt = function(opts)
+          local language = opts.language or "English"
+          return string.format(
+            [[You are an AI programming assistant named "CodeCompanion". You are currently plugged into the Neovim text editor on a user's machine.
 
 Your core tasks include:
 - Answering general programming questions.
@@ -786,70 +966,60 @@ When given a task:
 3. End your response with a short suggestion for the next user turn that directly supports continuing the conversation.
 4. Provide exactly one complete reply per conversation turn.
 ]],
-              language
-            )
-          end,
+            language
+          )
+        end,
+      }
+
+      opts.extensions = {
+        -- :CodeComapnionHistory
+        history = {
+          enabled = true,
+          opts = {
+            -- Keymap to open history from chat buffer (default: gh)
+            keymap = "gh",
+            -- Keymap to save the current chat manually (when auto_save is disabled)
+            save_chat_keymap = "sc",
+            -- Save all chats by default (disable to save only manually using 'sc')
+            auto_save = true,
+            -- Number of days after which chats are automatically deleted (0 to disable)
+            expiration_days = 0,
+            -- Picker interface ("telescope" or "snacks" or "fzf-lua" or "default")
+            picker = "telescope",
+            ---Automatically generate titles for new chats
+            auto_generate_title = true,
+            title_generation_opts = {
+              ---Adapter for generating titles (defaults to current chat adapter)
+              adapter = nil, -- "copilot"
+              ---Model for generating titles (defaults to current chat model)
+              model = nil, -- "gpt-4o"
+            },
+            ---On exiting and entering neovim, loads the last chat on opening chat
+            continue_last_chat = false,
+            ---When chat is cleared with `gx` delete the chat from history
+            delete_on_clearing_chat = false,
+            ---Directory path to save the chats
+            dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
+            ---Enable detailed logging for history extension
+            enable_logging = false,
+          },
         },
-      })
+        mcphub = {
+          callback = "mcphub.extensions.codecompanion",
+          opts = {
+            make_vars = true,
+            make_slash_commands = true,
+            show_result_in_chat = true,
+          },
+        },
+        vectorcode = {
+          opts = {
+            add_tool = true,
+          },
+        },
+      }
 
-      -- https://gist.github.com/itsfrank/942780f88472a14c9cbb3169012a3328
-      -- add 2 commands:
-      --    CodeCompanionSave [space delimited args]
-      --    CodeCompanionLoad
-      -- Save will save current chat in a md file named 'space-delimited-args.md'
-      -- Load will use a telescope filepicker to open a previously saved chat
-
-      -- create a folder to store our chats
-      local Path = require("plenary.path")
-      local data_path = vim.fn.stdpath("data")
-      local save_folder = Path:new(data_path, "cc_saves")
-      if not save_folder:exists() then
-        save_folder:mkdir({ parents = true })
-      end
-
-      -- telescope picker for our saved chats
-      vim.api.nvim_create_user_command("CodeCompanionLoad", function()
-        local t_builtin = require("telescope.builtin")
-        local t_actions = require("telescope.actions")
-        local t_action_state = require("telescope.actions.state")
-
-        local function start_picker()
-          t_builtin.find_files({
-            prompt_title = "Saved CodeCompanion Chats | <c-d>: delete",
-            cwd = save_folder:absolute(),
-            attach_mappings = function(_, map)
-              map("i", "<c-d>", function(prompt_bufnr)
-                local selection = t_action_state.get_selected_entry()
-                local filepath = selection.path or selection.filename
-                os.remove(filepath)
-                t_actions.close(prompt_bufnr)
-                start_picker()
-              end)
-              return true
-            end,
-          })
-        end
-        start_picker()
-      end, {})
-
-      -- save current chat, `CodeCompanionSave foo bar baz` will save as 'foo-bar-baz.md'
-      vim.api.nvim_create_user_command("CodeCompanionSave", function(opts)
-        local codecompanion = require("codecompanion")
-        local success, chat = pcall(function()
-          return codecompanion.buf_get_chat(0)
-        end)
-        if not success or chat == nil then
-          vim.notify("CodeCompanionSave should only be called from CodeCompanion chat buffers", vim.log.levels.ERROR)
-          return
-        end
-        if #opts.fargs == 0 then
-          vim.notify("CodeCompanionSave requires at least 1 arg to make a file name", vim.log.levels.ERROR)
-        end
-        local save_name = table.concat(opts.fargs, "-") .. ".md"
-        local save_path = Path:new(save_folder, save_name)
-        local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-        save_path:write(table.concat(lines, "\n"), "w")
-      end, { nargs = "*" })
+      require("codecompanion").setup(opts)
     end,
   },
   { -- colorschma
@@ -1164,11 +1334,16 @@ When given a task:
     end,
     opts = {},
   },
-  { -- display space in visual mode
-    "mcauley-penney/visual-whitespace.nvim",
-    event = "BufReadPost",
-    config = true,
-  },
+  -- FIXME:  エラーが起きてしまう
+  -- Error executing vim.schedule lua callback: Vim:E117: Unknown function: getregionpos
+  -- stack traceback:
+  -- 	[C]: in function 'getregionpos'
+  -- 	...im/lazy/visual-whitespace.nvim/lua/visual-whitespace.lua:190: in function <...im/lazy/visual-whitespace.nvim/lua/visual-whitespace.lua:183>
+  -- { -- display space in visual mode
+  --   "mcauley-penney/visual-whitespace.nvim",
+  --   event = "BufReadPost",
+  --   config = true,
+  -- },
   { -- lazy load docs
     "phanen/lazy-help.nvim",
     ft = "lazy",
@@ -2036,6 +2211,10 @@ When given a task:
           name = "personal",
           path = "~/Documents/obsidian-vault",
         },
+        {
+          name = "build-system",
+          path = "~/workspace/work/build-system/_docs/",
+        },
       },
 
       daily_notes = {
@@ -2664,7 +2843,7 @@ When given a task:
     "godlygeek/tabular",
     cmd = "Tabularize",
     keys = {
-      { "<leader>a", ":Tabularize /", desc = "Align text", mode = "v" },
+      -- { "<leader>a", ":Tabularize /", desc = "Align text", mode = "v" },
     },
     -- keys = { { "<leader>a ", mode = "v" }, { "<leader>a=", mode = "v" }, { "<leader>a:", mode = "v" } },
   },
@@ -2935,15 +3114,15 @@ When given a task:
     },
   },
 
-  {
-    "kosayoda/nvim-lightbulb",
-    event = "BufReadPost",
-    config = function()
-      require("nvim-lightbulb").setup({
-        autocmd = { enabled = true },
-      })
-    end,
-  },
+  -- { -- code actionのやつ
+  --   "kosayoda/nvim-lightbulb",
+  --   event = "BufReadPost",
+  --   config = function()
+  --     require("nvim-lightbulb").setup({
+  --       autocmd = { enabled = true },
+  --     })
+  --   end,
+  -- },
 
   -- {
   --   "folke/trouble.nvim",
