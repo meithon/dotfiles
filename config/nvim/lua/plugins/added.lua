@@ -82,80 +82,80 @@ return {
       })
     end,
   },
-  {
-    "yetone/avante.nvim",
-    cmd = {
-      "AvanteAsk",
-      "AvanteBuild",
-      "AvanteChat",
-      "AvanteEdit",
-      "AvanteFocus",
-      "AvanteRefresh",
-      "AvanteSwitchProvider",
-      "AvanteShowRepoMap",
-      "AvanteToggle",
-    },
-    version = false, -- set this if you want to always pull the latest change
-    opts = {
-      provider = "claude",
-      -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
-      -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
-      -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
-      auto_suggestions_provider = "openai",
-      claude = {
-        endpoint = "https://api.anthropic.com",
-        model = "claude-3-5-sonnet-20241022",
-        temperature = 0,
-        max_tokens = 4096,
-      },
-      openai = {
-        endpoint = "https://api.deepseek.com/v1",
-        model = "deepseek-chat",
-        timeout = 30000, -- Timeout in milliseconds
-        temperature = 0,
-        max_tokens = 4096,
-        -- optional
-        api_key_name = "OPENAI_API_KEY", -- default OPENAI_API_KEY if not set
-      },
-    },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = "make",
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      --- The below dependencies are optional,
-      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
-      {
-        -- support for image pasting
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        "MeanderingProgrammer/render-markdown.nvim",
-        opts = {
-          file_types = { "markdown", "Avante" },
-        },
-        ft = { "markdown", "Avante" },
-      },
-    },
-  },
+  -- {
+  --   "yetone/avante.nvim",
+  --   cmd = {
+  --     "AvanteAsk",
+  --     "AvanteBuild",
+  --     "AvanteChat",
+  --     "AvanteEdit",
+  --     "AvanteFocus",
+  --     "AvanteRefresh",
+  --     "AvanteSwitchProvider",
+  --     "AvanteShowRepoMap",
+  --     "AvanteToggle",
+  --   },
+  --   version = false, -- set this if you want to always pull the latest change
+  --   opts = {
+  --     provider = "claude",
+  --     -- WARNING: Since auto-suggestions are a high-frequency operation and therefore expensive,
+  --     -- currently designating it as `copilot` provider is dangerous because: https://github.com/yetone/avante.nvim/issues/1048
+  --     -- Of course, you can reduce the request frequency by increasing `suggestion.debounce`.
+  --     auto_suggestions_provider = "openai",
+  --     claude = {
+  --       endpoint = "https://api.anthropic.com",
+  --       model = "claude-3-5-sonnet-20241022",
+  --       temperature = 0,
+  --       max_tokens = 4096,
+  --     },
+  --     openai = {
+  --       endpoint = "https://api.deepseek.com/v1",
+  --       model = "deepseek-chat",
+  --       timeout = 30000, -- Timeout in milliseconds
+  --       temperature = 0,
+  --       max_tokens = 4096,
+  --       -- optional
+  --       api_key_name = "OPENAI_API_KEY", -- default OPENAI_API_KEY if not set
+  --     },
+  --   },
+  --   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+  --   build = "make",
+  --   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+  --   dependencies = {
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "stevearc/dressing.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --     --- The below dependencies are optional,
+  --     "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+  --     "zbirenbaum/copilot.lua", -- for providers='copilot'
+  --     {
+  --       -- support for image pasting
+  --       "HakonHarnes/img-clip.nvim",
+  --       event = "VeryLazy",
+  --       opts = {
+  --         -- recommended settings
+  --         default = {
+  --           embed_image_as_base64 = false,
+  --           prompt_for_file_name = false,
+  --           drag_and_drop = {
+  --             insert_mode = true,
+  --           },
+  --           -- required for Windows users
+  --           use_absolute_path = true,
+  --         },
+  --       },
+  --     },
+  --     {
+  --       -- Make sure to set this up properly if you have lazy=true
+  --       "MeanderingProgrammer/render-markdown.nvim",
+  --       opts = {
+  --         file_types = { "markdown", "Avante" },
+  --       },
+  --       ft = { "markdown", "Avante" },
+  --     },
+  --   },
+  -- },
   { "EdenEast/nightfox.nvim" },
   -- Disable indent line
   -- {
@@ -798,16 +798,16 @@ return {
 
       local opts = {
         adapters = {
-    openai = function()
-      return require("codecompanion.adapters").extend("openai", {
-        schema = {
-          model = {
-            default = "gpt-4o",
-          },
+          openai = function()
+            return require("codecompanion.adapters").extend("openai", {
+              schema = {
+                model = {
+                  default = "gpt-4o",
+                },
+              },
+            })
+          end,
         },
-      })
-    end,
-  },
         strategies = {
           chat = {
             adapter = "openai",
@@ -2215,6 +2215,10 @@ When given a task:
           name = "build-system",
           path = "~/workspace/work/build-system/_docs/",
         },
+        {
+          name = "mitra",
+          path = "/Users/mei/workspace/mitra/valut/",
+        },
       },
 
       daily_notes = {
@@ -2296,22 +2300,22 @@ When given a task:
   --   },
   --   keys = { { "<leader>ul", "<cmd>Twilight<cr>", desc = "Highlight code" } },
   -- },
-  {
-    "willothy/flatten.nvim",
-    opts = {
-      {
-        "willothy/flatten.nvim",
-        config = true,
-        -- or pass configuration with
-        -- opts = {  }
-        -- Ensure that it runs first to minimize delay when opening file from terminal
-        lazy = false,
-        priority = 1001,
-      },
-      --- ...
-    },
-    update = ":Rocks install flatten.nvim",
-  },
+  -- { -  Open files and command output from `:term`, Wezterm and Kitty in your current neovim instance
+  --   "willothy/flatten.nvim",
+  --   opts = {
+  --     {
+  --       "willothy/flatten.nvim",
+  --       config = true,
+  --       -- or pass configuration with
+  --       -- opts = {  }
+  --       -- Ensure that it runs first to minimize delay when opening file from terminal
+  --       lazy = false,
+  --       priority = 1001,
+  --     },
+  --     --- ...
+  --   },
+  --   update = ":Rocks install flatten.nvim",
+  -- },
   { -- diagnostic fixer
     "piersolenski/wtf.nvim",
     dependencies = {
@@ -3251,13 +3255,13 @@ When given a task:
   {
     "chrisgrieser/nvim-spider",
     lazy = true,
-    dependencies = {
-      "theHamsta/nvim_rocks",
-      build = "pip3 install --user hererocks && python3 -mhererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
-      config = function()
-        require("nvim_rocks").ensure_installed("luautf8")
-      end,
-    },
+    -- dependencies = {
+    --   "theHamsta/nvim_rocks",
+    --   build = "pipx install hererocks && hererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
+    --   config = function()
+    --     require("nvim_rocks").ensure_installed("luautf8")
+    --   end,
+    -- },
     keys = {
       {
         "e",
@@ -3269,16 +3273,16 @@ When given a task:
         "<cmd>lua require('spider').motion('w')<CR>",
         mode = { "n", "o", "x" },
       },
-      {
-        "E",
-        "<cmd>lua require('spider').motion('E')<CR>",
-        mode = { "n", "o", "x" },
-      },
-      {
-        "W",
-        "<cmd>lua require('spider').motion('W')<CR>",
-        mode = { "n", "o", "x" },
-      },
+      -- {
+      --   "E",
+      --   "<cmd>lua require('spider').motion('E')<CR>",
+      --   mode = { "n", "o", "x" },
+      -- },
+      -- {
+      --   "W",
+      --   "<cmd>lua require('spider').motion('W')<CR>",
+      --   mode = { "n", "o", "x" },
+      -- },
       -- ...
     },
   },

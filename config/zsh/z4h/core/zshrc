@@ -111,6 +111,8 @@ bindkey -M vicmd '^O' z4h-cd-back
 bindkey -M vicmd '^I' z4h-cd-forward
 bindkey -M vicmd '^L' z4h-clear-screen-soft-bottom
 
+bindkey "^?" backward-delete-char
+
 # Extend PATH.
 path=(~/bin $path)
 

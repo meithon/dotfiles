@@ -11,7 +11,7 @@
 #
 ######################################################################
 
-. ~/dotfiles/shell/alias.sh
-. ~/dotfiles/shell/asdf.sh
-. ~/dotfiles/shell/envsetup.sh
+# . ~/dotfiles/shell/alias.sh
+# . ~/dotfiles/shell/asdf.sh
+# . ~/dotfiles/shell/envsetup.sh
 
