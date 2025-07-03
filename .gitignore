@@ -2,3 +2,8 @@
 .DS_Store?
 
 .vscode/
+
+# Ignore plain secrets; track only encrypted files
+/secrets/*
+!/secrets/*.secret
+!/secrets/README.md
