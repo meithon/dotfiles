@@ -160,25 +160,27 @@ setup_rust() {
 
 ## @func main
 #  Orchestrate parsing args, cloning, deploying, installing, and final configuration.
+## @func main
+#  Orchestrate parsing args, cloning, deploying, installing, and final configuration.
 main() {
   parse_args "$@"
   printf "%s" "$BOLD"
   cat <<'EOF'
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
-██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ╚══██╔════╝██╔════╝
+██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
 ██║  ██║██║   ██║   ██║   █████╗  ██║██║     █████╗  ███████╗
-██║  ██║██║   ██║   ██║   ██╔══╝  ██║██║      ╚══██║╔══╝  ╚════██║
+██║  ██║██║   ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
 ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
 ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
-*** WHAT IS INSIDE? ***
-1. Clone your dotfiles from $DOTFILES_GITHUB
-2. Install development packages
-3. Symlink config files to your home directory
+  *** WHAT IS INSIDE? ***
+  1. Clone your dotfiles from $DOTFILES_GITHUB
+  2. Install development packages
+  3. Symlink config files to your home directory
 
-*** HOW TO INSTALL? ***
-Read the README.md for details.
-Licensed under MIT.
+  *** HOW TO INSTALL? ***
+  Read the README.md for details.
+  Licensed under MIT.
 EOF
   printf "%s" "$NORMAL"
 
