@@ -20,26 +20,19 @@ cmd="${1:-help}"
 shift || true
 
 case "$cmd" in
-  init)
-    git secret init
-    if [ "$#" -eq 0 ]; then
-      echo "No GPG keys specified. Please provide at least one key ID or email."
-      exit 1
-    fi
-    git secret tell "$@"
-    ;;
-  add)
-    if [ "$#" -eq 0 ]; then
-      echo "No files specified to add"
-      exit 1
-    fi
-    git secret add "$@"
-    ;;
-  hide)
+  update)
+    changed_files=$(ls -la ./secrets/)
+
+    for file in $changed_files; do
+      # skip extension is .secret
+      if [[ "$file" == *.secret ]]; then
+          continue
+      fi
+      if [ "$file" = "./secrets/*" ]; then
+        git secret add "$file"
+      fi
+    done
     git secret hide
-    ;;
-  reveal)
-    git secret reveal
     ;;
   help)
     print_usage
