@@ -1,16 +1,26 @@
 #!/bin/sh
+#
+# echo "Running pre-commit checks..."
+#
+# result=$(
+#   stylua --config-path config/nvim/lua/.stylua.toml config/nvim/lua
+#   echo $?
+# )
+#
+# if [ $result -eq 0 ]; then
+#   echo "✅ Pre-commit checks passed successfully. Proceeding with commit..."
+# else
+#   echo "❌ Pre-commit checks failed! Please fix the issues and try again."
+#   echo "   Run 'pre-commit run --all-files' to check all files manually."
+#   exit 1
+# fi
 
-echo "Running pre-commit checks..."
+changed_files=$(git diff --cached --name-only)
 
-result=$(
-  stylua --config-path config/nvim/lua/.stylua.toml config/nvim/lua
-  echo $?
-)
-
-if [ $result -eq 0 ]; then
-  echo "✅ Pre-commit checks passed successfully. Proceeding with commit..."
-else
-  echo "❌ Pre-commit checks failed! Please fix the issues and try again."
-  echo "   Run 'pre-commit run --all-files' to check all files manually."
-  exit 1
-fi
+for file in $changed_files; do
+  if [ "$file" = "./secrets/*" ]; then
+    git secret add "$file"
+    git secret hide
+    git add "$file"
+  fi
+done
