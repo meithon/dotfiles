@@ -1,136 +1,171 @@
 #!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
-DOTPATH=~/dotfiles
-DOTFILES_YES_OPTION=false
+# Configuration
+DOTPATH="$HOME/dotfiles"
+DOTFILES_GITHUB="https://github.com/MeiWagatsuma/dotfiles"
+FORCE=false
 
-# オプションを処理
-while getopts "y" opt; do
-  case $opt in
-  y)
-    DOTFILES_YES_OPTION=true
-    ;;
-  \?)
-    echo "Invalid option: -$OPTARG" >&2
-    exit 1
-    ;;
-  esac
-done
-shift $((OPTIND - 1))
+usage() {
+  cat <<EOF
+Usage: $0 [-y] [-h]
 
-get_user_confirmation() {
-  if [ "$DOTFILES_YES_OPTION" = true ]; then
+Options:
+  -y    Automatic yes to prompts (no confirmation)
+  -h    Show this help message
+EOF
+  exit 1
+}
+
+parse_args() {
+  while getopts "yh" opt; do
+    case $opt in
+      y) FORCE=true ;;
+      h) usage     ;;
+      *) usage     ;;
+    esac
+  done
+  shift $((OPTIND -1))
+}
+
+# Color setup
+if command -v tput &>/dev/null && [ -t 1 ]; then
+  ncolors=$(tput colors 2>/dev/null || echo 0)
+  if [ "$ncolors" -ge 8 ]; then
+    RED="$(tput setaf 1)"   GREEN="$(tput setaf 2)"   YELLOW="$(tput setaf 3)"
+    BOLD="$(tput bold)"     NORMAL="$(tput sgr0)"
+  else
+    RED="" GREEN="" YELLOW="" BOLD="" NORMAL=""
+  fi
+else
+  RED="" GREEN="" YELLOW="" BOLD="" NORMAL=""
+fi
+
+# Logging helpers
+info()  { printf "%s[+] %s%s
+" "$GREEN" "$1" "$NORMAL"; }
+warn()  { printf "%s[*] %s%s
+" "$YELLOW" "$1" "$NORMAL"; }
+error() { printf "%s[-] %s%s
+" "$RED" "$1" "$NORMAL"; }
+link()  { mkdir -p "$(dirname "$2")"; ln -sfn "$1" "$2"; info "Linked $2 → $1"; }
+
+## @func confirm
+#  Prompt the user to confirm the installation unless forced with -y.
+
+confirm() {
+  [ "$FORCE" = true ] && return
+  read -rp "${YELLOW}[*] Proceed with installation? [y/N] ${NORMAL}" ans
+  [[ "$ans" =~ ^[Yy]$ ]] || { error "Aborted."; exit 1; }
+}
+
+## @func clone_dotfiles
+#  Clone the dotfiles repository into DOTPATH if it does not already exist.
+clone_dotfiles() {
+  if [ -d "$DOTPATH" ]; then
+    warn "Dotfiles already present at $DOTPATH"
     return
   fi
+  command -v git &>/dev/null || { error "git is required."; exit 1; }
+  info "Cloning dotfiles into $DOTPATH"
+  git clone "$DOTFILES_GITHUB" "$DOTPATH"
+}
 
-  echo ""
-  read -p "$(warn 'Are you sure you want to install it? [y/N] ')" -n 1 -r
-  echo ""
+## @func deploy_dotfiles
+#  Create symlinks for hooks, home dotfiles, and ~/.config entries.
+deploy_dotfiles() {
+  info "Deploying dotfiles"
+  [ -d "$DOTPATH" ] || { error "$DOTPATH not found"; exit 1; }
+  link "$DOTPATH/pre-commit" "$DOTPATH/.git/hooks/pre-commit"
+  for src in "$DOTPATH/home"/.* "$DOTPATH/home"/*; do
+    base=$(basename "$src")
+    [[ "$base" = . || "$base" = .. ]] && continue
+    link "$src" "$HOME/$base"
+  done
+  for src in "$DOTPATH/config"/*; do
+    base=$(basename "$src")
+    link "$src" "$HOME/.config/$base"
+  done
+}
 
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo ""
-    error 'OK. Goodbye.'
-    exit 1
+## @func install_apt
+#  Install development packages on Debian/Ubuntu systems via apt and apt-fast.
+install_apt() {
+  sudo apt-get update
+  sudo apt-get install -y software-properties-common
+  sudo add-apt-repository -y ppa:apt-fast/stable
+  sudo apt-get update
+  sudo apt-get install -y apt-fast
+  apt-fast install -y curl git btop zsh tmux jq fzf vim gh ripgrep bat gcc unzip make pkg-config libssl-dev
+}
+
+## @func install_brew
+#  Install packages on macOS using Homebrew.
+install_brew() {
+  command -v brew &>/dev/null || { error "Homebrew not found. Install it first."; exit 1; }
+  brew update
+  brew install curl git btop zsh tmux jq fzf ripgrep bat gcc unzip make pkg-config asdf
+}
+
+## @func install_termux
+#  Install packages on Termux (Android) environment.
+install_termux() {
+  pkg update -y
+  pkg upgrade -y
+  pkg install -y curl git btop zsh tmux jq fzf ripgrep bat clang make pkg-config openssl unzip
+}
+
+## @func install_tools
+#  Detect OS and install required development tools; ensure asdf is installed.
+install_tools() {
+  info "Installing tools for OS: $OSTYPE"
+  if [[ "$OSTYPE" == linux-gnu* ]]; then
+    install_apt
+  elif [[ "$OSTYPE" == darwin* ]]; then
+    install_brew
+  elif [ -n "${TERMUX_VERSION-+x}" ]; then
+    install_termux
+  else
+    error "Unsupported OS: $OSTYPE"; exit 1
+  fi
+  if [ ! -d "$HOME/.asdf" ]; then
+    info "Installing asdf"
+    git clone https://github.com/asdf-vm/asdf.git "$HOME/.asdf" --branch v0.14.0
   fi
 }
+
+## @func setup_asdf
+#  Add language plugins and install global versions via asdf.
+setup_asdf() {
+  info "Configuring asdf plugins"
+  for lang in deno golang nodejs python rust; do
+    asdf plugin-add "$lang" 2>/dev/null || true
+    asdf install "$lang" latest
+    asdf global "$lang" latest
+  done
+  asdf plugin-add java 2>/dev/null || true
+  asdf install java openjdk-21.0.2
+  asdf global java openjdk-21.0.2
+}
+
+## @func setup_rust
+#  Set the Rust toolchain to stable and install useful Rust-based CLI tools.
+setup_rust() {
+  info "Configuring Rust"
+  rustup default stable
+  cargo install lsd sheldon bob-nvim pueue
+  bob use latest
+}
+
+## @func main
+#  Orchestrate parsing args, cloning, deploying, installing, and final configuration.
+## @func main
+#  Orchestrate parsing args, cloning, deploying, installing, and final configuration.
 main() {
+  parse_args "$@"
   printf "%s" "$BOLD"
-  echo "$dotfiles_logo"
-  printf "%s" "$NORMAL"
-
-  get_user_confirmation
-  info "Downloading dotfiles..."
-  git_clone_dotfiles
-
-  info "Deploying dotfiles..."
-  deploy_dotfiles
-  info "Deployed!"
-
-  info "Installing tools..."
-  install_tools
-  . ~/dotfiles/shell/asdf.sh
-
-  info "Setting up Asdf"
-  setup_asdf
-
-  . ~/dotfiles/shell/envsetup.sh
-
-  setup_rust
-  . ~/dotfiles/shell/alias.sh
-}
-
-# trap 'echo Error: $0:$LINENO stopped; exit 1' ERR INT
-
-# if [ -z "${DOTPATH:-}" ]; then
-#   DOTPATH=$HOME/dotfiles
-#   export DOTPATH
-# fi
-#
-# # set dotfiles path as default variable
-# set -euo pipefail
-#
-# # load lib functions
-# # use colors on terminal
-# tput=$(which tput)
-# if [ -n "$tput" ] && [ -t 1 ]; then
-#   if ! ncolors=$($tput colors 2>/dev/null); then
-#     # tput execution failed, fallback to ANSI escape codes
-#     RED="\033[0;31m"
-#     GREEN="\033[0;32m"
-#     YELLOW="\033[0;33m"
-#     BOLD="\033[1m"
-#     NORMAL="\033[0m"
-#   elif [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
-#     RED="$($tput setaf 1)"
-#     GREEN="$($tput setaf 2)"
-#     YELLOW="$($tput setaf 3)"
-#     BOLD="$($tput bold)"
-#     NORMAL="$($tput sgr0)"
-#   else
-#     # Terminal doesn't support enough colors
-#     RED=""
-#     GREEN=""
-#     YELLOW=""
-#     BOLD=""
-#     NORMAL=""
-#   fi
-# else
-#   # tput is not available, use ANSI escape codes
-#   RED="\033[0;31m"
-#   GREEN="\033[0;32m"
-#   YELLOW="\033[0;33m"
-#   BOLD="\033[1m"
-#   NORMAL="\033[0m"
-# fi
-
-### functions
-# info: output terminal green
-info() {
-  printf "${GREEN}[+] ${NORMAL}%s\n" "$1"
-}
-# error: output terminal red
-error() {
-  printf "${RED}[-] ${NORMAL}%s\n" "$1"
-}
-# warn: output terminal yellow
-warn() {
-  printf "${YELLOW}[*] ${NORMAL}%s\n" "$1"
-}
-# log: output terminal normal
-log() {
-  printf "  %s\n" "$1"
-}
-
-# check package & return flag
-DOTFILES_GITHUB="https://github.com/MeiWagatsuma/dotfiles"
-
-### Start install script
-is_exists() {
-  which "$1" >/dev/null 2>&1
-  return $?
-}
-export DOTFILES_GITHUB
-
-dotfiles_logo='
+  cat <<'EOF'
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
 ██║  ██║██║   ██║   ██║   █████╗  ██║██║     █████╗  ███████╗
@@ -138,192 +173,28 @@ dotfiles_logo='
 ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
 ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
-*** WHAT IS INSIDE? ***
-1. Download dotfiles from https://github.com/MeiWagatsuma/dotfiles
-2. Install dev packages
-   [coreutils bash vim git python tmux curl fish...]
-3. Symbolik linking config files to your home directory
+  *** WHAT IS INSIDE? ***
+  1. Clone your dotfiles from $DOTFILES_GITHUB
+  2. Install development packages
+  3. Symlink config files to your home directory
 
-*** HOW TO INSTALL? ***
-See the README for documentation.
-Licensed under the MIT license.
-'
+  *** HOW TO INSTALL? ***
+  Read the README.md for details.
+  Licensed under MIT.
+EOF
+  printf "%s" "$NORMAL"
 
-git_clone_dotfiles() {
-
-  if [ ! -d "$DOTPATH" ]; then
-    if is_exists "git"; then
-      git clone "$DOTFILES_GITHUB" "$DOTPATH"
-      info "Downloaded"
-
-    elif is_exists "curl" || is_exists "wget"; then
-      local zip_url="https://github.com/MeiWagatsuma/dotfiles/archive/main.zip"
-      local temp_file="/tmp/dotfiles.zip"
-
-      if is_exists "curl"; then
-        curl -L "$zip_url" -o "$temp_file"
-      elif is_exists "wget"; then
-        wget "$zip_url" -O "$temp_file"
-      fi
-
-      if [ ! -f "$temp_file" ]; then
-        error "Failed to download dotfiles"
-        exit 1
-      fi
-
-      if is_exists "unzip"; then
-        unzip "$temp_file" -d "/tmp"
-      elif is_exists "tar"; then
-        # Some systems have tar with zip support
-        tar -xvf "$temp_file" -C "/tmp"
-      else
-        error "unzip or tar command is required"
-        rm "$temp_file"
-        exit 1
-      fi
-
-      rm "$temp_file"
-
-      if [ ! -d "/tmp/dotfiles-main" ]; then
-        error "dotfiles-main: not found"
-        exit 1
-      fi
-      mv -f "/tmp/dotfiles-main" "$DOTPATH"
-      info "Downloaded!"
-
-    else
-      error "git, curl or wget required"
-      exit 1
-    fi
-
-  else
-    warn "Dotfiles are already installed"
-  fi
+  confirm
+  clone_dotfiles
+  deploy_dotfiles
+  install_tools
+  source "$HOME/dotfiles/shell/asdf.sh"
+  setup_asdf
+  source "$HOME/dotfiles/shell/envsetup.sh"
+  setup_rust
+  source "$HOME/dotfiles/shell/alias.sh"
+  info "Installation complete!"
 }
 
-validate_dotpath_exists() {
-  if [ ! -d "$DOTPATH" ]; then
-    error "$DOTPATH: not found"
-    exit 1
-  fi
-}
-
-check_file_exists() {
-  if [ ! -e "$1" ]; then
-    error "File $1 does not exist"
-    exit 2
-  fi
-}
-
-create_symlink() {
-  local source=$1
-  local target=$2
-
-  if [ ! -e "$source" ]; then
-    error "Source $source does not exist"
-    return
-  fi
-
-  ln -sif "$source" "$target"
-}
-
-deploy_dotfiles() {
-
-  validate_dotpath_exists
-
-  create_symlink "pre-commit" ".git/hooks/pre-commit"
-
-  # shopt -s dotglob
-  for file in ~/dotfiles/home/*; do
-    create_symlink "$file" ~/
-  done
-
-  mkdir -p ~/.config
-  for file in ~/dotfiles/config/*; do
-    create_symlink "$file" ~/.config
-  done
-
-}
-
-install_tools() {
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "This is Linux "
-    apt-get update
-    apt-get install -y software-properties-common
-    add-apt-repository ppa:apt-fast/stable
-    apt-get update
-    apt-get -y install apt-fast
-    apt-fast install -y \
-      curl \
-      git \
-      btop \
-      zsh \
-      tmux \
-      jq \
-      fzf \
-      tmux \
-      vim \
-      gh \
-      ripgrep \
-      bat \
-      gcc \
-      unzip \
-      make \
-      pkg-config \
-      libssl-dev
-    if [ ! -d "$HOME/.asdf" ]; then
-      git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-    fi
-  elif [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "This is macOS."
-    # TODO: Check if homebrew is installed
-    export PATH=/opt/homebrew/bin:$PATH
-    brew install curl git btop zsh tmux jq fzf tmux ripgrep bat gcc unzip make pkg-config
-    brew install asdf
-  else
-    echo "This is an unsupported OS."
-    exit 1
-  fi
-
-}
-
-setup_asdf() {
-  local list=(
-    "deno"
-    "golang"
-    "nodejs"
-    "python"
-    "rust"
-  )
-
-  # Check if asdf is installed
-  if ! command -v asdf &>/dev/null; then
-    echo "Error: asdf is not installed. Please install it first."
-    return 1
-  fi
-
-  for lang in "${list[@]}"; do
-    (
-      asdf plugin add "$lang"
-      asdf install "$lang" latest
-      asdf global "$lang" latest
-      info "Installed asdf $lang"
-    )
-  done
-
-  (
-    asdf plugin add java
-    asdf install java openjdk-21.0.2
-    asdf global java openjdk-21.0.2
-  )
-  wait
-}
-
-setup_rust() {
-  rustup default stable
-  cargo install lsd sheldon bob-nvim pueue
-
-  bob use latest
-}
-
-main
+parse_args "$@"
+main "$@"
