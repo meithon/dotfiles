@@ -49,7 +49,16 @@ warn()  { printf "%s[*] %s%s
 " "$YELLOW" "$1" "$NORMAL"; }
 error() { printf "%s[-] %s%s
 " "$RED" "$1" "$NORMAL"; }
-link()  { mkdir -p "$(dirname "$2")"; ln -sfn "$1" "$2"; info "Linked $2 → $1"; }
+link() {
+  if [ ! -e "$1" ]; then
+    warn "$1 does not exist."
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$2")"
+  ln -sfn "$1" "$2"
+  info "Linked $2 → $1"
+}
 
 ## @func confirm
 #  Prompt the user to confirm the installation unless forced with -y.
@@ -89,6 +98,10 @@ deploy_dotfiles() {
   done
 }
 
+deploy_secrets() {
+  link ~/dotfiles/secrets/.zshsecrets ~/.zshsecrets
+}
+
 ## @func install_apt
 #  Install development packages on Debian/Ubuntu systems via apt and apt-fast.
 install_apt() {
@@ -98,6 +111,11 @@ install_apt() {
   sudo apt-get update
   sudo apt-get install -y apt-fast
   apt-fast install -y curl git btop zsh tmux jq fzf vim gh ripgrep bat gcc unzip make pkg-config libssl-dev
+}
+
+install_apk() {
+  sudo apk update
+  sudo apk add curl git btop zsh tmux jq fzf vim gh ripgrep bat gcc unzip make pkg-config openssl
 }
 
 ## @func install_brew
@@ -122,6 +140,8 @@ install_tools() {
   info "Installing tools for OS: $OSTYPE"
   if [[ "$OSTYPE" == linux-gnu* ]]; then
     install_apt
+  elif [[ "$OSTYPE" == linux-musl* ]]; then
+    install_apk
   elif [[ "$OSTYPE" == darwin* ]]; then
     install_brew
   elif [ -n "${TERMUX_VERSION-+x}" ]; then
