@@ -87,11 +87,17 @@ deploy_dotfiles() {
   info "Deploying dotfiles"
   [ -d "$DOTPATH" ] || { error "$DOTPATH not found"; exit 1; }
   link "$DOTPATH/pre-commit" "$DOTPATH/.git/hooks/pre-commit"
-  for src in "$DOTPATH/home"/.* "$DOTPATH/home"/*; do
-    base=$(basename "$src")
-    [[ "$base" = . || "$base" = .. ]] && continue
-    link "$src" "$HOME/$base"
+  
+  # Link files in home directory, recursively handling directories
+  find "$DOTPATH/home" -type f | while read -r src; do
+    # Remove the home/ prefix to get relative path
+    rel_path="${src#$DOTPATH/home/}"
+    dest="$HOME/$rel_path"
+    # Create parent directory if needed
+    mkdir -p "$(dirname "$dest")"
+    link "$src" "$dest"
   done
+  
   for src in "$DOTPATH/config"/*; do
     base=$(basename "$src")
     link "$src" "$HOME/.config/$base"
