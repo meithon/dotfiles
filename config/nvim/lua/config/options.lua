@@ -93,7 +93,7 @@ end
 --     end
 --   end
 -- })
-vim.api.nvim_create_autocmd("BufReadPost", {
+vim.api.nvim_create_autocmd({"BufReadPost", "BufNewFile", "BufEnter"}, {
   pattern = "*",
   callback = function()
     vim.opt_local.spell = false
