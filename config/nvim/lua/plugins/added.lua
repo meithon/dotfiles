@@ -5,6 +5,301 @@ local map = vim.keymap.setadded
 ---
 ---
 return {
+  -- lua/plugins/mermaider.lua
+  {
+    "snrogers/mermaider.nvim",
+    dependencies = {
+      "3rd/image.nvim", -- Required for image display
+    },
+    config = function()
+      require("mermaider").setup({
+        -- Your config here (see Configuration section below)
+      })
+    end,
+    ft = { "mmd", "mermaid" },
+  },
+  -- {
+  --   'NickvanDyke/opencode.nvim',
+  --   dependencies = {
+  --     'folke/snacks.nvim',
+  --   },
+  --   keys = {
+  --     {
+  --       '<leader>ot',
+  --       function()
+  --         require('snacks.terminal').toggle('opencode', { win = { position = 'right' } })
+  --       end,
+  --       desc = "Toggle opencode",
+  --     },
+  --   }
+  -- }
+  {
+    "loukotal/neopencode.nvim",
+    config = function()
+      require("neopencode.main").setup({
+        -- follows https://models.dev/
+        -- needs to be setup in opencode
+        provider_id = "google",
+        model_id = "gemini-2.5-pro-preview-06-05",
+      })
+    end,
+  },
+  {
+    "NickvanDyke/opencode.nvim",
+    ---@type opencode.Config
+    opts = {
+      -- Set these according to https://models.dev/
+      provider_id = "openrouter",
+      model_id = "qwen/qwen3-coder",
+    },
+    -- stylua: ignore
+    keys = {
+      -- opencode.nvim exposes a general, flexible API — customize it to your workflow!
+      -- But here are some examples to get you started :)
+      { '<leader>oa', function() require('opencode').ask() end, desc = 'Ask opencode', mode = { 'n', 'v' }, },
+      { '<leader>oA', function() require('opencode').ask('@file ') end, desc = 'Ask opencode about current file', mode = { 'n', 'v' }, },
+      { '<leader>oe', function() require('opencode').prompt('Explain @cursor and its context') end, desc = 'Explain code near cursor' },
+      { '<leader>or', function() require('opencode').prompt('Review @file for correctness and readability') end, desc = 'Review file', },
+      { '<leader>of', function() require('opencode').prompt('Fix these @diagnostics') end, desc = 'Fix errors', },
+      { '<leader>oo', function() require('opencode').prompt('Optimize @selection for performance and readability') end, desc = 'Optimize selection', mode = 'v', },
+      { '<leader>od', function() require('opencode').prompt('Add documentation comments for @selection') end, desc = 'Document selection', mode = 'v', },
+      -- { '<leader>ot', function() require('opencode').prompt('Add tests for @selection') end, desc = 'Test selection', mode = 'v', },
+    },
+  },
+  {
+    "kcl-lang/kcl.nvim",
+  },
+  --  { -- for scope.nvim
+  --    "stevearc/resession.nvim",
+  --    config = function()
+  --      local resession = require("resession")
+  --      resession.setup()
+  --      -- Resession does NOTHING automagically, so we have to set up some keymaps
+  --      vim.keymap.set("n", "<leader>ss", resession.save)
+  --      vim.keymap.set("n", "<leader>sl", resession.load)
+  --      vim.keymap.set("n", "<leader>sd", resession.delete)
+  --    end,
+  --  },
+  --  { -- for resession.nvim
+  --    "folke/persistence.nvim",
+  --    enabled = false,
+  -- },
+  {
+    "nes.nvim",
+    -- event = "VeryLazy",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    opts = {
+      provider = "openrouter",
+      api_key = vim.env.OPENROUTER_API_KEY,
+      -- model = "mistralai/mistral-small-3.2-24b-instruct", -- optional
+      -- model = "qwen/qwen-2.5-7b-instruct", -- optional
+      model = "deepseek/deepseek-r1-0528-qwen3-8b:free",
+    },
+    dir = "~/ghq/github.com/Xuyuanp/nes.nvim",
+    -- lazy config
+    keys = {
+      {
+        "<C-o>",
+        function()
+          print("request!!")
+          require("nes").get_suggestion()
+        end,
+        mode = "i",
+        desc = "[Nes] get suggestion",
+      },
+      {
+        "<C-u>",
+        function()
+          print("apply!!")
+          require("nes").apply_suggestion(0, { jump = true, trigger = true })
+        end,
+        mode = "i",
+        desc = "[Nes] apply suggestion",
+      },
+    },
+  },
+  {
+    "dlants/magenta.nvim",
+    -- dir = "/Users/mei/workspace/private/investigation/magenta.nvim/magenta.nvim",
+    dir = "/Users/mei/workspace/private/investigation/magenta.nvim/magenta.nvim/.git/phantom/worktrees/new-log",
+    build = "npm install --frozen-lockfile",
+    cmd = { "Magenta" },
+    keys = {
+      { "<leader>mn", ":Magenta new-thread<CR>", desc = "Create new Magenta thread" },
+      { "<leader>mc", ":Magenta clear<CR>", desc = "Clear Magenta state" },
+      { "<leader>ma", ":Magenta abort<CR>", desc = "Abort current Magenta operation" },
+      { "<leader>mt", ":Magenta toggle<CR>", desc = "Toggle Magenta window" },
+      { "<leader>mi", ":Magenta start-inline-edit<CR>", mode = "n", desc = "Inline edit" },
+      { "<leader>mi", ":Magenta start-inline-edit-selection<CR>", mode = "v", desc = "Inline edit selection" },
+      { "<leader>mp", ":Magenta paste-selection<CR>", mode = "v", desc = "Send selection to Magenta" },
+      {
+        "<leader>mb",
+        function()
+          require("magenta.actions").add_buffer_to_context()
+        end,
+        desc = "Add current buffer to Magenta context",
+      },
+      {
+        "<leader>mf",
+        function()
+          require("magenta.actions").pick_context_files()
+        end,
+        desc = "Select files to add to Magenta context",
+      },
+      {
+        "<leader>mp",
+        function()
+          require("magenta.actions").pick_provider()
+        end,
+        desc = "Select provider and model",
+      },
+    },
+    config = function()
+      vim.api.nvim_create_user_command("MagentaListMCPServers", function()
+        -- 内部状態にアクセスするLua関数を呼び出します
+        require("magenta.actions").list_mcp_servers()
+      end, {})
+      require("magenta").setup({
+        autoContext = {
+          "context.md",
+          "claude.md",
+          ".magenta/*.md",
+          "~/dotfiles/magenta.md",
+        },
+        commandAllowlist = {
+          -- "^ls( [^;&|()<>]*)?$",
+          -- "^pwd$",
+          -- "^echo( [^;&|()<>]*)?$",
+          -- "^git (status|log|diff|show|add|commit|push|reset|restore|branch|checkout|switch|fetch|pull|merge|rebase|tag|stash)( [^;&|()<>]*)?$",
+          -- "^ls [^;&()<>]* | grep [^;&|()<>]*$",
+          -- "^echo [^;&|()<>]* > [a-zA-Z0-9_\\-.]+$",
+          -- "^grep( -[A-Za-z]*)? [^;&|()<>]*$",
+          ".*",
+        },
+        defaultKeymaps = false,
+        mcpServers = {
+          vectorcode = {
+            command = "vectorcode-mcp-server",
+            args = {},
+          },
+          browsermcp = {
+            command = "npx",
+            args = { "@browsermcp/mcp@latest" },
+          },
+          context7 = {
+            command = "npx",
+            args = { "-y", "@upstash/context7-mcp" },
+          },
+          -- https://github.com/github/github-mcp-server
+          githubMcpServer = {
+            command = "github-mcp-server",
+            args = {
+              "stdio",
+            },
+            env = {
+              GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"),
+            },
+          },
+          openmemory = {
+            command = "npx",
+            args = {
+              "-y",
+              "supergateway",
+              "--sse",
+              "http://localhost:8765/mcp/openmemory/sse/mei",
+              "--debug", -- デバッグフラグを追加
+            },
+            debug = true, -- MCPクライアント側のデバッグを有効に
+          },
+        },
+        profiles = {
+          {
+            name = "claude-3-7",
+            provider = "anthropic",
+            model = "claude-3-7-sonnet-latest",
+            apiKeyEnvVar = "ANTHROPIC_API_KEY",
+          },
+          {
+            name = "custom",
+            provider = "anthropic",
+            model = "claude-3-7-sonnet-latest",
+            apiKeyEnvVar = "CUSTOM_API_KEY_ENV_VAR",
+            baseUrl = "custom anthropic endpoint",
+          },
+        },
+      })
+    end,
+
+    -- opts = {
+    --   autoContext = {
+    --     "context.md",
+    --     "claude.md",
+    --     ".magenta/*.md",
+    --     "~/dotfiles/magenta.md",
+    --   },
+    --   commandAllowlist = {
+    --     -- "^ls( [^;&|()<>]*)?$",
+    --     -- "^pwd$",
+    --     -- "^echo( [^;&|()<>]*)?$",
+    --     -- "^git (status|log|diff|show|add|commit|push|reset|restore|branch|checkout|switch|fetch|pull|merge|rebase|tag|stash)( [^;&|()<>]*)?$",
+    --     -- "^ls [^;&()<>]* | grep [^;&|()<>]*$",
+    --     -- "^echo [^;&|()<>]* > [a-zA-Z0-9_\\-.]+$",
+    --     -- "^grep( -[A-Za-z]*)? [^;&|()<>]*$",
+    --     ".*",
+    --   },
+    --   defaultKeymaps = false,
+    --   mcpServers = {
+    --     openmemory = {
+    --       command = "npx",
+    --       args = {
+    --         "-y",
+    --         "supergateway",
+    --         "--sse",
+    --         "http://localhost:8765/mcp/openmemory/sse/mei",
+    --       },
+    --     },
+    --     vectorcode = {
+    --       command = "vectorcode-mcp-server",
+    --       args = {},
+    --     },
+    --     browsermcp = {
+    --       command = "npx",
+    --       args = { "@browsermcp/mcp@latest" },
+    --     },
+    --     context7 = {
+    --       command = "npx",
+    --       args = { "-y", "@upstash/context7-mcp" },
+    --     },
+    --     -- https://github.com/github/github-mcp-server
+    --     githubMcpServer = {
+    --       command = "github-mcp-server",
+    --       args = {
+    --         "stdio",
+    --       },
+    --       env = {
+    --         -- GITHUB_PERSONAL_ACCESS_TOKEN =
+    --       },
+    --     },
+    --   },
+    --   profiles = {
+    --     {
+    --       name = "claude-3-7",
+    --       provider = "anthropic",
+    --       model = "claude-3-7-sonnet-latest",
+    --       apiKeyEnvVar = "ANTHROPIC_API_KEY",
+    --     },
+    --     {
+    --       name = "custom",
+    --       provider = "anthropic",
+    --       model = "claude-3-7-sonnet-latest",
+    --       apiKeyEnvVar = "CUSTOM_API_KEY_ENV_VAR",
+    --       baseUrl = "custom anthropic endpoint",
+    --     },
+    --   },
+    -- },
+  },
   {
     "alexandrosalexiou/kotlin.nvim",
   },
@@ -2196,98 +2491,301 @@ When given a task:
       "ObsidianExtractNote",
       "ObsidianDebug",
       "ObsidianTOC",
+      "CreateVault",
     },
     keys = {
       { "<leader>oo", "<cmd>ObsidianQuickSwitch<cr>", desc = "Open Obsidian" },
       { "<leader>ot", "<cmd>ObsidianToday<cr>", desc = "Open Obsidian Daily note" },
+      { "<leader>on", "<cmd>ObsidianTemplate<cr>", desc = "Create new note from template" },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "gvvaughan/lyaml",
     },
-    ---@param opts obsidian.config.ClientOpts
-    opts = {
-      workspaces = {
-        {
-          name = "personal",
-          path = "~/Documents/obsidian-vault",
-        },
-        {
-          name = "build-system",
-          path = "~/workspace/work/build-system/_docs/",
-        },
-        {
-          name = "mitra",
-          path = "/Users/mei/workspace/mitra/valut/",
-        },
-      },
+    config = function()
+      local lyaml = require("lyaml")
+      local obsidian_data_path = "~/.local/share/obsidian.nvim/data.yaml"
 
-      daily_notes = {
-        -- Optional, if you keep daily notes in a separate directory.
-        folder = "summary/daily",
-        -- Optional, if you want to change the date format for the ID of daily notes.
-        date_format = "%Y/%Y-%m-%d",
-        -- Optional, if you want to change the date format of the default alias of daily notes.
-        -- alias_format = "%B %-d, %Y",
-        -- Optional, default tags to add to each new daily note created.
-        default_tags = { "summary/daily" },
-        -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-        -- template = "templates/tplDaily",
-      },
-      disable_frontmatter = true,
-      templates = {
-        folder = "templates",
-        date_format = "%Y-%m-%d",
-        time_format = "%H:%M",
-        -- A map for custom variables, the key should be the variable and the value a function
-        substitutions = {},
-      },
-      note_id_func = function(title)
-        return title
-      end,
-      note_frontmatter_func = function(note)
-        -- -- Add the title of the note as an alias.
-        -- if note.title then
-        --   note:add_alias(note.title)
-        -- end
-        --
-        -- local out = { id = note.id, aliases = note.aliases, tags = note.tags }
-        --
-        -- -- `note.metadata` contains any manually added fields in the frontmatter.
-        -- -- So here we just make sure those fields are kept in the frontmatter.
-        -- if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-        --   for k, v in pairs(note.metadata) do
-        --     out[k] = v
-        --   end
-        -- end
-        --
-        return {}
-      end,
-      mappings = {
-        -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
-        ["gf"] = {
-          action = function()
-            return require("obsidian").util.gf_passthrough()
-          end,
-          opts = { noremap = false, expr = true, buffer = true },
-        },
-        -- Toggle check-boxes.
-        ["<leader>ch"] = {
-          action = function()
-            return require("obsidian").util.toggle_checkbox()
-          end,
-          opts = { buffer = true },
-        },
-        -- Smart action depending on context, either follow link or toggle checkbox.
-        ["<cr>"] = {
-          action = function()
-            return require("obsidian").util.smart_action()
-          end,
-          opts = { buffer = true, expr = true },
-        },
-      },
+      local function load_workspaces_from_yaml(file_path)
+        local expanded_path = vim.fn.expand(file_path)
 
-      -- see below for full list of options 👇
-    },
+        local file = io.open(expanded_path, "r")
+        if not file then
+          return {}
+        end
+
+        local content = file:read("*all")
+        file:close()
+
+        if content == "" or content == nil then
+          return {}
+        end
+
+        local success, data = pcall(lyaml.load, content)
+        if not success or not data or type(data) ~= "table" then
+          return {}
+        end
+
+        return data.workspaces or {}
+      end
+
+      local function save_workspaces_to_yaml(file_path, workspaces)
+        local expanded_path = vim.fn.expand(file_path)
+
+        -- ディレクトリが存在しない場合は作成
+        local dir = vim.fn.fnamemodify(expanded_path, ":h")
+        vim.fn.mkdir(dir, "p")
+
+        -- YAML形式で直接書き込み
+        local file = io.open(expanded_path, "w")
+        if not file then
+          error("Could not open file for writing: " .. expanded_path)
+          return
+        end
+
+        file:write("workspaces:\n")
+        for _, workspace in ipairs(workspaces) do
+          file:write(string.format("  - name: %s\n", workspace.name))
+          file:write(string.format("    path: %s\n", workspace.path))
+        end
+
+        file:close()
+      end
+
+      local function add_workspace(name, path)
+        local workspaces = load_workspaces_from_yaml(obsidian_data_path)
+
+        -- 重複チェック
+        for _, workspace in ipairs(workspaces) do
+          if workspace.name == name then
+            error("Workspace with name '" .. name .. "' already exists")
+            return
+          end
+        end
+
+        table.insert(workspaces, { name = name, path = path })
+        save_workspaces_to_yaml(obsidian_data_path, workspaces)
+      end
+
+      local function create_vault_structure(vault_path)
+        -- .obsidianディレクトリ作成
+        local obsidian_dir = vault_path .. "/.obsidian"
+        vim.fn.mkdir(obsidian_dir, "p")
+
+        -- templatesディレクトリ作成
+        local templates_dir = vault_path .. "/templates"
+        vim.fn.mkdir(templates_dir, "p")
+
+        -- summary/dailyディレクトリ作成
+        local daily_dir = vault_path .. "/summary/daily"
+        vim.fn.mkdir(daily_dir, "p")
+
+        -- 基本的なテンプレートファイル作成
+        local daily_template_path = templates_dir .. "/tplDaily.md"
+        local daily_template_content = [[# {{date:YYYY-MM-DD}}
+
+
+---
+#summary/daily
+]]
+
+        local note_template_path = templates_dir .. "/tplNote.md"
+        local note_template_content = [[---
+alias: 
+created_at: {{date}}
+tags: 
+---]]
+
+        local app_json = vault_path .. "/.obisidan/app.json"
+        local app_json_content = [[{
+  "showInlineTitle": false,
+  "attachmentFolderPath": "assets",
+  "showUnsupportedFiles": false,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "inbox",
+  "trashOption": "local",
+  "vimMode": true,
+  "defaultViewMode": "preview",
+  "promptDelete": false
+}]]
+
+        local function write_file(path, content)
+          local file = io.open(path, "w")
+          if file then
+            file:write(content)
+            file:close()
+          end
+        end
+        write_file(daily_template_path, daily_template_content)
+        write_file(note_template_path, note_template_content)
+        write_file(app_json, app_json_content)
+        write_file(
+          vault_path .. "/.obisidan/community-plugins.json",
+          [[[
+  "obsidian-filename-heading-sync",
+  "obsidian-hotkeys-for-templates",
+]]
+        )
+        write_file(
+          vault_path .. "/.obisidan/templates.json",
+          [[[
+  "folder": "templates",
+]]
+        )
+
+        write_file(
+          vault_path .. "/.obsidian/plugins/obsidian-filename-heading-sync/data.json",
+          [[{
+  "userIllegalSymbols": [],
+  "ignoredFiles": {},
+  "ignoreRegex": "templates/*",
+  "useFileOpenHook": true,
+  "useFileSaveHook": true,
+  "newHeadingStyle": "Prefix",
+  "replaceStyle": false,
+  "underlineString": "===",
+  "renameDebounceTimeout": 1000,
+  "insertHeadingIfMissing": true
+}]]
+        )
+        write_file(
+          vault_path .. "/.obsidian/plugins/obsidian-filename-heading-sync/data.json",
+          [[{
+  "files": [
+    "tplNote.md"
+  ],
+  "templaterFiles": [],
+  "newFileTemplates": [
+    {
+      "folder": "inbox",
+      "path": "tplNote.md",
+      "plugin": "core"
+    }
+  ],
+  "openNewFileTemplateInNewPane": true,
+  "useNewFileTemplateOnFileCreation": true
+}]]
+        )
+      end
+
+      local function create_vault(name, path)
+        -- パスの展開（~、環境変数、相対パスを絶対パスに変換）
+        local expanded_path = vim.fn.expand(path)
+        local absolute_path = vim.fn.fnamemodify(expanded_path, ":p")
+
+        -- 末尾のスラッシュを削除
+        absolute_path = absolute_path:gsub("/$", "")
+
+        -- ディレクトリ作成
+        local success = vim.fn.mkdir(absolute_path, "p")
+        if success == 0 then
+          error("Failed to create directory: " .. absolute_path)
+          return
+        end
+
+        -- vault構造を作成
+        create_vault_structure(absolute_path)
+
+        -- ワークスペース追加
+        local ok, err = pcall(add_workspace, name, absolute_path)
+        if not ok then
+          error("Failed to add workspace: " .. err)
+          return
+        end
+
+        print("Vault created successfully: " .. name .. " at " .. absolute_path)
+        print("Created directories: .obsidian, templates, summary/daily")
+        print("Created templates: tplDaily.md, tplNote.md")
+      end
+
+      vim.api.nvim_create_user_command("CreateVault", function(opts)
+        local args = vim.split(opts.args, "%s+")
+
+        if #args < 2 then
+          print("Usage: :CreateVault <name> <path>")
+          return
+        end
+
+        local name = args[1]
+        local path = table.concat(args, " ", 2)
+
+        local ok, err = pcall(create_vault, name, path)
+        if not ok then
+          print("Error creating vault: " .. err)
+        end
+      end, {
+        nargs = "+",
+        desc = "Create a new vault with specified name and path",
+      })
+
+      require("obsidian").setup({
+        ui = {
+          enable = false,
+        },
+        workspaces = load_workspaces_from_yaml(obsidian_data_path),
+        daily_notes = {
+          folder = "summary/daily",
+          date_format = "%Y/%Y-%m-%d",
+          default_tags = { "summary/daily" },
+          template = "templates/tplDaily.md",
+        },
+        disable_frontmatter = false,
+        templates = {
+          folder = "templates",
+          date_format = "%Y-%m-%d",
+          time_format = "%H:%M",
+          substitutions = {},
+        },
+        new_notes_location = "current_dir",
+        note_path_func = function(spec)
+          local path = spec.dir / tostring(spec.title)
+          return path:with_suffix(".md")
+        end,
+        note_id_func = function(title)
+          return title
+        end,
+        note_frontmatter_func = function(note)
+          local out = {
+            alias = {},
+            created_at = os.date("%Y-%m-%d %H:%M"),
+            tags = {},
+          }
+
+          if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+            for k, v in pairs(note.metadata) do
+              out[k] = v
+            end
+          end
+
+          return out
+        end,
+        mappings = {
+          -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+          ["gf"] = {
+            action = function()
+              return require("obsidian").util.gf_passthrough()
+            end,
+            opts = { noremap = false, expr = true, buffer = true },
+          },
+          -- Toggle check-boxes.
+          ["<leader>ch"] = {
+            action = function()
+              return require("obsidian").util.toggle_checkbox()
+            end,
+            opts = { buffer = true },
+          },
+          -- Smart action depending on context, either follow link or toggle checkbox.
+          -- ["<cr>"] = {
+          --   action = function()
+          --     return require("obsidian").util.smart_action()
+          --   end,
+          --   opts = { buffer = true, expr = true },
+          -- },
+        },
+
+        -- see below for full list of options 👇
+      })
+    end,
   },
   { "echasnovski/mini.nvim", version = "*" },
   -- {
@@ -2645,10 +3143,44 @@ When given a task:
       require("nvim-dap-virtual-text").setup({})
     end,
   },
-  { -- tab space
+  {
     "tiagovla/scope.nvim",
-    config = true,
-    event = "TabNew",
+    config = function()
+      require("scope").setup({
+        hooks = {
+          pre_tab_enter = function()
+            -- Your custom logic to run before entering a tab
+          end,
+        },
+      })
+
+      -- https://github.com/folke/persistence.nvim
+      -- PersistenceLoadPre: before loading a session
+      -- PersistenceLoadPost: after loading a session
+      -- PersistenceSavePre: before saving a session
+      -- PersistenceSavePost: after saving a session
+
+      -- save_hook = function()
+      --                 vim.cmd([[ScopeSaveState]]) -- Scope.nvim saving
+      --             end,
+      --             post_hook = function()
+      --                 vim.cmd([[ScopeLoadState]]) -- Scope.nvim loading
+      --             end,
+      -- persistence.nvimのフックイベントに対応するautocmdを設定
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "PersistenceSavePre",
+        callback = function()
+          vim.cmd([[ScopeSaveState]]) -- Scope.nvimの保存を呼び出す
+        end,
+      })
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "PersistenceLoadPost",
+        callback = function()
+          vim.cmd([[ScopeLoadState]]) -- Scope.nvimの読み込みを呼び出す
+        end,
+      })
+    end,
     enabled = not vim.g.vscode,
   },
   {

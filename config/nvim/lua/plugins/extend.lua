@@ -117,7 +117,7 @@ return {
           priority = 100,
           primary = true,
           format = function(buf)
-            require("conform").format({ bufnr = buf , async= true})
+            require("conform").format({ bufnr = buf, async = true })
           end,
           sources = function(buf)
             local ret = require("conform").list_formatters(buf)
@@ -701,15 +701,15 @@ return {
         lualine_c = { -- lualine_{a,b} だと背景が強調されるので、あえてcを使用
           {
             "filename",
-            file_status = false,
-            newfile_status = false,
-            -- 0: Just the filename
-            -- 1: Relative path
-            -- 2: Absolute path
-            -- 3: Absolute path, with tilde as the home directory
-            -- 4: Filename and parent dir, with tilde as the home directory
-            path = 3,
-            -- shorting_target = 80,
+      --       file_status = false,
+      --       newfile_status = false,
+      --       -- 0: Just the filename
+      --       -- 1: Relative path
+      --       -- 2: Absolute path
+      --       -- 3: Absolute path, with tilde as the home directory
+      --       -- 4: Filename and parent dir, with tilde as the home directory
+      --       path = 3,
+      --       -- shorting_target = 80,
           },
         },
       }
@@ -914,6 +914,38 @@ return {
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
+    keys = {
+      {
+        "<leader>e",
+        function()
+          local neo_tree = require("neo-tree.command")
+          local current_win = vim.api.nvim_get_current_win()
+          local current_buf = vim.api.nvim_win_get_buf(current_win)
+          
+          -- Check if current window is neo-tree
+          if vim.bo[current_buf].filetype == "neo-tree" then
+            -- Close neo-tree if currently focused
+            neo_tree.execute({ toggle = true, dir = LazyVim.root() })
+            return
+          end
+          
+          -- Check if any neo-tree window is open
+          local neo_tree_wins = vim.tbl_filter(function(win)
+            local buf = vim.api.nvim_win_get_buf(win)
+            return vim.bo[buf].filetype == "neo-tree"
+          end, vim.api.nvim_list_wins())
+          
+          if #neo_tree_wins > 0 then
+            -- Focus the first neo-tree window found
+            vim.api.nvim_set_current_win(neo_tree_wins[1])
+          else
+            -- Open neo-tree if it's not open
+            neo_tree.execute({ toggle = true, dir = LazyVim.root() })
+          end
+        end,
+        desc = "Focus/Open Explorer NeoTree (Root Dir)",
+      },
+    },
     opts = function(_, opts)
       -- opts.filesystem.window.mappings["<leader>p"] = "image_wezterm"
       -- opts.filesystem.commands.image_wezterm = function(state)
@@ -1058,8 +1090,58 @@ return {
       --   g_cut_to_clipboard_visual = cut_to_clipboard_visual,
       --   g_paste_from_clipboard = paste_from_clipboard,
       -- })
+      --
+
+      local function getTelescopeOpts(state, path)
+        return {
+          cwd = path,
+          search_dirs = { path },
+          attach_mappings = function(prompt_bufnr, map)
+            local actions = require("telescope.actions")
+            actions.select_default:replace(function()
+              actions.close(prompt_bufnr)
+              local action_state = require("telescope.actions.state")
+              local selection = action_state.get_selected_entry()
+              local filename = selection.filename
+              if filename == nil then
+                filename = selection[1]
+              end
+              -- any way to open the file without triggering auto-close event of neo-tree?
+              require("neo-tree.sources.filesystem").navigate(state, state.path, filename)
+            end)
+            return true
+          end,
+        }
+      end
+      -- require("neo-tree").setup({
+      --   filesystem = {
+      --     window = {
+      --       mappings = {
+      --         ["tf"] = "telescope_find",
+      --         ["tg"] = "telescope_grep",
+      --       },
+      --     },
+      --   },
+      --   commands = {
+      --     telescope_find = function(state)
+      --       local node = state.tree:get_node()
+      --       local path = node:get_id()
+      --       require("telescope.builtin").find_files(getTelescopeOpts(state, path))
+      --     end,
+      --     telescope_grep = function(state)
+      --       local node = state.tree:get_node()
+      --       local path = node:get_id()
+      --       require("telescope.builtin").live_grep(getTelescopeOpts(state, path))
+      --     end,
+      --   },
+      -- })
 
       opts.window.mappings = vim.tbl_extend("force", opts.window.mappings, {
+        ["sg"] = function(state)
+          local node = state.tree:get_node()
+          local path = node:get_id()
+          require("telescope.builtin").live_grep(getTelescopeOpts(state, path))
+        end,
         ["s"] = "open_split",
         ["v"] = "open_vsplit",
         -- ["H"] = "close_all_nodes",
@@ -1093,15 +1175,15 @@ return {
           end
           vim.cmd('ToggleTerm dir="' .. dir .. '"')
         end,
-        ["sg"] = function(state)
-          local node = state.tree:get_node()
-          local path = node:get_id()
-          local dir = path
-          if not vim.fn.isdirectory(path) then
-            dir = vim.fs.dirname(path)
-          end
-          vim.cmd("Telescope live_grep cwd=" .. dir)
-        end,
+        -- ["sg"] = function(state)
+        --   local node = state.tree:get_node()
+        --   local path = node:get_id()
+        --   local dir = path
+        --   if not vim.fn.isdirectory(path) then
+        --     dir = vim.fs.dirname(path)
+        --   end
+        --   vim.cmd("Telescope live_grep cwd=" .. dir)
+        -- end,
         ["F"] = function(state)
           local node = state.tree:get_node()
           local path = node:get_id()
@@ -1127,6 +1209,7 @@ return {
         --   end
         -- end,
       })
+      return opts
     end,
   },
   { -- add window picker to neo-tree
@@ -1225,15 +1308,24 @@ return {
   -- },
   { -- better typescript error
     "neovim/nvim-lspconfig",
-    opts = {
-      inlay_hints = {
-        enabled = false,
-      },
-    },
-    -- opts = function(_, opts)
-    --
-    --   -- table.insert(opts.inlay_hints, { enabled = false })
-    -- end,
+    opts = function(_, opts)
+      -- inlay hintsを無効化
+      opts.inlay_hints = { enabled = false }
+      
+      -- code actionのサインを無効化してチラつきを防ぐ
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "", 
+            [vim.diagnostic.severity.HINT] = "",
+            [vim.diagnostic.severity.INFO] = "",
+          },
+        },
+      })
+      
+      return opts
+    end,
   },
   { -- better typescript error
     "neovim/nvim-lspconfig",
@@ -1525,7 +1617,7 @@ return {
               vertical = {
                 mirror = false,
               },
-              prompt_position = "top",
+              prompt_position = "bottom",
             },
           }))
         end,
@@ -1544,41 +1636,123 @@ return {
     --   }
     -- end,
     -- change some options
-    opts = function(_, opts)
-      -- Useful for easily creating commands
-      local z_utils = require("telescope._extensions.zoxide.utils")
-
-      vim.tbl_deep_extend("keep", opts, {
-        extensions = {
-          zoxide = {
-            prompt_title = "[ Walking on the shoulders of TJ ]",
-            mappings = {
-              default = {
-                after_action = function(selection)
-                  print("Update to (" .. selection.z_score .. ") " .. selection.path)
-                end,
-              },
-              ["<C-s>"] = {
-                before_action = function(selection)
-                  print("before C-s")
-                end,
-                action = function(selection)
-                  vim.cmd.edit(selection.path)
-                end,
-              },
-              -- Opens the selected entry in a new split
-              ["<C-q>"] = { action = z_utils.create_basic_command("split") },
+    -- opts = function(_, opts)
+    --   -- Useful for easily creating commands
+    --   local z_utils = require("telescope._extensions.zoxide.utils")
+    --
+    --   -- vim.tbl_deep_extend("keep", opts, {
+    --   --   extensions = {
+    --   --     zoxide = {
+    --   --       prompt_title = "[ Walking on the shoulders of TJ ]",
+    --   --       mappings = {
+    --   --         default = {
+    --   --           after_action = function(selection)
+    --   --             print("Update to (" .. selection.z_score .. ") " .. selection.path)
+    --   --           end,
+    --   --         },
+    --   --         ["<C-s>"] = {
+    --   --           before_action = function(selection)
+    --   --             print("before C-s")
+    --   --           end,
+    --   --           action = function(selection)
+    --   --             vim.cmd.edit(selection.path)
+    --   --           end,
+    --   --         },
+    --   --         -- Opens the selected entry in a new split
+    --   --         ["<C-q>"] = { action = z_utils.create_basic_command("split") },
+    --   --       },
+    --   --     },
+    --   --   },
+    --   -- })
+    --
+    --   require("telescope").load_extension("zoxide")
+    --
+    --   -- opts = vim.tbl_deep_extend("force", opts or {}, {
+    --   --   defaults = {
+    --   --     layout_config = {
+    --   --       horizontal = {
+    --   --         mirror = false,
+    --   --       },
+    --   --       vertical = {
+    --   --         mirror = false,
+    --   --       },
+    --   --       prompt_position = "top",
+    --   --     },
+    --   --   },
+    --   --   extensions = {
+    --   --     ["ui-select"] = require("telescope.themes").get_dropdown({
+    --   --       layout_config = {
+    --   --         width = 0.6,
+    --   --         height = 0.6,
+    --   --         preview_height = nil,
+    --   --       },
+    --   --     }),
+    --   --   },
+    --   -- })
+    --
+    --   -- opts = {
+    --   --   defaults = {
+    --   --     layout_config = {
+    --   --       horizontal = {
+    --   --         mirror = false,
+    --   --       },
+    --   --       vertical = {
+    --   --         mirror = false,
+    --   --       },
+    --   --       prompt_position = "top",
+    --   --     },
+    --   --   },
+    --   --
+    --   -- }
+    --   -- layout_strategy = "horizontal",
+    --   -- layout_config = { prompt_position = "top" },
+    --   -- sorting_strategy = "ascending",
+    --   -- winblend = 0,
+    --   return opts
+    -- end,
+    opts = {
+      defaults = {
+        layout_config = {
+          horizontal = {
+            mirror = false,
+          },
+          vertical = {
+            mirror = false,
+          },
+          prompt_position = "top",
+          width = 0.6,
+          height = 0.6,
+          preview_height = nil,
+        },
+      },
+    },
+    config = function()
+      -- ┌──────────────────────────────────────────────────┐
+      -- │                                                  │
+      -- │    ┌────────────────────────────────────────┐    │
+      -- │    │                 Preview                │    │
+      -- │    │                 Preview                │    │
+      -- │    │                 Preview                │    │
+      -- │    └────────────────────────────────────────┘    │
+      -- │    ┌────────────────────────────────────────┐    │
+      -- │    │                 Result                 │    │
+      -- │    │                 Result                 │    │
+      -- │    └────────────────────────────────────────┘    │
+      -- │    ┌────────────────────────────────────────┐    │
+      -- │    │                 Prompt                 │    │
+      -- │    └────────────────────────────────────────┘    │
+      -- │                                                  │
+      -- └──────────────────────────────────────────────────┘
+      require("telescope").setup({
+        defaults = {
+          layout_strategy = "vertical",
+          layout_config = {
+            vertical = {
+              height = 0.8,
             },
           },
         },
       })
-
-      require("telescope").load_extension("zoxide")
-
-      -- layout_strategy = "horizontal",
-      -- layout_config = { prompt_position = "top" },
-      -- sorting_strategy = "ascending",
-      -- winblend = 0,
     end,
   },
   -- then: setup supertab in cmp
@@ -2302,3 +2476,4 @@ return {
   --   end,
   -- },
 }
+

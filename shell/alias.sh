@@ -74,3 +74,9 @@ alias kx='kubectx'
 function ain() {
   nvim -c "CodeCompanionChat" -c "bdelete 1"
 }
+
+function c() {
+  git add -A
+  git commit -m "$1"
+  git push
+}

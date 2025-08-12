@@ -1,0 +1,12 @@
+[init]
+   defaultBranch = main
+[user]
+  name = "meithon"
+  email = "rneithon@gmail.com"
+[push]
+	autoSetupRemote = true
+[core]
+	quotepath = false
+	editor = nvim
+  pager = delta
+
