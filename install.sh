@@ -21,20 +21,20 @@ EOF
 parse_args() {
   while getopts "yh" opt; do
     case $opt in
-      y) FORCE=true ;;
-      h) usage     ;;
-      *) usage     ;;
+    y) FORCE=true ;;
+    h) usage ;;
+    *) usage ;;
     esac
   done
-  shift $((OPTIND -1))
+  shift $((OPTIND - 1))
 }
 
 # Color setup
 if command -v tput &>/dev/null && [ -t 1 ]; then
   ncolors=$(tput colors 2>/dev/null || echo 0)
   if [ "$ncolors" -ge 8 ]; then
-    RED="$(tput setaf 1)"   GREEN="$(tput setaf 2)"   YELLOW="$(tput setaf 3)"
-    BOLD="$(tput bold)"     NORMAL="$(tput sgr0)"
+    RED="$(tput setaf 1)" GREEN="$(tput setaf 2)" YELLOW="$(tput setaf 3)"
+    BOLD="$(tput bold)" NORMAL="$(tput sgr0)"
   else
     RED="" GREEN="" YELLOW="" BOLD="" NORMAL=""
   fi
@@ -43,9 +43,9 @@ else
 fi
 
 # Logging helpers
-info()  { printf "%s[+] %s%s
+info() { printf "%s[+] %s%s
 " "$GREEN" "$1" "$NORMAL"; }
-warn()  { printf "%s[*] %s%s
+warn() { printf "%s[*] %s%s
 " "$YELLOW" "$1" "$NORMAL"; }
 error() { printf "%s[-] %s%s
 " "$RED" "$1" "$NORMAL"; }
@@ -66,7 +66,10 @@ link() {
 confirm() {
   [ "$FORCE" = true ] && return
   read -rp "${YELLOW}[*] Proceed with installation? [y/N] ${NORMAL}" ans
-  [[ "$ans" =~ ^[Yy]$ ]] || { error "Aborted."; exit 1; }
+  [[ "$ans" =~ ^[Yy]$ ]] || {
+    error "Aborted."
+    exit 1
+  }
 }
 
 ## @func clone_dotfiles
@@ -76,7 +79,10 @@ clone_dotfiles() {
     warn "Dotfiles already present at $DOTPATH"
     return
   fi
-  command -v git &>/dev/null || { error "git is required."; exit 1; }
+  command -v git &>/dev/null || {
+    error "git is required."
+    exit 1
+  }
   info "Cloning dotfiles into $DOTPATH"
   git clone "$DOTFILES_GITHUB" "$DOTPATH"
 }
@@ -85,7 +91,10 @@ clone_dotfiles() {
 #  Create symlinks for hooks, home dotfiles, and ~/.config entries.
 deploy_dotfiles() {
   info "Deploying dotfiles"
-  [ -d "$DOTPATH" ] || { error "$DOTPATH not found"; exit 1; }
+  [ -d "$DOTPATH" ] || {
+    error "$DOTPATH not found"
+    exit 1
+  }
   link "$DOTPATH/pre-commit" "$DOTPATH/.git/hooks/pre-commit"
   
   # Link files in home directory, recursively handling directories
@@ -126,39 +135,37 @@ install_apk() {
 
 ## @func install_brew
 #  Install packages on macOS using Homebrew.
-install_brew() {
-  command -v brew &>/dev/null || { error "Homebrew not found. Install it first."; exit 1; }
+install_tools_via_brew() {
+  command -v brew &>/dev/null || {
+    error "Homebrew not found. Install it first."
+    exit 1
+  }
+
   brew update
-  brew install curl git btop zsh tmux jq fzf ripgrep bat gcc unzip make pkg-config asdf
+  brew install curl git btop zsh tmux jq fzf ripgrep bat gcc unzip make pkg-config asdf git-secret
 }
 
-## @func install_termux
-#  Install packages on Termux (Android) environment.
-install_termux() {
-  pkg update -y
-  pkg upgrade -y
-  pkg install -y curl git btop zsh tmux jq fzf ripgrep bat clang make pkg-config openssl unzip
+## @func install_devbox
+#  Install devbox CLI for reproducible dev environments.
+install_devbox() {
+  info 'Installing devbox CLI'
+  if command -v devbox &>/dev/null; then
+    warn 'devbox already installed'
+    return
+  fi
+
+  curl -fsSL https://get.jetify.com/devbox | bash
 }
 
-## @func install_tools
-#  Detect OS and install required development tools; ensure asdf is installed.
 install_tools() {
-  info "Installing tools for OS: $OSTYPE"
-  if [[ "$OSTYPE" == linux-gnu* ]]; then
-    install_apt
-  elif [[ "$OSTYPE" == linux-musl* ]]; then
-    install_apk
-  elif [[ "$OSTYPE" == darwin* ]]; then
-    install_brew
-  elif [ -n "${TERMUX_VERSION-+x}" ]; then
-    install_termux
-  else
-    error "Unsupported OS: $OSTYPE"; exit 1
-  fi
-  if [ ! -d "$HOME/.asdf" ]; then
-    info "Installing asdf"
-    git clone https://github.com/asdf-vm/asdf.git "$HOME/.asdf" --branch v0.14.0
-  fi
+  info "Installing devbox"
+  install_devbox
+
+  info "Installing homebrew"
+  devbox global add brew
+
+  info "Installing tools via Homebrew"
+  install_tools_via_brew
 }
 
 ## @func setup_asdf
@@ -175,12 +182,16 @@ setup_asdf() {
   asdf global java openjdk-21.0.2
 }
 
+install_languages() {
+  devbox global add deno go nodejs python3 rustup bun
+}
+
 ## @func setup_rust
 #  Set the Rust toolchain to stable and install useful Rust-based CLI tools.
 setup_rust() {
   info "Configuring Rust"
   rustup default stable
-  cargo install lsd sheldon bob-nvim pueue
+  cargo install bob-nvim pueue
   bob use latest
 }
 
@@ -214,9 +225,7 @@ EOF
   clone_dotfiles
   deploy_dotfiles
   install_tools
-  source "$HOME/dotfiles/shell/asdf.sh"
-  setup_asdf
-  source "$HOME/dotfiles/shell/envsetup.sh"
+  install_languages
   setup_rust
   source "$HOME/dotfiles/shell/alias.sh"
   info "Installation complete!"
