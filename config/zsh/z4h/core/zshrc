@@ -154,7 +154,7 @@ autoload -Uz zmv
 
 alias clear=z4h-clear-screen-soft-bottom
 
-eval "$(devbox global shellenv)"
+eval "$(devbox global shellenv --init-hook)"
 
 
 source ~/.config/zsh/z4h/alias.zsh
