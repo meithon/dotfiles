@@ -1,57 +1,47 @@
-FROM ubuntu:22.04
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && apt-get install -y \
-  iputils-ping \
-  traceroute \
-  nmap \
-  netcat \
-  tcpdump \
-  tshark \
-  curl \
-  wget \
-  telnet \
-  dnsutils \
-  whois \
-  net-tools \
-  iftop \
-  iptraf \
-  mtr \
-  ngrep \
-  iperf3 \
-  iproute2 \
-  htop \
-  nload \
-  build-essential libssl-dev zlib1g-dev \
-  libbz2-dev libreadline-dev libsqlite3-dev \
-  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
-  speedtest-cli \
-  hping3 \
-  fping \
-  ethtool \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+FROM public.ecr.aws/docker/library/alpine:3.22.1
 
 WORKDIR /root
 COPY . dotfiles/
 
-
 ENV TERM=xterm-256color
 WORKDIR /root/dotfiles
-# RUN ./install.sh -y
+
+# Install base dependencies
+RUN apk --no-cache add bash curl git build-base linux-headers
 
 SHELL ["/bin/bash", "-c"]
 
-RUN ./install/deploy_dotfiles.sh
-RUN ./install/install_tools.sh
-RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_asdf.sh
-RUN . ~/dotfiles/shell/asdf.sh && ./install/setup_rust.sh
+# Deploy dotfiles and install devbox
+RUN source ./install.sh && deploy_dotfiles
+RUN TMPDIR=/tmp source ./install.sh && install_devbox
 
-# RUN nvim --headless "+Lazy! sync" "+lua print('Lazy sync completed')" +qa
-RUN ./install.sh
-RUN ln -s /root/.zshrc /root/dotfiles/hone/.zshrc 
-RUN ln -s /root/.zshenv /root/dotfiles/hone/.zshenv
-RUN zsh -c "source ~/.zshrc"
+# Setup devbox environment with disk space optimization  
+RUN mkdir -p /tmp/nix && \
+  TMPDIR=/tmp/nix devbox global shellenv > /tmp/devbox_env && \
+  echo 'source /tmp/devbox_env' >> /root/.bashrc
+
+# Refresh environment and install core tools
+RUN eval "$(devbox global shellenv --preserve-path-stack -r)" && hash -r
+RUN devbox global add gcc neovim zsh
+
+# Install and setup Rust
+RUN devbox global add rustup && \
+  eval "$(devbox global shellenv --preserve-path-stack -r)" && hash -r
+RUN eval "$(devbox global shellenv)" && \
+  export CC="$(which gcc)" && export CXX="$(which g++)" && \
+  rustup default stable
+
+# Install additional tools
+RUN source ./install.sh && install_languages
+RUN eval "$(devbox global shellenv)" && cargo install pueue
+
+# Setup Neovim
+RUN eval "$(devbox global shellenv)" && nvim --headless "+Lazy! sync" +qa || true
+
+# Setup Zsh
+RUN eval "$(devbox global shellenv)" && zsh -c "source ~/.zshrc" || true
+
+# Clean up to reduce image size
+# RUN rm -rf /nix/store/.links /nix/var/nix/gcroots/auto/* /nix/var/nix/db/db.sqlite-* || true
 
 CMD ["/bin/bash"]
