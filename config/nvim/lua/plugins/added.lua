@@ -5,6 +5,45 @@ local map = vim.keymap.setadded
 ---
 ---
 return {
+  {
+    "floatstack",
+    dir = "/Users/mei/workspace/private/tools/floatstack.nvim",
+    config = function()
+      -- init.lua あるいはプラグインマネージャで読み込んだ後に:
+      require("floatstack").setup()
+    end,
+    keys = {
+      {
+        "<leader>hg",
+        "<cmd>FSPush<cr>",
+        desc = "Add current buffet to floating window",
+      },
+      {
+        "<C-w>f",
+        "<cmd>FSPush<cr>",
+        desc = "Add current buffet to floating window",
+      },
+      {
+        "<leader>hf",
+        "<cmd>FSFocusToggle<cr>",
+        desc = "Add current buffet to floating window",
+      },
+      {
+        "<leader>hz",
+        "<cmd>FSToggleMinimal<cr>",
+        desc = "Toggle minimal",
+      },
+    },
+  },
+  {
+    "vim-scripts/securemodelines",
+    config = function()
+      vim.g.secure_modelines_allowed_items = {
+        "filetype",
+        "ft",
+      }
+    end,
+  },
   -- lua/plugins/mermaider.lua
   {
     "snrogers/mermaider.nvim",
@@ -1038,6 +1077,7 @@ return {
       "<Leader>a",
       "<Leader>a",
       "ga",
+      { "<leader>aj", "<cmd>'<,'>CodeCompanion<cr>", mode = { "v" }, desc = "Code Companion Inline Prompt" },
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -1052,7 +1092,10 @@ return {
       "ravitemer/codecompanion-history.nvim",
       {
         "echasnovski/mini.diff",
-        opts = {},
+        opts = {
+         -- disable lazyvim mapping
+          mappings = {}
+        },
         --   version = "*",
         --   opts = {
         --     mappings = {
@@ -1087,27 +1130,47 @@ return {
 
       vim.api.nvim_set_keymap("n", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("n", "<Leader>a", ":CodeCompanion ", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("v", "<Leader>a", ":CodeCompanion ", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
       local opts = {
         adapters = {
-          openai = function()
-            return require("codecompanion.adapters").extend("openai", {
-              schema = {
-                model = {
-                  default = "gpt-4o",
-                },
-              },
-            })
-          end,
+          -- openai = function()
+          --   return require("codecompanion.adapters").extend("openai", {
+          --     schema = {
+          --       model = {
+          --         default = "gpt-4o",
+          --       },
+          --     },
+          --   })
+          -- end,
         },
         strategies = {
           chat = {
-            adapter = "openai",
+            roles = {
+              user = "",
+              llm = function(adapter)
+                return "  " .. adapter.formatted_name
+              end,
+            },
+            -- keymaps = {
+            --   clear = { modes = { n = "<C-x>" } },
+            --   next_chat = { modes = { n = "<A-l>" } },
+            --   previous_chat = { modes = { n = "<A-h>" } },
+            --   regenerate = { modes = { n = "<localleader>r" } },
+            --   stop = { modes = { n = "q" } },
+            --   codeblock = { modes = { n = "<localleader>c" } },
+            --   yank_code = { modes = { n = "<localleader>y" } },
+            --   pin = { modes = { n = "<localleader>p" } },
+            --   watch = { modes = { n = "<localleader>w" } },
+            --   change_adapter = { modes = { n = "<localleader>a" } },
+            --   fold_code = { modes = { n = "<localleader>f" } },
+            --   debug = { modes = { n = "<localleader>d" } },
+            --   system_prompt = { modes = { n = "<localleader>s" } },
+            --   auto_tool_mode = { modes = { n = "<localleader>ta" } },
+            -- },
+            adapter = "anthropic",
             tools = {
-              opts = { -- FIXME: なんか動かねえ
+              opts = {
                 auto_submit_errors = true, -- Send any errors to the LLM automatically?
                 auto_submit_success = true, -- Send any successful output to the LLM automatically?
               },
@@ -1124,22 +1187,72 @@ return {
                 },
               },
             },
+
+            display = {
+              diff = { enabled = false },
+              chat = {
+                show_header_separator = false,
+                show_settings = false, -- do not show settings to allow model change with shortcut
+              },
+              action_palette = { provider = "default" },
+            },
             slash_commands = {
-              ["git_files"] = {
-                description = "List git files",
+              ["buffer"] = {
+                opts = {
+                  provider = "snacks",
+                },
+              },
+              ["file"] = {
+                opts = {
+                  provider = "snacks",
+                },
+              },
+              ["terminal"] = {
                 ---@param chat CodeCompanion.Chat
                 callback = function(chat)
-                  local handle = io.popen("git ls-files")
-                  if handle ~= nil then
-                    local result = handle:read("*a")
-                    handle:close()
-                    chat:add_reference({ role = "user", content = result }, "git", "<git_files>")
-                  else
-                    return vim.notify("No git files available", vim.log.levels.INFO, { title = "CodeCompanion" })
-                  end
+                  Snacks.picker.buffers({
+                    title = "Terminals",
+                    hidden = true,
+                    actions = {
+                      ---@param picker snacks.Picker
+                      add_to_chat = function(picker)
+                        picker:close()
+                        local items = picker:selected({ fallback = true })
+                        vim.iter(items):each(function(item)
+                          local id = "<buf>" .. chat.context:make_id_from_buf(item.buf) .. "</buf>"
+                          local lines = vim.api.nvim_buf_get_lines(item.buf, 0, -1, false)
+                          local content = table.concat(lines, "\n")
+
+                          chat:add_message({
+                            role = "user",
+                            content = "Terminal content from buffer "
+                              .. item.buf
+                              .. " ("
+                              .. item.file
+                              .. "):\n"
+                              .. content,
+                          }, { reference = id, visible = false })
+
+                          chat.context:add({
+                            bufnr = item.buf,
+                            id = id,
+                            source = "",
+                          })
+                        end)
+                      end,
+                    },
+                    win = { input = { keys = { ["<CR>"] = { "add_to_chat", mode = { "i", "n" } } } } },
+                    filter = {
+                      filter = function(item)
+                        return vim.bo[item.buf].buftype == "terminal"
+                      end,
+                    },
+                    main = { file = false },
+                  })
                 end,
+                description = "Insert terminal output",
                 opts = {
-                  contains_code = false,
+                  provider = "snacks",
                 },
               },
             },
@@ -1155,6 +1268,7 @@ return {
                 description = "Reject the suggested change",
               },
             },
+            adapter = "anthropic",
           },
           -- inline = {
           --   adapter = "openai",
@@ -1176,29 +1290,332 @@ return {
       }
 
       opts.prompt_library = {
-        ["Summarize"] = {
+        -- Prefer buffer selection in chat instead of inline
+        ["Buffer selection"] = {
           strategy = "chat",
-          description = "Some cool custom prompt you can do",
+          opts = {
+            auto_submit = false,
+          },
+        },
+        ["Generate a Commit Message for Staged Files"] = {
+          strategy = "inline",
+          description = "staged file commit messages",
+          opts = {
+            index = 15,
+            is_default = false,
+            is_slash_cmd = true,
+            short_name = "scommit",
+            auto_submit = true,
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function()
+                return "You are an expert at following the Conventional Commit specification. Given the git diff listed below, please generate a commit message for me:"
+                  .. "\n\n```diff\n"
+                  .. vim.fn.system("git diff --staged")
+                  .. "\n```"
+              end,
+            },
+          },
+        },
+        ["Add Documentation"] = {
+          strategy = "inline",
+          description = "Add documentation to the selected code",
+          opts = {
+            index = 16,
+            is_default = false,
+            modes = { "v" },
+            short_name = "doc",
+            is_slash_cmd = true,
+            auto_submit = true,
+            user_prompt = false,
+            stop_context_insertion = true,
+          },
           prompts = {
             {
               role = "system",
-              content = [[
-
-1. 依頼は、与えられたテキストから情報のマインドマップを作成することです。まず、テキストの内容を分析し、主要なトピックと概念を抽出する必要があります。
-主要なトピックとサブトピックを抽出してみましょう
-
-2. 既存のマインドマップをさらに拡張していきます。元のテキストをさらに細かく分析し、追加できる情報を抽出し、マインドマップの各セクションを充実させていきます。
-
-3. 最も重要で本質的な内容が階層の上位（親ノード）に来るように再構成してください
-
-4. 子ノードを支持する根拠や補足情報を与えられたマークダウンテキストから探し、さらに子ノードとして追加してください
-
-出力フォーマットはmarkdownでlistを使用してください
-                ]],
+              content = "When asked to add documentation, follow these steps:\n"
+                .. "1. **Identify Key Points**: Carefully read the provided code to understand its functionality.\n"
+                .. "2. **Review the Documentation**: Ensure the documentation:\n"
+                .. "  - Includes necessary explanations.\n"
+                .. "  - Helps in understanding the code's functionality.\n"
+                .. "  - Follows best practices for readability and maintainability.\n"
+                .. "  - Is formatted correctly.\n\n"
+                .. "For C/C++ code: use Doxygen comments using `\\` instead of `@`.\n"
+                .. "For Python code: Use Docstring numpy-notypes format.",
+              opts = {
+                visible = false,
+              },
             },
             {
               role = "user",
-              content = "",
+              content = function(context)
+                local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+                return "Please document the selected code:\n\n```" .. context.filetype .. "\n" .. code .. "\n```\n\n"
+              end,
+              opts = {
+                contains_code = true,
+              },
+            },
+          },
+        },
+        ["Refactor"] = {
+          strategy = "chat",
+          description = "Refactor the selected code for readability, maintainability and performances",
+          opts = {
+            index = 17,
+            is_default = false,
+            modes = { "v" },
+            short_name = "refactor",
+            is_slash_cmd = true,
+            auto_submit = true,
+            user_prompt = false,
+            stop_context_insertion = true,
+          },
+          prompts = {
+            {
+              role = "system",
+              content = "When asked to optimize code, follow these steps:\n"
+                .. "1. **Analyze the Code**: Understand the functionality and identify potential bottlenecks.\n"
+                .. "2. **Implement the Optimization**: Apply the optimizations including best practices to the code.\n"
+                .. "3. **Shorten the code**: Remove unnecessary code and refactor the code to be more concise.\n"
+                .. "3. **Review the Optimized Code**: Ensure the code is optimized for performance and readability. Ensure the code:\n"
+                .. "  - Maintains the original functionality.\n"
+                .. "  - Is more efficient in terms of time and space complexity.\n"
+                .. "  - Follows best practices for readability and maintainability.\n"
+                .. "  - Is formatted correctly.\n\n"
+                .. "Use Markdown formatting and include the programming language name at the start of the code block.",
+              opts = {
+                visible = false,
+              },
+            },
+            {
+              role = "user",
+              content = function(context)
+                local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+
+                return "Please optimize the selected code:\n\n```" .. context.filetype .. "\n" .. code .. "\n```\n\n"
+              end,
+              opts = {
+                contains_code = true,
+              },
+            },
+          },
+        },
+        ["PullRequest"] = {
+          strategy = "chat",
+          description = "Generate a Pull Request message description",
+          opts = {
+            index = 18,
+            is_default = false,
+            short_name = "pr",
+            is_slash_cmd = true,
+            auto_submit = true,
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function()
+                return "You are an expert at writing detailed and clear pull request descriptions."
+                  .. "Please create a pull request message following standard convention from the provided diff changes."
+                  .. "Ensure the title, description, type of change, checklist, related issues, and additional notes sections are well-structured and informative."
+                  .. "\n\n```diff\n"
+                  .. vim.fn.system("git diff $(git merge-base HEAD main)...HEAD")
+                  .. vim.fn.system("git diff $(git merge-base HEAD develop)...HEAD")
+                  .. "\n```"
+              end,
+            },
+          },
+        },
+        ["Spell"] = {
+          strategy = "inline",
+          description = "Correct grammar and reformulate",
+          opts = {
+            index = 19,
+            is_default = false,
+            short_name = "spell",
+            is_slash_cmd = true,
+            auto_submit = true,
+            adapter = {
+              name = "copilot",
+              model = "gpt-4.1",
+            },
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = false,
+              content = function(context)
+                local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+                return "Correct grammar and reformulate:\n\n" .. text
+              end,
+            },
+          },
+        },
+        ["Bug Finder"] = {
+          strategy = "chat",
+          description = "Find potential bugs from the provided diff changes",
+          opts = {
+            index = 20,
+            is_default = false,
+            short_name = "bugs",
+            is_slash_cmd = true,
+            auto_submit = true,
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function()
+                local question = "<question>\n"
+                  .. "Check if there is any bugs that have been introduced from the provided diff changes.\n"
+                  .. "Perform a complete analysis and do not stop at first issue found.\n"
+                  .. "If available, provide absolute file path and line number for code snippets.\n"
+                  .. "</question>"
+
+                local branch = "$(git merge-base HEAD origin/develop)...HEAD"
+                local changes = "changes.diff"
+                vim.fn.system("git diff --unified=10000 " .. branch .. " > " .. changes)
+
+                --- @type CodeCompanion.Chat
+                local chat = require("codecompanion").buf_get_chat(vim.api.nvim_get_current_buf())
+                local path = vim.fn.getcwd() .. "/" .. changes
+                local id = "<file>" .. changes .. "</file>"
+                local lines = vim.fn.readfile(path)
+                local content = table.concat(lines, "\n")
+
+                chat:add_message({
+                  role = "user",
+                  content = "git diff content from " .. path .. ":\n" .. content,
+                }, { reference = id, visible = false })
+
+                chat.context:add({
+                  id = id,
+                  path = path,
+                  source = "",
+                })
+
+                return question
+              end,
+            },
+          },
+        },
+        ["Split Commits"] = {
+          strategy = "chat",
+          description = "agent mode with explicit set of tools",
+          opts = {
+            index = 21,
+            is_default = false,
+            short_name = "commits",
+            is_slash_cmd = true,
+            auto_submit = false,
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function()
+                local current_branch = vim.fn.system("git rev-parse --abbrev-ref HEAD")
+                local logs = vim.fn.system('git log --pretty=format:"%s%n%b" -n 50')
+                local commit_history = "Commit history for branch " .. current_branch .. ":\n" .. logs .. "\n\n"
+                local staged_changes = "Staged files:\n" .. vim.fn.system("git diff --cached --name-only")
+                local prompt = "<prompt>" .. commit_history .. staged_changes .. "</prompt> \n\n"
+                local task = "You are an expert Git assistant.\n"
+                  .. "Your task is to help the user create well-structured and conventional commits from their currently staged changes.\n\n"
+                  .. "Based on the provided commit logs and branch name, first, infer the established commit message convention\n"
+                  .. "Next, use the staged changes to determine the logical grouping of changes and generate appropriate commit messages.\n\n"
+                  .. "Your primary goal is to analyze these staged changes and determine if they should be split into multiple logical and separate commits.\n"
+                  .. "If the staged changes are empty or too trivial for a meaningful commit, please state that.\n\n"
+                  .. "Use @{cmd_runner} to execute git commands for staging and un-staging files to group staged changes into meaningful commits when necessary."
+                return prompt .. task
+              end,
+            },
+          },
+        },
+        ["Gitlab MR Notes"] = {
+          strategy = "chat",
+          description = "Get the unresolved comments of the current MR",
+          opts = {
+            index = 22,
+            is_default = false,
+            short_name = "glab_mr_notes",
+            is_slash_cmd = true,
+            auto_submit = false,
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function()
+                local notes = require("util.glab.notes").get_unresolved_discussions()
+                return "Here is a list of notes from Pull Request:\n" .. notes .. "\n"
+              end,
+            },
+          },
+        },
+        ["qflist"] = {
+          strategy = "chat",
+          description = "Send errors to qflist and diagnostics",
+          opts = {
+            index = 23,
+            is_default = false,
+            short_name = "qflist",
+            is_slash_cmd = true,
+            auto_submit = false,
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function()
+                local content =
+                  "Create a neovim command line for `:` to send the current errors to qflist and diagnostics using neovim api.\n"
+                local example = [[
+                :lua do local ns = vim.api.nvim_create_namespace('review');
+
+                  -- For each files:
+                  local bufnr = vim.fn.bufnr('/full/path/to/your/file.txt');
+                  if bufnr ~= -1 then
+                    local diagnostics = {{bufnr=bufnr, lnum=324, col=0, message='This is the ErrorMessage', severity=vim.diagnostic.severity.ERROR}};
+                    vim.diagnostic.set(ns, bufnr, diagnostics);
+                    vim.fn.setqflist(vim.diagnostic.toqflist(diagnostics), 'a');
+                  end
+                end
+                ]]
+                return content .. "\nExample:\n" .. example:gsub("\n", " "):gsub(" +", " ")
+              end,
+            },
+          },
+        },
+        ["agent"] = {
+          strategy = "inline",
+          description = "Ask agent",
+          opts = {
+            index = 24,
+            is_default = false,
+            short_name = "agent",
+            is_slash_cmd = false,
+            auto_submit = true,
+            user_prompt = true,
+            adapter = {
+              name = "copilot",
+              model = "gpt-4.1",
+            },
+          },
+          prompts = {
+            {
+              role = "user",
+              contains_code = true,
+              content = function(context)
+                buffer = "#{buffer}\n"
+                tools = "@{cmd_runner} @{files} @{insert_edit_into_file}\n"
+                return buffer
+                  .. tools
+                  .. require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+              end,
             },
           },
         },
@@ -1315,6 +1732,7 @@ When given a task:
       }
 
       require("codecompanion").setup(opts)
+      require("plugins.codecompanion.utils.extmarks").setup()
     end,
   },
   { -- colorschma
@@ -2851,7 +3269,38 @@ tags:
   --     require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
   --   end,
   -- },
-  { "akinsho/toggleterm.nvim", version = "*", config = true },
+  {
+    "akinsho/toggleterm.nvim",
+    cmd = { "ToggleTerm", "ToggleTermToggleAll" },
+    keys = {
+      { "<leader>uP", "<cmd>ToggleTermToggleAll<cr>", desc = "Toggle All Toggleterm" },
+      { "<leader>up", "<cmd>ToggleTerm<cr>", desc = "Toggle Toggleterm" },
+    },
+    opts = {
+      size = 120,
+      auto_scroll = false,
+      close_on_exit = false,
+      persist_mode = true,
+      persist_size = false,
+      shade_terminals = false,
+      start_in_insert = false,
+      direction = "horizontal",
+      on_open = function()
+        vim.opt_local.spell = false
+        vim.opt_local.number = false
+        vim.opt_local.signcolumn = "no"
+        vim.opt_local.relativenumber = false
+        vim.wo.wrap = true
+        vim.wo.winfixwidth = true
+      end,
+      winbar = {
+        enabled = false,
+        name_formatter = function(term) --  term: Terminal
+          return term.id
+        end,
+      },
+    },
+  },
   -- {
   --   "nvim-telescope/telescope-frecency.nvim",
   --   config = function()

@@ -5,8 +5,13 @@
 #: kitty has very powerful font management. You can configure
 #: individual font faces and even specify special fonts for particular
 #: characters.
-
-font_family      Inconsolata
+# EnvyCodeRNerdFont-Bold
+#HurmitNerdFontMono-Regular
+font_family    Bitstream Vera Sans Mono
+# Hurmit Nerd Font Mono
+# EnvyCodeR Nerd Font MONO
+# ProFont IIx Nerd Font Mono
+# Inconsolata
 bold_font        auto
 italic_font      auto
 bold_italic_font auto
@@ -24,7 +29,7 @@ bold_italic_font auto
 #:     italic_font      Operator Mono Book Italic
 #:     bold_italic_font Operator Mono Medium Italic
 
-# font_size 11.0
+font_size 13.0
 
 #: Font size (in pts)
 
@@ -1550,7 +1555,7 @@ background_opacity 0.9
 #: background_opacity. If you want to use both, you are probably
 #: better off just hiding the titlebar with hide_window_decorations.
 
-# macos_option_as_alt no
+macos_option_as_alt yes
 
 #: Use the Option key as an Alt key on macOS. With this set to no,
 #: kitty will use the macOS native Option+Key to enter Unicode
@@ -1613,7 +1618,7 @@ background_opacity 0.9
 #: the macOS global menu bar. Values less than one means that there is
 #: no maximum limit.
 
-# macos_custom_beam_cursor no
+macos_custom_beam_cursor yes
 
 #: Use a custom mouse cursor for macOS that is easier to see on both
 #: light and dark backgrounds. Nowadays, the default macOS cursor
@@ -2400,3 +2405,40 @@ background_opacity 0.9
 #: }}}
 
 #: }}}
+
+
+# BEGIN_KITTY_THEME
+# Catppuccin-Macchiato
+# include current-theme.conf
+# END_KITTY_THEME
+
+
+# Base colors
+background #161616
+foreground #f2f4f8
+selection_background #2a2a2a
+selection_foreground #f2f4f8
+cursor #f2f4f8
+
+# Normal colors
+color0 #282828
+color1 #ee5396
+color2 #25be6a
+color3 #08bdba
+color4 #78a9ff
+color5 #be95ff
+color6 #33b1ff
+color7 #dfdfe0
+
+# Bright colors
+color8 #484848
+color9 #f16da6
+color10 #46c880
+color11 #2dc7c4
+color12 #8cb6ff
+color13 #c8a5ff
+color14 #52bdff
+color15 #e4e4e5
+
+# Extended colors
+color16 #3ddbd9

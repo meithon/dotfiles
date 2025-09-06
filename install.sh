@@ -96,7 +96,7 @@ deploy_dotfiles() {
     exit 1
   }
   link "$DOTPATH/pre-commit" "$DOTPATH/.git/hooks/pre-commit"
-  
+
   # Link files in home directory, recursively handling directories
   find "$DOTPATH/home" -type f | while read -r src; do
     # Remove the home/ prefix to get relative path
@@ -106,7 +106,7 @@ deploy_dotfiles() {
     mkdir -p "$(dirname "$dest")"
     link "$src" "$dest"
   done
-  
+
   for src in "$DOTPATH/config"/*; do
     base=$(basename "$src")
     link "$src" "$HOME/.config/$base"
@@ -154,32 +154,19 @@ install_devbox() {
     return
   fi
 
-  curl -fsSL https://get.jetify.com/devbox | bash
+  curl -fsSL https://get.jetify.com/devbox | bash -s -- -f
 }
 
 install_tools() {
   info "Installing devbox"
   install_devbox
 
+  devbox global add ruby
   info "Installing homebrew"
-  devbox global add brew
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   info "Installing tools via Homebrew"
   install_tools_via_brew
-}
-
-## @func setup_asdf
-#  Add language plugins and install global versions via asdf.
-setup_asdf() {
-  info "Configuring asdf plugins"
-  for lang in deno golang nodejs python rust; do
-    asdf plugin-add "$lang" 2>/dev/null || true
-    asdf install "$lang" latest
-    asdf global "$lang" latest
-  done
-  asdf plugin-add java 2>/dev/null || true
-  asdf install java openjdk-21.0.2
-  asdf global java openjdk-21.0.2
 }
 
 install_languages() {
@@ -231,5 +218,7 @@ EOF
   info "Installation complete!"
 }
 
-parse_args "$@"
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  parse_args "$@"
+  main "$@"
+fi

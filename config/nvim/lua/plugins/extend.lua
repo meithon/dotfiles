@@ -88,6 +88,55 @@ end
 ---@type Plugin[]
 return {
   {
+    "folke/snacks.nvim",
+    opts = function(_, opts)
+      vim.tbl_deep_extend("force", {}, {
+      -- vim.tbl_deep_extend("force", opts, {
+      -- ---@type table<string, snacks.win.Config>
+      styles = {
+        above_cursor = {
+          backdrop = false,
+          position = "float",
+      --     border = vim.g.border.style,
+          title_pos = "left",
+          height = 1,
+      --     noautocmd = true,
+          relative = "cursor",
+          row = -3,
+          col = 0,
+          wo = {
+            cursorline = false,
+          },
+          bo = {
+            filetype = "snacks_input",
+            buftype = "prompt",
+          },
+          --- buffer local variables
+          b = {
+            completion = true, -- enable/disable blink completions in input
+          },
+          keys = {
+            n_esc = { "<esc>", { "cmp_close", "cancel" }, mode = "n", expr = true },
+            i_esc = { "<esc>", { "cmp_close", "stopinsert" }, mode = "i", expr = true },
+            i_cr = { "<cr>", { "cmp_accept", "confirm" }, mode = "i", expr = true },
+            i_tab = { "<tab>", { "cmp_select_next", "cmp", "fallback" }, mode = "i", expr = true },
+            i_ctrl_w = { "<c-w>", "<c-s-w>", mode = "i", expr = true },
+            i_up = { "<up>", { "hist_up" }, mode = { "i", "n" } },
+            i_down = { "<down>", { "hist_down" }, mode = { "i", "n" } },
+            q = "cancel",
+          },
+        },
+      },
+        input = {
+          enabled = true,
+          win = {
+            style = "above_cursor",
+          },
+        },
+      })
+    end,
+  },
+  {
     "stevearc/conform.nvim",
     optional = true,
     opts = {
@@ -533,6 +582,14 @@ return {
         ["json"] = { "biome" },
         ["jsonc"] = { "biome" },
         ["handlebars"] = { "biome" },
+        ["markdown"] = { "prettier" },
+      },
+      formatters = {
+        ["markdownlint-cli2"] = {
+          condition = function()
+            return false
+          end,
+        },
       },
     },
   },
@@ -701,15 +758,15 @@ return {
         lualine_c = { -- lualine_{a,b} だと背景が強調されるので、あえてcを使用
           {
             "filename",
-      --       file_status = false,
-      --       newfile_status = false,
-      --       -- 0: Just the filename
-      --       -- 1: Relative path
-      --       -- 2: Absolute path
-      --       -- 3: Absolute path, with tilde as the home directory
-      --       -- 4: Filename and parent dir, with tilde as the home directory
-      --       path = 3,
-      --       -- shorting_target = 80,
+            --       file_status = false,
+            --       newfile_status = false,
+            --       -- 0: Just the filename
+            --       -- 1: Relative path
+            --       -- 2: Absolute path
+            --       -- 3: Absolute path, with tilde as the home directory
+            --       -- 4: Filename and parent dir, with tilde as the home directory
+            --       path = 3,
+            --       -- shorting_target = 80,
           },
         },
       }
@@ -921,20 +978,20 @@ return {
           local neo_tree = require("neo-tree.command")
           local current_win = vim.api.nvim_get_current_win()
           local current_buf = vim.api.nvim_win_get_buf(current_win)
-          
+
           -- Check if current window is neo-tree
           if vim.bo[current_buf].filetype == "neo-tree" then
             -- Close neo-tree if currently focused
             neo_tree.execute({ toggle = true, dir = LazyVim.root() })
             return
           end
-          
+
           -- Check if any neo-tree window is open
           local neo_tree_wins = vim.tbl_filter(function(win)
             local buf = vim.api.nvim_win_get_buf(win)
             return vim.bo[buf].filetype == "neo-tree"
           end, vim.api.nvim_list_wins())
-          
+
           if #neo_tree_wins > 0 then
             -- Focus the first neo-tree window found
             vim.api.nvim_set_current_win(neo_tree_wins[1])
@@ -1311,19 +1368,47 @@ return {
     opts = function(_, opts)
       -- inlay hintsを無効化
       opts.inlay_hints = { enabled = false }
-      
+
       -- code actionのサインを無効化してチラつきを防ぐ
       vim.diagnostic.config({
         signs = {
           text = {
             [vim.diagnostic.severity.ERROR] = "",
-            [vim.diagnostic.severity.WARN] = "", 
+            [vim.diagnostic.severity.WARN] = "",
             [vim.diagnostic.severity.HINT] = "",
             [vim.diagnostic.severity.INFO] = "",
           },
         },
       })
-      
+
+      return opts
+    end,
+  },
+  {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = function(_, opts)
+      -- markdownのlinterを無効化
+      if opts.linters_by_ft and opts.linters_by_ft.markdown then
+        opts.linters_by_ft.markdown = {}
+      end
+      -- markdownlint-cli2を完全に無効化
+      if opts.linters and opts.linters["markdownlint-cli2"] then
+        opts.linters["markdownlint-cli2"] = nil
+      end
+      return opts
+    end,
+  },
+  {
+    "nvimtools/none-ls.nvim",
+    optional = true,
+    opts = function(_, opts)
+      -- none-ls のmarkdownlint_cli2診断を無効化
+      if opts.sources then
+        opts.sources = vim.tbl_filter(function(source)
+          return source ~= require("null-ls").builtins.diagnostics.markdownlint_cli2
+        end, opts.sources or {})
+      end
       return opts
     end,
   },
@@ -2314,15 +2399,15 @@ return {
   },
   {
     "echasnovski/mini.bufremove",
-    keys = {
-      {
-        "<C-Q>",
-        function()
-          require("mini.bufremove").delete(0, true)
-        end,
-        desc = "Delete Buffer (Force)",
-      },
-    },
+    -- keys = {
+    --   {
+    --     "<C-Q>",
+    --     function()
+    --       require("mini.bufremove").delete(0, true)
+    --     end,
+    --     desc = "Delete Buffer (Force)",
+    --   },
+    -- },
   },
   {
     "lewis6991/gitsigns.nvim",
@@ -2359,9 +2444,7 @@ return {
       },
       {
         "<leader>gr",
-        function()
-          require("gitsigns").reset_hunk()
-        end,
+        require("gitsigns").reset_hunk,
         desc = "Reset Hunk",
         mode = "v",
       },
@@ -2381,6 +2464,11 @@ return {
         desc = "Select Hunk",
       },
     },
+    opts = function(_, opts)
+      -- overwrite lazyvim default on_attach
+      -- for disable keymaps
+      opts.on_attach = nil
+    end,
   },
   -- {
   --   "folke/tokyonight.nvim",
@@ -2476,4 +2564,3 @@ return {
   --   end,
   -- },
 }
-

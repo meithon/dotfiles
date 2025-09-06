@@ -1,8 +1,9 @@
 [init]
    defaultBranch = main
-[user]
-  name = "meithon"
-  email = "rneithon@gmail.com"
+[include]
+  path = ~/.gitconfig-personal
+[includeIf "gitdir:~/workspace/work/"]
+  path = ~/.gitconfig-work
 [push]
 	autoSetupRemote = true
 [core]
@@ -10,3 +11,7 @@
 	editor = nvim
   pager = delta
 
+[color]
+	ui = auto
+[remind]
+	paths = /Users/mei/workspace/private/*

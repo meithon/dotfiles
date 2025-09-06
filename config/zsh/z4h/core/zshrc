@@ -160,10 +160,9 @@ eval "$(devbox global shellenv --init-hook)"
 source ~/.config/zsh/z4h/alias.zsh
 source ~/.config/zsh/z4h/plugins.zsh
 
-source ~/dotfiles/zsh/tmux-rename.zsh
+# source ~/dotfiles/zsh/tmux-rename.zsh
 
 source ~/dotfiles/shell/alias.sh
-source ~/dotfiles/shell/envsetup.sh
 
 
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
