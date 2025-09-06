@@ -27,7 +27,7 @@ map("n", "<Up>", "<C-w>+16")
 map("n", "<Down>", "<C-w>-16")
 map("n", "<C-p>", "<cmd>Telescope find_files<Cr>")
 -- map("n", "<C-x>", "<cmd>quitall<Cr>")
--- map("n", "<C-q>", "<cmd>quit<Cr>")
+map("n", "<C-q>", "<cmd>quit<Cr>")
 map("n", "<D-.>", vim.lsp.buf.code_action)
 map("n", "<D-s>", "<cmd>w<cr>", { noremap = true })
 -- { "<leader>ca", vim.lsp.buf.code_action, desc = "Code Action", mode = { "n", "v" }, has = "codeAction" },
