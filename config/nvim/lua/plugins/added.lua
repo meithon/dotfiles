@@ -4296,7 +4296,7 @@ tags:
       "Neogit",
     },
     keys = {
-      { "gh", "<cmd>Neogit<cr>", desc = "Open git tool interface" },
+      { "<leader>gh", "<cmd>Neogit<cr>", desc = "Open git tool interface" },
     },
   },
 }
