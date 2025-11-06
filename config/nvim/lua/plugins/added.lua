@@ -2918,13 +2918,11 @@ When given a task:
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "gvvaughan/lyaml",
     },
     config = function()
-      local lyaml = require("lyaml")
-      local obsidian_data_path = "~/.local/share/obsidian.nvim/data.yaml"
+      local obsidian_data_path = "~/.local/share/obsidian.nvim/data.json"
 
-      local function load_workspaces_from_yaml(file_path)
+      local function load_workspaces_from_json(file_path)
         local expanded_path = vim.fn.expand(file_path)
 
         local file = io.open(expanded_path, "r")
@@ -2939,7 +2937,7 @@ When given a task:
           return {}
         end
 
-        local success, data = pcall(lyaml.load, content)
+        local success, data = pcall(vim.fn.json_decode, content)
         if not success or not data or type(data) ~= "table" then
           return {}
         end
@@ -2947,31 +2945,28 @@ When given a task:
         return data.workspaces or {}
       end
 
-      local function save_workspaces_to_yaml(file_path, workspaces)
+      local function save_workspaces_to_json(file_path, workspaces)
         local expanded_path = vim.fn.expand(file_path)
 
         -- ディレクトリが存在しない場合は作成
         local dir = vim.fn.fnamemodify(expanded_path, ":h")
         vim.fn.mkdir(dir, "p")
 
-        -- YAML形式で直接書き込み
+        local data_to_save = { workspaces = workspaces }
+        local json_content = vim.fn.json_encode(data_to_save)
+
         local file = io.open(expanded_path, "w")
         if not file then
           error("Could not open file for writing: " .. expanded_path)
           return
         end
 
-        file:write("workspaces:\n")
-        for _, workspace in ipairs(workspaces) do
-          file:write(string.format("  - name: %s\n", workspace.name))
-          file:write(string.format("    path: %s\n", workspace.path))
-        end
-
+        file:write(json_content)
         file:close()
       end
 
       local function add_workspace(name, path)
-        local workspaces = load_workspaces_from_yaml(obsidian_data_path)
+        local workspaces = load_workspaces_from_json(obsidian_data_path)
 
         -- 重複チェック
         for _, workspace in ipairs(workspaces) do
@@ -2982,7 +2977,7 @@ When given a task:
         end
 
         table.insert(workspaces, { name = name, path = path })
-        save_workspaces_to_yaml(obsidian_data_path, workspaces)
+        save_workspaces_to_json(obsidian_data_path, workspaces)
       end
 
       local function create_vault_structure(vault_path)
@@ -3140,7 +3135,7 @@ tags:
         ui = {
           enable = false,
         },
-        workspaces = load_workspaces_from_yaml(obsidian_data_path),
+        workspaces = load_workspaces_from_json(obsidian_data_path),
         daily_notes = {
           folder = "summary/daily",
           date_format = "%Y/%Y-%m-%d",
