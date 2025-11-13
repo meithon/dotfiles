@@ -87,6 +87,11 @@ end
 
 ---@type Plugin[]
 return {
+  -- {
+  --   "catppuccin/nvim",
+  --   -- NOTE: typescriptでconst, exportの色が変になるので、変更しないようにする
+  --   tag ="v1.10.0"
+  -- },
   {
     "folke/snacks.nvim",
     opts = function(_, opts)
@@ -473,35 +478,35 @@ return {
         end)
       end)
 
-      -- feel free to change the keys to new ones, those are just my current mappings
-      vim.keymap.set("i", "<C-f>", function()
-        if ls.choice_active() then
-          return ls.change_choice(1)
-        else
-          return _G.dynamic_node_external_update(1) -- feel free to update to any index i
-        end
-      end, { noremap = true })
-      vim.keymap.set("s", "<C-f>", function()
-        if ls.choice_active() then
-          return ls.change_choice(1)
-        else
-          return _G.dynamic_node_external_update(1)
-        end
-      end, { noremap = true })
-      vim.keymap.set("i", "<C-d>", function()
-        if ls.choice_active() then
-          return ls.change_choice(-1)
-        else
-          return _G.dynamic_node_external_update(2)
-        end
-      end, { noremap = true })
-      vim.keymap.set("s", "<C-d>", function()
-        if ls.choice_active() then
-          return ls.change_choice(-1)
-        else
-          return _G.dynamic_node_external_update(2)
-        end
-      end, { noremap = true })
+      -- -- feel free to change the keys to new ones, those are just my current mappings
+      -- vim.keymap.set("i", "<C-f>", function()
+      --   if ls.choice_active() then
+      --     return ls.change_choice(1)
+      --   else
+      --     return _G.dynamic_node_external_update(1) -- feel free to update to any index i
+      --   end
+      -- end, { noremap = true })
+      -- vim.keymap.set("s", "<C-f>", function()
+      --   if ls.choice_active() then
+      --     return ls.change_choice(1)
+      --   else
+      --     return _G.dynamic_node_external_update(1)
+      --   end
+      -- end, { noremap = true })
+      -- vim.keymap.set("i", "<C-d>", function()
+      --   if ls.choice_active() then
+      --     return ls.change_choice(-1)
+      --   else
+      --     return _G.dynamic_node_external_update(2)
+      --   end
+      -- end, { noremap = true })
+      -- vim.keymap.set("s", "<C-d>", function()
+      --   if ls.choice_active() then
+      --     return ls.change_choice(-1)
+      --   else
+      --     return _G.dynamic_node_external_update(2)
+      --   end
+      -- end, { noremap = true })
       require("snippet").setup()
       -- \udb83\udfd8
       -- \udb83\udfd8
@@ -511,7 +516,7 @@ return {
     end,
   },
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       table.insert(opts.ensure_installed, "typos-lsp")
     end,
@@ -845,12 +850,21 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    -- NOTE: v0.10.0 以降だとmarkidが動かないので、v0.9.3にしておく
+    tag = "v0.9.3",
     dependencies = {
       "David-Kunz/markid",
       "windwp/nvim-ts-autotag",
     },
-    opts = function(_, opts)
-      -- require("nvim-treesitter.parsers").filetype_to_parsername.zsh = "bash"
+    -- NOTE: lazyvim v15からlazyvimのtreesitterのv0.9が使えなくなったので設定を上書き
+    config = function()
+      local TS = require("nvim-treesitter")
+      TS.setup()
+      require("nvim-treesitter.configs").setup({
+        markid = { enable = true },
+        autotag = { enable = true },
+      })
+
       vim.filetype.add({
         extension = {
           zsh = "bash",
@@ -864,13 +878,29 @@ return {
           ["%.zlogout"] = "bash",
         },
       })
-      opts.markid = {
-        enable = true,
-      }
-      opts.autotag = {
-        enable = true,
-      }
     end,
+    -- opts = function(_, opts)
+    --   -- require("nvim-treesitter.parsers").filetype_to_parsername.zsh = "bash"
+    --   vim.filetype.add({
+    --     extension = {
+    --       zsh = "bash",
+    --     },
+    --     pattern = {
+    --       [".*%.zsh"] = "bash",
+    --       ["%.zshrc"] = "bash",
+    --       ["%.zshenv"] = "bash",
+    --       ["%.zprofile"] = "bash",
+    --       ["%.zlogin"] = "bash",
+    --       ["%.zlogout"] = "bash",
+    --     },
+    --   })
+    --   opts.markid = {
+    --     enable = true,
+    --   }
+    --   opts.autotag = {
+    --     enable = true,
+    --   }
+    -- end,
   },
   { -- Add vitest runner
     "nvim-neotest/neotest",
@@ -2398,7 +2428,7 @@ return {
     -- end,
   },
   {
-    "echasnovski/mini.bufremove",
+    "nvim-mini/mini.bufremove",
     -- keys = {
     --   {
     --     "<C-Q>",
