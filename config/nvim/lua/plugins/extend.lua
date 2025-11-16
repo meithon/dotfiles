@@ -227,13 +227,13 @@ return {
     -- end,
     -- config = M.setup,
   },
-  { "EdenEast/nightfox.nvim" },
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "nightfox",
-    },
-  },
+  -- { "EdenEast/nightfox.nvim" },
+  -- {
+  --   "LazyVim/LazyVim",
+  --   opts = {
+  --     colorscheme = "nightfox",
+  --   },
+  -- },
   {
     "kiyoon/treesitter-indent-object.nvim",
     keys = {
@@ -796,27 +796,28 @@ return {
       }
     end,
   },
-  { -- not extend but used by lualine
-    "SmiteshP/nvim-navic",
-    lazy = true,
-    init = function()
-      vim.g.navic_silence = true
-      LazyVim.lsp.on_attach(function(client, buffer)
-        if client.supports_method("textDocument/documentSymbol") then
-          require("nvim-navic").attach(client, buffer)
-        end
-      end)
-    end,
-    opts = function()
-      return {
-        separator = " ",
-        highlight = true,
-        depth_limit = 8,
-        icons = LazyVim.config.icons.kinds,
-        lazy_update_context = true,
-      }
-    end,
-  },
+  -- { -- not extend but used by lualine
+  --   "SmiteshP/nvim-navic",
+  --   lazy = true,
+  --   init = function()
+  --     vim.g.navic_silence = true
+  --     local Snacks = require("snacks")
+  --     Snacks.util.lsp.on(nil, function(buf, client)
+  --       if client.supports_method("textDocument/documentSymbol") then
+  --         require("nvim-navic").attach(client, buffer)
+  --       end
+  --     end)
+  --   end,
+  --   opts = function()
+  --     return {
+  --       separator = " ",
+  --       highlight = true,
+  --       depth_limit = 8,
+  --       icons = LazyVim.config.icons.kinds,
+  --       lazy_update_context = true,
+  --     }
+  --   end,
+  -- },
   -- word highlight
   -- { -- FIXME: method textDocument/documentHighlight is not supported by any of the servers registered for the current buffer
   --   "RRethy/vim-illuminate",
@@ -858,12 +859,15 @@ return {
     },
     -- NOTE: lazyvim v15からlazyvimのtreesitterのv0.9が使えなくなったので設定を上書き
     config = function()
-      local TS = require("nvim-treesitter")
-      TS.setup()
+      -- local TS = require("nvim-treesitter")
+      -- TS.setup()
       require("nvim-treesitter.configs").setup({
         markid = { enable = true },
-        autotag = { enable = true },
       })
+      -- require("nvim-treesitter.configs").setup({
+      --   -- markid = { enable = true },
+      --   -- autotag = { enable = true },
+      -- })
 
       vim.filetype.add({
         extension = {
@@ -1442,88 +1446,88 @@ return {
       return opts
     end,
   },
-  { -- better typescript error
-    "neovim/nvim-lspconfig",
-    dependencies = "davidosomething/format-ts-errors.nvim",
-    ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-    opts = function(_, opts)
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = {
-        "gd",
-        function()
-          require("telescope.builtin").lsp_definitions({ reuse_win = false })
-        end,
-        desc = "Goto Definition",
-        has = "definition",
-      }
-
-      keys[#keys + 1] = {
-        "gI",
-        function()
-          require("telescope.builtin").lsp_implementations({ reuse_win = false })
-        end,
-        desc = "Goto Implementation",
-      }
-      keys[#keys + 1] = {
-        "gy",
-        function()
-          require("telescope.builtin").lsp_type_definitions({ reuse_win = false })
-        end,
-        desc = "Goto T[y]pe Definition",
-      }
-
-      opts.servers.tsserver.handlers = {
-        ["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
-          if result.diagnostics == nil then
-            return
-          end
-
-          -- ignore some tsserver diagnostics
-          local idx = 1
-          while idx <= #result.diagnostics do
-            local entry = result.diagnostics[idx]
-
-            local formatter = require("format-ts-errors")[entry.code]
-            entry.message = formatter and formatter(entry.message) or entry.message
-
-            -- codes: https://github.com/microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
-            if entry.code == 80001 then
-              -- { message = "File is a CommonJS module; it may be converted to an ES module.", }
-              table.remove(result.diagnostics, idx)
-            else
-              idx = idx + 1
-            end
-          end
-
-          vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
-        end,
-      }
-      -- table.insert(opts.servers.rust_analyzer.settings["rust-analyzer"].procMacro.ignored, {
-      --   leptos_macro = {
-      --     -- optional: --
-      --     -- "component",
-      --     "server",
-      --   },
-      -- })
-      -- require('lspconfig').rust_analyzer.setup {
-      --   -- Other Configs ...
-      --   settings = {
-      --     ["rust-analyzer"] = {
-      --       -- Other Settings ...
-      --       procMacro = {
-      --         ignored = {
-      --             leptos_macro = {
-      --                 -- optional: --
-      --                 -- "component",
-      --                 "server",
-      --             },
-      --         },
-      --       },
-      --     },
-      --   }
-      -- }
-    end,
-  },
+  -- { -- better typescript error
+  --   "neovim/nvim-lspconfig",
+  --   dependencies = "davidosomething/format-ts-errors.nvim",
+  --   ft = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+  --   opts = function(_, opts)
+  --     local keys = require("lazyvim.plugins.lsp.keymaps").get()
+  --     keys[#keys + 1] = {
+  --       "gd",
+  --       function()
+  --         require("telescope.builtin").lsp_definitions({ reuse_win = false })
+  --       end,
+  --       desc = "Goto Definition",
+  --       has = "definition",
+  --     }
+  --
+  --     keys[#keys + 1] = {
+  --       "gI",
+  --       function()
+  --         require("telescope.builtin").lsp_implementations({ reuse_win = false })
+  --       end,
+  --       desc = "Goto Implementation",
+  --     }
+  --     keys[#keys + 1] = {
+  --       "gy",
+  --       function()
+  --         require("telescope.builtin").lsp_type_definitions({ reuse_win = false })
+  --       end,
+  --       desc = "Goto T[y]pe Definition",
+  --     }
+  --
+  --     opts.servers.tsserver.handlers = {
+  --       ["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
+  --         if result.diagnostics == nil then
+  --           return
+  --         end
+  --
+  --         -- ignore some tsserver diagnostics
+  --         local idx = 1
+  --         while idx <= #result.diagnostics do
+  --           local entry = result.diagnostics[idx]
+  --
+  --           local formatter = require("format-ts-errors")[entry.code]
+  --           entry.message = formatter and formatter(entry.message) or entry.message
+  --
+  --           -- codes: https://github.com/microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
+  --           if entry.code == 80001 then
+  --             -- { message = "File is a CommonJS module; it may be converted to an ES module.", }
+  --             table.remove(result.diagnostics, idx)
+  --           else
+  --             idx = idx + 1
+  --           end
+  --         end
+  --
+  --         vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+  --       end,
+  --     }
+  --     -- table.insert(opts.servers.rust_analyzer.settings["rust-analyzer"].procMacro.ignored, {
+  --     --   leptos_macro = {
+  --     --     -- optional: --
+  --     --     -- "component",
+  --     --     "server",
+  --     --   },
+  --     -- })
+  --     -- require('lspconfig').rust_analyzer.setup {
+  --     --   -- Other Configs ...
+  --     --   settings = {
+  --     --     ["rust-analyzer"] = {
+  --     --       -- Other Settings ...
+  --     --       procMacro = {
+  --     --         ignored = {
+  --     --             leptos_macro = {
+  --     --                 -- optional: --
+  --     --                 -- "component",
+  --     --                 "server",
+  --     --             },
+  --     --         },
+  --     --       },
+  --     --     },
+  --     --   }
+  --     -- }
+  --   end,
+  -- },
   -- {
   --   "nvimtools/none-ls.nvim",
   --   dependencies = {

@@ -6,35 +6,40 @@ local map = vim.keymap.setadded
 ---
 return {
   {
-    "floatstack",
-    dir = "/Users/mei/workspace/private/tools/floatstack.nvim",
-    config = function()
-      -- init.lua あるいはプラグインマネージャで読み込んだ後に:
-      require("floatstack").setup()
-    end,
-    keys = {
-      {
-        "<leader>hg",
-        "<cmd>FSPush<cr>",
-        desc = "Add current buffet to floating window",
-      },
-      {
-        "<C-w>f",
-        "<cmd>FSPush<cr>",
-        desc = "Add current buffet to floating window",
-      },
-      {
-        "<leader>hf",
-        "<cmd>FSFocusToggle<cr>",
-        desc = "Add current buffet to floating window",
-      },
-      {
-        "<leader>hz",
-        "<cmd>FSToggleMinimal<cr>",
-        desc = "Toggle minimal",
-      },
-    },
+    "comby.nvim",
+    dir = "~/Workdir/private/tools/comby.nvim",
+    opts = {},
   },
+  -- {
+  --   "floatstack",
+  --   dir = "/Users/mei/workspace/private/tools/floatstack.nvim",
+  --   config = function()
+  --     -- init.lua あるいはプラグインマネージャで読み込んだ後に:
+  --     require("floatstack").setup()
+  --   end,
+  --   keys = {
+  --     {
+  --       "<leader>hg",
+  --       "<cmd>FSPush<cr>",
+  --       desc = "Add current buffet to floating window",
+  --     },
+  --     {
+  --       "<C-w>f",
+  --       "<cmd>FSPush<cr>",
+  --       desc = "Add current buffet to floating window",
+  --     },
+  --     {
+  --       "<leader>hf",
+  --       "<cmd>FSFocusToggle<cr>",
+  --       desc = "Add current buffet to floating window",
+  --     },
+  --     {
+  --       "<leader>hz",
+  --       "<cmd>FSToggleMinimal<cr>",
+  --       desc = "Toggle minimal",
+  --     },
+  --   },
+  -- },
   {
     "vim-scripts/securemodelines",
     config = function()
@@ -123,222 +128,222 @@ return {
   --    "folke/persistence.nvim",
   --    enabled = false,
   -- },
-  {
-    "nes.nvim",
-    -- event = "VeryLazy",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-    },
-    opts = {
-      provider = "openrouter",
-      api_key = vim.env.OPENROUTER_API_KEY,
-      -- model = "mistralai/mistral-small-3.2-24b-instruct", -- optional
-      -- model = "qwen/qwen-2.5-7b-instruct", -- optional
-      model = "deepseek/deepseek-r1-0528-qwen3-8b:free",
-    },
-    dir = "~/ghq/github.com/Xuyuanp/nes.nvim",
-    -- lazy config
-    keys = {
-      {
-        "<C-o>",
-        function()
-          print("request!!")
-          require("nes").get_suggestion()
-        end,
-        mode = "i",
-        desc = "[Nes] get suggestion",
-      },
-      {
-        "<C-u>",
-        function()
-          print("apply!!")
-          require("nes").apply_suggestion(0, { jump = true, trigger = true })
-        end,
-        mode = "i",
-        desc = "[Nes] apply suggestion",
-      },
-    },
-  },
-  {
-    "dlants/magenta.nvim",
-    -- dir = "/Users/mei/workspace/private/investigation/magenta.nvim/magenta.nvim",
-    dir = "/Users/mei/workspace/private/investigation/magenta.nvim/magenta.nvim/.git/phantom/worktrees/new-log",
-    build = "npm install --frozen-lockfile",
-    cmd = { "Magenta" },
-    keys = {
-      { "<leader>mn", ":Magenta new-thread<CR>", desc = "Create new Magenta thread" },
-      { "<leader>mc", ":Magenta clear<CR>", desc = "Clear Magenta state" },
-      { "<leader>ma", ":Magenta abort<CR>", desc = "Abort current Magenta operation" },
-      { "<leader>mt", ":Magenta toggle<CR>", desc = "Toggle Magenta window" },
-      { "<leader>mi", ":Magenta start-inline-edit<CR>", mode = "n", desc = "Inline edit" },
-      { "<leader>mi", ":Magenta start-inline-edit-selection<CR>", mode = "v", desc = "Inline edit selection" },
-      { "<leader>mp", ":Magenta paste-selection<CR>", mode = "v", desc = "Send selection to Magenta" },
-      {
-        "<leader>mb",
-        function()
-          require("magenta.actions").add_buffer_to_context()
-        end,
-        desc = "Add current buffer to Magenta context",
-      },
-      {
-        "<leader>mf",
-        function()
-          require("magenta.actions").pick_context_files()
-        end,
-        desc = "Select files to add to Magenta context",
-      },
-      {
-        "<leader>mp",
-        function()
-          require("magenta.actions").pick_provider()
-        end,
-        desc = "Select provider and model",
-      },
-    },
-    config = function()
-      vim.api.nvim_create_user_command("MagentaListMCPServers", function()
-        -- 内部状態にアクセスするLua関数を呼び出します
-        require("magenta.actions").list_mcp_servers()
-      end, {})
-      require("magenta").setup({
-        autoContext = {
-          "context.md",
-          "claude.md",
-          ".magenta/*.md",
-          "~/dotfiles/magenta.md",
-        },
-        commandAllowlist = {
-          -- "^ls( [^;&|()<>]*)?$",
-          -- "^pwd$",
-          -- "^echo( [^;&|()<>]*)?$",
-          -- "^git (status|log|diff|show|add|commit|push|reset|restore|branch|checkout|switch|fetch|pull|merge|rebase|tag|stash)( [^;&|()<>]*)?$",
-          -- "^ls [^;&()<>]* | grep [^;&|()<>]*$",
-          -- "^echo [^;&|()<>]* > [a-zA-Z0-9_\\-.]+$",
-          -- "^grep( -[A-Za-z]*)? [^;&|()<>]*$",
-          ".*",
-        },
-        defaultKeymaps = false,
-        mcpServers = {
-          vectorcode = {
-            command = "vectorcode-mcp-server",
-            args = {},
-          },
-          browsermcp = {
-            command = "npx",
-            args = { "@browsermcp/mcp@latest" },
-          },
-          context7 = {
-            command = "npx",
-            args = { "-y", "@upstash/context7-mcp" },
-          },
-          -- https://github.com/github/github-mcp-server
-          githubMcpServer = {
-            command = "github-mcp-server",
-            args = {
-              "stdio",
-            },
-            env = {
-              GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"),
-            },
-          },
-          openmemory = {
-            command = "npx",
-            args = {
-              "-y",
-              "supergateway",
-              "--sse",
-              "http://localhost:8765/mcp/openmemory/sse/mei",
-              "--debug", -- デバッグフラグを追加
-            },
-            debug = true, -- MCPクライアント側のデバッグを有効に
-          },
-        },
-        profiles = {
-          {
-            name = "claude-3-7",
-            provider = "anthropic",
-            model = "claude-3-7-sonnet-latest",
-            apiKeyEnvVar = "ANTHROPIC_API_KEY",
-          },
-          {
-            name = "custom",
-            provider = "anthropic",
-            model = "claude-3-7-sonnet-latest",
-            apiKeyEnvVar = "CUSTOM_API_KEY_ENV_VAR",
-            baseUrl = "custom anthropic endpoint",
-          },
-        },
-      })
-    end,
-
-    -- opts = {
-    --   autoContext = {
-    --     "context.md",
-    --     "claude.md",
-    --     ".magenta/*.md",
-    --     "~/dotfiles/magenta.md",
-    --   },
-    --   commandAllowlist = {
-    --     -- "^ls( [^;&|()<>]*)?$",
-    --     -- "^pwd$",
-    --     -- "^echo( [^;&|()<>]*)?$",
-    --     -- "^git (status|log|diff|show|add|commit|push|reset|restore|branch|checkout|switch|fetch|pull|merge|rebase|tag|stash)( [^;&|()<>]*)?$",
-    --     -- "^ls [^;&()<>]* | grep [^;&|()<>]*$",
-    --     -- "^echo [^;&|()<>]* > [a-zA-Z0-9_\\-.]+$",
-    --     -- "^grep( -[A-Za-z]*)? [^;&|()<>]*$",
-    --     ".*",
-    --   },
-    --   defaultKeymaps = false,
-    --   mcpServers = {
-    --     openmemory = {
-    --       command = "npx",
-    --       args = {
-    --         "-y",
-    --         "supergateway",
-    --         "--sse",
-    --         "http://localhost:8765/mcp/openmemory/sse/mei",
-    --       },
-    --     },
-    --     vectorcode = {
-    --       command = "vectorcode-mcp-server",
-    --       args = {},
-    --     },
-    --     browsermcp = {
-    --       command = "npx",
-    --       args = { "@browsermcp/mcp@latest" },
-    --     },
-    --     context7 = {
-    --       command = "npx",
-    --       args = { "-y", "@upstash/context7-mcp" },
-    --     },
-    --     -- https://github.com/github/github-mcp-server
-    --     githubMcpServer = {
-    --       command = "github-mcp-server",
-    --       args = {
-    --         "stdio",
-    --       },
-    --       env = {
-    --         -- GITHUB_PERSONAL_ACCESS_TOKEN =
-    --       },
-    --     },
-    --   },
-    --   profiles = {
-    --     {
-    --       name = "claude-3-7",
-    --       provider = "anthropic",
-    --       model = "claude-3-7-sonnet-latest",
-    --       apiKeyEnvVar = "ANTHROPIC_API_KEY",
-    --     },
-    --     {
-    --       name = "custom",
-    --       provider = "anthropic",
-    --       model = "claude-3-7-sonnet-latest",
-    --       apiKeyEnvVar = "CUSTOM_API_KEY_ENV_VAR",
-    --       baseUrl = "custom anthropic endpoint",
-    --     },
-    --   },
-    -- },
-  },
+  -- {
+  --   "nes.nvim",
+  --   -- event = "VeryLazy",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --   },
+  --   opts = {
+  --     provider = "openrouter",
+  --     api_key = vim.env.OPENROUTER_API_KEY,
+  --     -- model = "mistralai/mistral-small-3.2-24b-instruct", -- optional
+  --     -- model = "qwen/qwen-2.5-7b-instruct", -- optional
+  --     model = "deepseek/deepseek-r1-0528-qwen3-8b:free",
+  --   },
+  --   dir = "~/ghq/github.com/Xuyuanp/nes.nvim",
+  --   -- lazy config
+  --   keys = {
+  --     {
+  --       "<C-o>",
+  --       function()
+  --         print("request!!")
+  --         require("nes").get_suggestion()
+  --       end,
+  --       mode = "i",
+  --       desc = "[Nes] get suggestion",
+  --     },
+  --     {
+  --       "<C-u>",
+  --       function()
+  --         print("apply!!")
+  --         require("nes").apply_suggestion(0, { jump = true, trigger = true })
+  --       end,
+  --       mode = "i",
+  --       desc = "[Nes] apply suggestion",
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "dlants/magenta.nvim",
+  --   -- dir = "/Users/mei/workspace/private/investigation/magenta.nvim/magenta.nvim",
+  --   dir = "/Users/mei/workspace/private/investigation/magenta.nvim/magenta.nvim/.git/phantom/worktrees/new-log",
+  --   build = "npm install --frozen-lockfile",
+  --   cmd = { "Magenta" },
+  --   keys = {
+  --     { "<leader>mn", ":Magenta new-thread<CR>", desc = "Create new Magenta thread" },
+  --     { "<leader>mc", ":Magenta clear<CR>", desc = "Clear Magenta state" },
+  --     { "<leader>ma", ":Magenta abort<CR>", desc = "Abort current Magenta operation" },
+  --     { "<leader>mt", ":Magenta toggle<CR>", desc = "Toggle Magenta window" },
+  --     { "<leader>mi", ":Magenta start-inline-edit<CR>", mode = "n", desc = "Inline edit" },
+  --     { "<leader>mi", ":Magenta start-inline-edit-selection<CR>", mode = "v", desc = "Inline edit selection" },
+  --     { "<leader>mp", ":Magenta paste-selection<CR>", mode = "v", desc = "Send selection to Magenta" },
+  --     {
+  --       "<leader>mb",
+  --       function()
+  --         require("magenta.actions").add_buffer_to_context()
+  --       end,
+  --       desc = "Add current buffer to Magenta context",
+  --     },
+  --     {
+  --       "<leader>mf",
+  --       function()
+  --         require("magenta.actions").pick_context_files()
+  --       end,
+  --       desc = "Select files to add to Magenta context",
+  --     },
+  --     {
+  --       "<leader>mp",
+  --       function()
+  --         require("magenta.actions").pick_provider()
+  --       end,
+  --       desc = "Select provider and model",
+  --     },
+  --   },
+  --   config = function()
+  --     vim.api.nvim_create_user_command("MagentaListMCPServers", function()
+  --       -- 内部状態にアクセスするLua関数を呼び出します
+  --       require("magenta.actions").list_mcp_servers()
+  --     end, {})
+  --     require("magenta").setup({
+  --       autoContext = {
+  --         "context.md",
+  --         "claude.md",
+  --         ".magenta/*.md",
+  --         "~/dotfiles/magenta.md",
+  --       },
+  --       commandAllowlist = {
+  --         -- "^ls( [^;&|()<>]*)?$",
+  --         -- "^pwd$",
+  --         -- "^echo( [^;&|()<>]*)?$",
+  --         -- "^git (status|log|diff|show|add|commit|push|reset|restore|branch|checkout|switch|fetch|pull|merge|rebase|tag|stash)( [^;&|()<>]*)?$",
+  --         -- "^ls [^;&()<>]* | grep [^;&|()<>]*$",
+  --         -- "^echo [^;&|()<>]* > [a-zA-Z0-9_\\-.]+$",
+  --         -- "^grep( -[A-Za-z]*)? [^;&|()<>]*$",
+  --         ".*",
+  --       },
+  --       defaultKeymaps = false,
+  --       mcpServers = {
+  --         vectorcode = {
+  --           command = "vectorcode-mcp-server",
+  --           args = {},
+  --         },
+  --         browsermcp = {
+  --           command = "npx",
+  --           args = { "@browsermcp/mcp@latest" },
+  --         },
+  --         context7 = {
+  --           command = "npx",
+  --           args = { "-y", "@upstash/context7-mcp" },
+  --         },
+  --         -- https://github.com/github/github-mcp-server
+  --         githubMcpServer = {
+  --           command = "github-mcp-server",
+  --           args = {
+  --             "stdio",
+  --           },
+  --           env = {
+  --             GITHUB_PERSONAL_ACCESS_TOKEN = os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"),
+  --           },
+  --         },
+  --         openmemory = {
+  --           command = "npx",
+  --           args = {
+  --             "-y",
+  --             "supergateway",
+  --             "--sse",
+  --             "http://localhost:8765/mcp/openmemory/sse/mei",
+  --             "--debug", -- デバッグフラグを追加
+  --           },
+  --           debug = true, -- MCPクライアント側のデバッグを有効に
+  --         },
+  --       },
+  --       profiles = {
+  --         {
+  --           name = "claude-3-7",
+  --           provider = "anthropic",
+  --           model = "claude-3-7-sonnet-latest",
+  --           apiKeyEnvVar = "ANTHROPIC_API_KEY",
+  --         },
+  --         {
+  --           name = "custom",
+  --           provider = "anthropic",
+  --           model = "claude-3-7-sonnet-latest",
+  --           apiKeyEnvVar = "CUSTOM_API_KEY_ENV_VAR",
+  --           baseUrl = "custom anthropic endpoint",
+  --         },
+  --       },
+  --     })
+  --   end,
+  --
+  --   -- opts = {
+  --   --   autoContext = {
+  --   --     "context.md",
+  --   --     "claude.md",
+  --   --     ".magenta/*.md",
+  --   --     "~/dotfiles/magenta.md",
+  --   --   },
+  --   --   commandAllowlist = {
+  --   --     -- "^ls( [^;&|()<>]*)?$",
+  --   --     -- "^pwd$",
+  --   --     -- "^echo( [^;&|()<>]*)?$",
+  --   --     -- "^git (status|log|diff|show|add|commit|push|reset|restore|branch|checkout|switch|fetch|pull|merge|rebase|tag|stash)( [^;&|()<>]*)?$",
+  --   --     -- "^ls [^;&()<>]* | grep [^;&|()<>]*$",
+  --   --     -- "^echo [^;&|()<>]* > [a-zA-Z0-9_\\-.]+$",
+  --   --     -- "^grep( -[A-Za-z]*)? [^;&|()<>]*$",
+  --   --     ".*",
+  --   --   },
+  --   --   defaultKeymaps = false,
+  --   --   mcpServers = {
+  --   --     openmemory = {
+  --   --       command = "npx",
+  --   --       args = {
+  --   --         "-y",
+  --   --         "supergateway",
+  --   --         "--sse",
+  --   --         "http://localhost:8765/mcp/openmemory/sse/mei",
+  --   --       },
+  --   --     },
+  --   --     vectorcode = {
+  --   --       command = "vectorcode-mcp-server",
+  --   --       args = {},
+  --   --     },
+  --   --     browsermcp = {
+  --   --       command = "npx",
+  --   --       args = { "@browsermcp/mcp@latest" },
+  --   --     },
+  --   --     context7 = {
+  --   --       command = "npx",
+  --   --       args = { "-y", "@upstash/context7-mcp" },
+  --   --     },
+  --   --     -- https://github.com/github/github-mcp-server
+  --   --     githubMcpServer = {
+  --   --       command = "github-mcp-server",
+  --   --       args = {
+  --   --         "stdio",
+  --   --       },
+  --   --       env = {
+  --   --         -- GITHUB_PERSONAL_ACCESS_TOKEN =
+  --   --       },
+  --   --     },
+  --   --   },
+  --   --   profiles = {
+  --   --     {
+  --   --       name = "claude-3-7",
+  --   --       provider = "anthropic",
+  --   --       model = "claude-3-7-sonnet-latest",
+  --   --       apiKeyEnvVar = "ANTHROPIC_API_KEY",
+  --   --     },
+  --   --     {
+  --   --       name = "custom",
+  --   --       provider = "anthropic",
+  --   --       model = "claude-3-7-sonnet-latest",
+  --   --       apiKeyEnvVar = "CUSTOM_API_KEY_ENV_VAR",
+  --   --       baseUrl = "custom anthropic endpoint",
+  --   --     },
+  --   --   },
+  --   -- },
+  -- },
   {
     "alexandrosalexiou/kotlin.nvim",
   },
@@ -355,12 +360,12 @@ return {
       require("octo").setup()
     end,
   },
-  {
-    "Davidyz/VectorCode",
-    version = "*", -- optional, depending on whether you're on nightly or release
-    build = "pipx upgrade vectorcode", -- optional but recommended. This keeps your CLI up-to-date.
-    dependencies = { "nvim-lua/plenary.nvim" },
-  },
+  -- {
+  --   "Davidyz/VectorCode",
+  --   version = "*", -- optional, depending on whether you're on nightly or release
+  --   build = "pipx upgrade vectorcode", -- optional but recommended. This keeps your CLI up-to-date.
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  -- },
   {
     "johnseth97/codex.nvim",
     lazy = true,
@@ -461,7 +466,7 @@ return {
   --     "nvim-lua/plenary.nvim",
   --     "MunifTanjim/nui.nvim",
   --     --- The below dependencies are optional,
-  --     "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+  --     "nvim-tree/nvim-web-devicons", -- or nvim-mini/mini.icons
   --     "zbirenbaum/copilot.lua", -- for providers='copilot'
   --     {
   --       -- support for image pasting
@@ -493,7 +498,7 @@ return {
   { "EdenEast/nightfox.nvim" },
   -- Disable indent line
   -- {
-  --   "echasnovski/mini.indentscope",
+  --   "nvim-mini/mini.indentscope",
   --   --   enabled = false,
   --   -- opts = function(_, opts)
   --   --   -- opts.draw.animation = require("mini.indentscope").gen_animation.none()
@@ -509,7 +514,7 @@ return {
   -- },
   -- Disable indent line, for indent-blankline.nvim
   {
-    "echasnovski/mini.indentscope",
+    "nvim-mini/mini.indentscope",
     enabled = false,
     -- opts = {
     --   draw = {
@@ -1073,10 +1078,10 @@ return {
       "CodeCompanionHistory",
     },
     keys = {
-      { "<C-a>", mode = { "n", "v" } },
-      "<Leader>a",
       "<Leader>a",
       "ga",
+      { "<C-a>", "<cmd>CodeCompanionChat<cr>", mode = { "n", "v" } },
+      -- { "<Home", "<cmd>CodeCompanionChat<cr>", mode = { "n", "v" } },
       { "<leader>aj", "<cmd>'<,'>CodeCompanion<cr>", mode = { "v" }, desc = "Code Companion Inline Prompt" },
     },
     dependencies = {
@@ -1091,10 +1096,10 @@ return {
       "ravitemer/mcphub.nvim",
       "ravitemer/codecompanion-history.nvim",
       {
-        "echasnovski/mini.diff",
+        "nvim-mini/mini.diff",
         opts = {
-         -- disable lazyvim mapping
-          mappings = {}
+          -- disable lazyvim mapping
+          mappings = {},
         },
         --   version = "*",
         --   opts = {
@@ -1128,12 +1133,30 @@ return {
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
 
-      vim.api.nvim_set_keymap("n", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
-      vim.api.nvim_set_keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      -- vim.api.nvim_set_keymap("n", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      -- vim.api.nvim_set_keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      -- vim.api.nvim_set_keymap("n", "<Home>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      -- vim.api.nvim_set_keymap("v", "<Home>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
+      -- vim.api.nvim_set_keymap("v", "<C-a>", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
       vim.api.nvim_set_keymap("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { noremap = true, silent = true })
 
       local opts = {
         adapters = {
+          openrouter = function()
+            return require("codecompanion.adapters").extend("openai", {
+              name = "OpenRouter",
+              url = "https://openrouter.ai/api/v1/chat/completions",
+              env = {
+                api_key = os.getenv("OPENROUTER_API_KEY"),
+              },
+              schema = {
+                model = {
+                  default = "gpt-4",
+                },
+              },
+            })
+          end,
+
           -- openai = function()
           --   return require("codecompanion.adapters").extend("openai", {
           --     schema = {
@@ -1168,7 +1191,11 @@ return {
             --   system_prompt = { modes = { n = "<localleader>s" } },
             --   auto_tool_mode = { modes = { n = "<localleader>ta" } },
             -- },
-            adapter = "anthropic",
+            adapter = {
+              name = "openrouter",
+              -- model = "meta-llama/llama-4-scout:free",
+              model = "meta-llama/llama-3.3-70b-instruct:free",
+            },
             tools = {
               opts = {
                 auto_submit_errors = true, -- Send any errors to the LLM automatically?
@@ -1724,11 +1751,11 @@ When given a task:
             show_result_in_chat = true,
           },
         },
-        vectorcode = {
-          opts = {
-            add_tool = true,
-          },
-        },
+        -- vectorcode = {
+        --   opts = {
+        --     add_tool = true,
+        --   },
+        -- },
       }
 
       require("codecompanion").setup(opts)
@@ -1764,13 +1791,13 @@ When given a task:
   --     })
   --   end,
   -- },
-  { -- scroll bar
-    "lewis6991/satellite.nvim",
-    event = "BufReadPost",
-    opts = {
-      current_only = true,
-    },
-  },
+  -- { -- scroll bar
+  --   "lewis6991/satellite.nvim",
+  --   event = "BufReadPost",
+  --   opts = {
+  --     current_only = true,
+  --   },
+  -- },
   { -- macro manager
     "ecthelionvi/NeoComposer.nvim",
     cmd = { "EditMacros" },
@@ -2766,7 +2793,16 @@ When given a task:
   --     })
   --   end,
   -- },
-  { "wakatime/vim-wakatime", lazy = false },
+  -- { "wakatime/vim-wakatime", lazy = false },
+  --
+  {
+    "meithon/vim-wakatime",
+    dir = "~/ghq/github.com/meithon/vim-wakatime",
+    opts = {
+      api_url = "https://wakapi.meith.onl/api",
+    },
+    lazy = false,
+  },
   {
     "stevearc/oil.nvim",
     opts = {
@@ -3200,7 +3236,7 @@ tags:
       })
     end,
   },
-  { "echasnovski/mini.nvim", version = "*" },
+  { "nvim-mini/mini.nvim", version = "*" },
   -- {
   --   "folke/twilight.nvim",
   --   opts = {
@@ -3267,6 +3303,7 @@ tags:
   {
     "akinsho/toggleterm.nvim",
     cmd = { "ToggleTerm", "ToggleTermToggleAll" },
+    enabled = false,
     keys = {
       { "<leader>uP", "<cmd>ToggleTermToggleAll<cr>", desc = "Toggle All Toggleterm" },
       { "<leader>up", "<cmd>ToggleTerm<cr>", desc = "Toggle Toggleterm" },
@@ -3625,7 +3662,7 @@ tags:
         end,
       })
     end,
-    enabled = not vim.g.vscode,
+    enabled = false,
   },
   {
     "jinh0/eyeliner.nvim",
@@ -3940,7 +3977,7 @@ tags:
     "altermo/ultimate-autopair.nvim",
     dependencies = {
       { -- disable lazyvim plugin
-        "echasnovski/mini.pairs",
+        "nvim-mini/mini.pairs",
         enabled = false,
       },
     },
@@ -4180,16 +4217,18 @@ tags:
       },
       {
         "<leader>li",
-        function()
-          require("lspsaga.callhierarchy"):send_method(2, {})
-        end,
+        "<cmd>Lspsaga incoming_calls<cr>",
+        -- function()
+        --   require("lspsaga.callhierarchy"):send_method(2, {})
+        -- end,
         desc = "Callhierarchy incoming(Lspsaga)",
       },
       {
         "<leader>lo",
-        function()
-          require("lspsaga.callhierarchy"):send_method(3, {})
-        end,
+        "<cmd>Lspsaga outgoing_calls<cr>",
+        -- function()
+        --   require("lspsaga.callhierarchy"):send_method(3, {})
+        -- end,
         desc = "Callhierarchy outgoing(Lspsaga)",
       },
     },
