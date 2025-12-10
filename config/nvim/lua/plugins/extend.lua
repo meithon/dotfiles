@@ -858,16 +858,28 @@ return {
       "windwp/nvim-ts-autotag",
     },
     -- NOTE: lazyvim v15からlazyvimのtreesitterのv0.9が使えなくなったので設定を上書き
-    config = function()
-      -- local TS = require("nvim-treesitter")
-      -- TS.setup()
-      require("nvim-treesitter.configs").setup({
-        markid = { enable = true },
-      })
-      -- require("nvim-treesitter.configs").setup({
-      --   -- markid = { enable = true },
-      --   -- autotag = { enable = true },
-      -- })
+    config = function(_, opts)
+      -- keep LazyVim defaults (highlight/injections) while forcing markid + markdown parsers
+      opts.markid = { enable = true }
+      opts.autotag = opts.autotag or { enable = true }
+
+      opts.ensure_installed = opts.ensure_installed or {}
+      for _, lang in ipairs({ "markdown", "markdown_inline" }) do
+        if not vim.tbl_contains(opts.ensure_installed, lang) then
+          table.insert(opts.ensure_installed, lang)
+        end
+      end
+
+      -- runtimeのqueriesに合わせて最新のmarkdownパーサを使う（0.9系の固定版だとcurly_group_textが無くてエラーになる）
+      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+      for _, lang in ipairs({ "markdown", "markdown_inline" }) do
+        if parser_config[lang] and parser_config[lang].install_info then
+          parser_config[lang].install_info.commit = nil
+          parser_config[lang].install_info.branch = parser_config[lang].install_info.branch or "main"
+        end
+      end
+
+      require("nvim-treesitter.configs").setup(opts)
 
       vim.filetype.add({
         extension = {
