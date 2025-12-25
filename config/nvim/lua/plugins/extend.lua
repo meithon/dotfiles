@@ -1543,119 +1543,18 @@ return {
     end,
   },
   { -- Treesitter text object
-    "ziontee113/syntax-tree-surfer",
+    "meithon/treeswing.nvim",
     vscode = true,
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = function()
-      local get_current_window_id = vim.api.nvim_get_current_win
-      local get_current_cursor_pos = vim.api.nvim_win_get_cursor
-
-      local current_buffer = 0
-
-      ---@class RestorePosition
-      ---@field window_id number
-      ---@field buf number
-      ---@field pos number[]
-      ---@field ns_id integer
-      ---@field extmark_id number
-      local RestorePosition = {}
-      function RestorePosition.new()
-        local self = setmetatable({}, RestorePosition)
-        self.window_id = get_current_window_id()
-        self.buf = vim.api.nvim_get_current_buf()
-        self.pos = get_current_cursor_pos(self.window_id)
-        self.ns_id = vim.api.nvim_create_namespace("flash_text_object")
-        self.extmark_id = vim.api.nvim_buf_set_extmark(self.buf, self.ns_id, self.pos[1], self.pos[2], {})
-        self.restore = function()
-          vim.api.nvim_set_current_win(self.window_id)
-          local pos = vim.api.nvim_buf_get_extmark_by_id(self.buf, self.ns_id, self.extmark_id, {})
-          vim.api.nvim_win_set_cursor(self.window_id, pos)
-          vim.api.nvim_buf_del_extmark(self.buf, self.ns_id, self.extmark_id)
-        end
-        return self
-      end
-      -- function RestorePosition.restore(self)
-      --   vim.api.nvim_set_current_win(self.window_id)
-      --   vim.api.nvim_buf_get_extmark_by_id(self.buf, self.ns_id, self.extmark_id, {})
-      --   vim.api.nvim_buf_del_extmark(self.buf, self.ns_id, self.extmark_id)
-      -- end
-
-      ---@param cmd string
-      ---@param node_type "current"|"master"
-      ---@return nil
-      local function flash_text_object(cmd, node_type)
-        -- local restore_position = RestorePosition.new()
-        local saved_window_id = get_current_window_id()
-        local saved_buf = vim.api.nvim_get_current_buf()
-        local saved_pos = get_current_cursor_pos(saved_window_id)
-        local ns_id = vim.api.nvim_create_namespace("flash_text_object")
-        local saved_extmark_id = vim.api.nvim_buf_set_extmark(saved_buf, ns_id, saved_pos[1], saved_pos[2], {})
-
-        require("flash").jump()
-        -- if was not moved, not select current node
-        if saved_window_id == get_current_window_id() and saved_pos == vim.api.nvim_win_get_cursor(saved_window_id) then
-          vim.api.nvim_buf_del_extmark(saved_buf, ns_id, saved_extmark_id)
-          return nil
-        end
-
-        if node_type == "currenta" then
-          require("syntax-tree-surfer").select_current_node()
-        else
-          require("syntax-tree-surfer").select()
-        end
-        if cmd == "" then -- its means a in select mode
-          local augroup = vim.api.nvim_create_augroup("DetectModeChange", { clear = true })
-
-          vim.api.nvim_create_autocmd({ "ModeChanged" }, {
-            group = augroup,
-            pattern = "*:*",
-            callback = function()
-              if vim.api.nvim_get_mode().mode ~= "v" then
-                vim.api.nvim_clear_autocmds({ group = augroup })
-
-                -- restore_position.restore()
-                vim.api.nvim_set_current_win(saved_window_id)
-                local pos = vim.api.nvim_buf_get_extmark_by_id(saved_buf, ns_id, saved_extmark_id, {})
-                vim.api.nvim_win_set_cursor(saved_window_id, pos)
-                vim.api.nvim_buf_del_extmark(saved_buf, ns_id, saved_extmark_id)
-              end
-            end,
-          })
-        else
-          vim.cmd("normal! " .. cmd)
-          -- restore_position.restore()
-          vim.api.nvim_set_current_win(saved_window_id)
-          local pos = vim.api.nvim_buf_get_extmark_by_id(saved_buf, ns_id, saved_extmark_id, {})
-          vim.api.nvim_win_set_cursor(saved_window_id, pos)
-          vim.api.nvim_buf_del_extmark(saved_buf, ns_id, saved_extmark_id)
-        end
-      end
-
-      --- Define keymap
-      ---@param cmd string
-      ---@param node_type "current"|"master
-      ---@return function
-      local function df(cmd, node_type)
-        return function()
-          flash_text_object(cmd, node_type)
-        end
-      end
-
       ---@type Key[]
       return {
-        -- { "vs", df("", "master"), mode = "n", desc = "Flash then Select" },
-        -- { "Vs", df("", "current"), mode = "n", desc = "Flash then Select" },
-        -- { "Ds", df("d", "master"), mode = "n", desc = "Select Master Node then Delete" },
-        -- { "ys", df("y", "master"), mode = "n", desc = "Select Master Node then Yank" },
-        -- { "Xs", df("x", "current"), mode = "n", desc = "Select Node then Dlete (not yank)" },
-        -- { "ds", df("d", "current"), mode = "n", desc = "Select Node then Delete" },
-        -- { "Ys", df("y", "current"), mode = "n", desc = "Select Node then Yank" },
-        { "vi", "<cmd>STSSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
-        { "va", "<cmd>STSSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
-        { "N", "<cmd>STSSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
-        { "P", "<cmd>STSSelectPrevSiblingNode<cr>", mode = "x", desc = "Select Previous Sibling Node" },
-        { "K", "<cmd>STSSelectParentNode<cr>", mode = "x", desc = "Select Parent Node" },
-        { "J", "<cmd>STSSelectChildNode<cr>", mode = "x", desc = "Select Child Node" },
+        { "vi", "<cmd>TSWSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
+        { "va", "<cmd>TSWSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
+        { "N", "<cmd>TSWSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
+        { "P", "<cmd>TSWSelectPrevSiblingNode<cr>", mode = "x", desc = "Select Previous Sibling Node" },
+        { "K", "<cmd>TSWSelectParentNode<cr>", mode = "x", desc = "Select Parent Node" },
+        { "J", "<cmd>TSWSelectChildNode<cr>", mode = "x", desc = "Select Child Node" },
       }
     end,
     opts = {},
