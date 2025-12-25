@@ -796,28 +796,28 @@ return {
       }
     end,
   },
-  -- { -- not extend but used by lualine
-  --   "SmiteshP/nvim-navic",
-  --   lazy = true,
-  --   init = function()
-  --     vim.g.navic_silence = true
-  --     local Snacks = require("snacks")
-  --     Snacks.util.lsp.on(nil, function(buf, client)
-  --       if client.supports_method("textDocument/documentSymbol") then
-  --         require("nvim-navic").attach(client, buffer)
-  --       end
-  --     end)
-  --   end,
-  --   opts = function()
-  --     return {
-  --       separator = " ",
-  --       highlight = true,
-  --       depth_limit = 8,
-  --       icons = LazyVim.config.icons.kinds,
-  --       lazy_update_context = true,
-  --     }
-  --   end,
-  -- },
+  { -- not extend but used by lualine
+    "SmiteshP/nvim-navic",
+    lazy = true,
+    init = function()
+      vim.g.navic_silence = true
+      local Snacks = require("snacks")
+      Snacks.util.lsp.on(nil, function(buf, client)
+        if client.supports_method("textDocument/documentSymbol") then
+          require("nvim-navic").attach(client, buf)
+        end
+      end)
+    end,
+    opts = function()
+      return {
+        separator = " ",
+        highlight = true,
+        depth_limit = 8,
+        icons = LazyVim.config.icons.kinds,
+        lazy_update_context = true,
+      }
+    end,
+  },
   -- word highlight
   -- { -- FIXME: method textDocument/documentHighlight is not supported by any of the servers registered for the current buffer
   --   "RRethy/vim-illuminate",
@@ -850,37 +850,36 @@ return {
     -- },
   },
   {
-    "nvim-treesitter/nvim-treesitter",
-    -- NOTE: v0.10.0 以降だとmarkidが動かないので、v0.9.3にしておく
-    tag = "v0.9.3",
+      "nvim-treesitter/nvim-treesitter",
+    -- FIXME: 2025-12-20のコミット8cdffc6でvim/highlights.scmに"tab"ノードが追加されたが、
+    -- Archなどのディストロがパッケージしているtree-sitter-vim 0.7.0にはこのノードが存在しない。
+    -- → "Query error at 113:4. Invalid node type 'tab'" エラーが発生する。
+    -- Issue: https://github.com/nvim-treesitter/nvim-treesitter/issues/8369
+    -- 影響:
+    --   - 2025-12-17以降のvim queryの新機能（"tab"コマンドのハイライト等）が使えない
+    --   - 上流でtree-sitter-vimパーサーが更新されるまでこのピン留めが必要
+    -- 解除条件: tree-sitter-vim >= 0.8.0 がディストロにリリースされたら削除可
+    commit = "d0bf5ff2b00939eab39c6572aec7cf232f843b1f",
     dependencies = {
-      "David-Kunz/markid",
+      {
+        "meithon/idemcolor.nvim",
+        dir = "~/ghq/github.com/meithon/idemcolor.nvim",
+      },
+      -- "David-Kunz/markid",
       "windwp/nvim-ts-autotag",
     },
     -- NOTE: lazyvim v15からlazyvimのtreesitterのv0.9が使えなくなったので設定を上書き
-    config = function(_, opts)
-      -- keep LazyVim defaults (highlight/injections) while forcing markid + markdown parsers
-      opts.markid = { enable = true }
+    opts = function(_, opts)
+      local m = require("idemcolor")
+      m.setup({
+        enable = true,
+        -- colors = m.colors.medium,
+        -- queries = m.queries,
+      })
       opts.autotag = opts.autotag or { enable = true }
-
-      opts.ensure_installed = opts.ensure_installed or {}
-      for _, lang in ipairs({ "markdown", "markdown_inline" }) do
-        if not vim.tbl_contains(opts.ensure_installed, lang) then
-          table.insert(opts.ensure_installed, lang)
-        end
-      end
-
-      -- runtimeのqueriesに合わせて最新のmarkdownパーサを使う（0.9系の固定版だとcurly_group_textが無くてエラーになる）
-      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-      for _, lang in ipairs({ "markdown", "markdown_inline" }) do
-        if parser_config[lang] and parser_config[lang].install_info then
-          parser_config[lang].install_info.commit = nil
-          parser_config[lang].install_info.branch = parser_config[lang].install_info.branch or "main"
-        end
-      end
-
-      require("nvim-treesitter.configs").setup(opts)
-
+      return opts
+    end,
+    init = function()
       vim.filetype.add({
         extension = {
           zsh = "bash",
@@ -895,28 +894,6 @@ return {
         },
       })
     end,
-    -- opts = function(_, opts)
-    --   -- require("nvim-treesitter.parsers").filetype_to_parsername.zsh = "bash"
-    --   vim.filetype.add({
-    --     extension = {
-    --       zsh = "bash",
-    --     },
-    --     pattern = {
-    --       [".*%.zsh"] = "bash",
-    --       ["%.zshrc"] = "bash",
-    --       ["%.zshenv"] = "bash",
-    --       ["%.zprofile"] = "bash",
-    --       ["%.zlogin"] = "bash",
-    --       ["%.zlogout"] = "bash",
-    --     },
-    --   })
-    --   opts.markid = {
-    --     enable = true,
-    --   }
-    --   opts.autotag = {
-    --     enable = true,
-    --   }
-    -- end,
   },
   { -- Add vitest runner
     "nvim-neotest/neotest",
