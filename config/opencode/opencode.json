@@ -4,49 +4,40 @@
         "oh-my-opencode",
         "opencode-openai-codex-auth"
     ],
-    "tools": {
-        "write": false,
-        "bash": false,
-        "webfetch": true
-    },
     "permission": {
         "edit": "ask",
         "webfetch": "allow",
         "doom_loop": "ask",
         "external_directory": "allow",
         "bash": {
-            "npm run build": "allow",
-            "ls": "allow",
-            "pwd": "allow",
-            "find": "allow",
             "rm": "ask",
-            "grep": "allow",
-            "mkdir": "ask",
-            "cp": "ask",
+            "rm -rf": "deny",
+            "rmdir": "ask",
             "mv": "ask",
-            "cat": "allow",
-            "echo": "allow",
-            "touch": "ask",
+            "git push --force": "deny",
+            "git push -f": "deny",
+            "git reset --hard": "ask",
+            "git checkout --": "ask",
             "chmod": "ask",
-            "git *": "deny",
-            "git status": "allow",
-            "git diff": "allow"
-        }
-    },
-    "mcp": {
-        "serena": {
-            "type": "local",
-            "command": [
-                "uvx",
-                "--from",
-                "git+https://github.com/oraios/serena",
-                "serena",
-                "start-mcp-server",
-                "--enable-web-dashboard",
-                "false",
-                "--project",
-                "$(pwd)"
-            ]
+            "chmod 777": "deny",
+            "chown": "deny",
+            "sudo": "deny",
+            "dd": "deny",
+            "mkfs": "deny",
+            "kill": "ask",
+            "pkill": "ask",
+            "killall": "ask",
+            "npm publish": "ask",
+            "bun publish": "ask",
+            "docker rm": "ask",
+            "docker rmi": "ask",
+            "brew uninstall": "ask",
+            "gh repo delete": "deny",
+            "gh release delete": "ask",
+            "gh pr merge": "ask",
+            "gh pr close": "ask",
+            "gh issue close": "ask",
+            "gh auth logout": "deny"
         }
     }
 }
