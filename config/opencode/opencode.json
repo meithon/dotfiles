@@ -1,0 +1,48 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "tools": {
+        "write": false,
+        "bash": false,
+        "webfetch": true
+    },
+    "permission": {
+        "edit": "ask",
+        "webfetch": "allow",
+        "doom_loop": "ask",
+        "external_directory": "allow",
+        "bash": {
+            "npm run build": "allow",
+            "ls": "allow",
+            "pwd": "allow",
+            "find": "allow",
+            "rm": "ask",
+            "grep": "allow",
+            "mkdir": "ask",
+            "cp": "ask",
+            "mv": "ask",
+            "cat": "allow",
+            "echo": "allow",
+            "touch": "ask",
+            "chmod": "ask",
+            "git *": "deny",
+            "git status": "allow",
+            "git diff": "allow"
+        }
+    },
+    "mcp": {
+        "serena": {
+            "type": "local",
+            "command": [
+                "uvx",
+                "--from",
+                "git+https://github.com/oraios/serena",
+                "serena",
+                "start-mcp-server",
+                "--enable-web-dashboard",
+                "false",
+                "--project",
+                "$(pwd)"
+            ]
+        }
+    }
+}
