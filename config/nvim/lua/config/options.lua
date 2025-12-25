@@ -108,3 +108,26 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.bo.tabstop = 4
   end,
 })
+
+-- 要求:
+-- Insertモードに入ったとき、直前のIME状態（日本語/英語）を復元する
+-- EscでNormalモードに戻るときは必ず英語にする
+-- IME状態は InsertLeave で記録し、InsertEnter で復元する
+local ime_state = 0
+vim.api.nvim_create_autocmd("InsertLeave", {
+  callback = function()
+    local handle = io.popen("fcitx5-remote")
+    ime_state = tonumber(handle:read("*a")) or 0
+    handle:close()
+    -- 強制的に英語へ
+    os.execute("fcitx5-remote -c")
+  end,
+})
+vim.api.nvim_create_autocmd("InsertEnter", {
+  callback = function()
+    if ime_state == 2 then
+      os.execute("fcitx5-remote -o")
+    end
+  end,
+})
+

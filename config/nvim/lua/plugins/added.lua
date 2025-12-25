@@ -564,30 +564,30 @@ return {
       opts.sources = require("cmp").config.sources(vim.list_extend(opts.sources, { { name = "bazel" } }))
     end,
   },
-  {
-    "apple/pkl-neovim",
-    lazy = true,
-    ft = "pkl",
-    dependencies = {
-      {
-        "nvim-treesitter/nvim-treesitter",
-        build = function(_)
-          vim.cmd("TSUpdate")
-        end,
-      },
-      "L3MON4D3/LuaSnip",
-    },
-    build = function()
-      require("pkl-neovim.internal").init()
-
-      -- Set up syntax highlighting.
-      vim.cmd("TSInstall! pkl")
-    end,
-    config = function()
-      -- Set up snippets.
-      require("luasnip.loaders.from_snipmate").lazy_load()
-    end,
-  },
+  -- {
+  --   "apple/pkl-neovim",
+  --   lazy = true,
+  --   ft = "pkl",
+  --   dependencies = {
+  --     {
+  --       "nvim-treesitter/nvim-treesitter",
+  --       build = function(_)
+  --         vim.cmd("TSUpdate")
+  --       end,
+  --     },
+  --     "L3MON4D3/LuaSnip",
+  --   },
+  --   build = function()
+  --     require("pkl-neovim.internal").init()
+  --
+  --     -- Set up syntax highlighting.
+  --     vim.cmd("TSInstall! pkl")
+  --   end,
+  --   config = function()
+  --     -- Set up snippets.
+  --     require("luasnip.loaders.from_snipmate").lazy_load()
+  --   end,
+  -- },
   {
     "nvim-zh/colorful-winsep.nvim",
     config = true,
@@ -2795,14 +2795,14 @@ When given a task:
   -- },
   -- { "wakatime/vim-wakatime", lazy = false },
   --
-  {
-    "meithon/vim-wakatime",
-    dir = "~/ghq/github.com/meithon/vim-wakatime",
-    opts = {
-      api_url = "https://wakapi.meith.onl/api",
-    },
-    lazy = false,
-  },
+  -- {
+  --   "meithon/vim-wakatime",
+  --   dir = "~/ghq/github.com/meithon/vim-wakatime",
+  --   opts = {
+  --     api_url = "https://wakapi.meith.onl/api",
+  --   },
+  --   lazy = false,
+  -- },
   {
     "stevearc/oil.nvim",
     opts = {
