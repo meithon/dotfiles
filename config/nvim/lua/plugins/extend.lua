@@ -863,7 +863,6 @@ return {
     dependencies = {
       {
         "meithon/idemcolor.nvim",
-        dir = "~/ghq/github.com/meithon/idemcolor.nvim",
       },
       -- "David-Kunz/markid",
       "windwp/nvim-ts-autotag",

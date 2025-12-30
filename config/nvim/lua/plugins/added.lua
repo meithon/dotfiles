@@ -5,11 +5,6 @@ local map = vim.keymap.setadded
 ---
 ---
 return {
-  {
-    "comby.nvim",
-    dir = "~/Workdir/private/tools/comby.nvim",
-    opts = {},
-  },
   -- {
   --   "floatstack",
   --   dir = "/Users/mei/workspace/private/tools/floatstack.nvim",
