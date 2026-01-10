@@ -6,19 +6,19 @@
 
 local M = {}
 
-local hl_group = 'DiagnosticVirtualTextWarn'
+local hl_group = "DiagnosticVirtualTextWarn"
 local priority = 2048
 local repeat_interval = 100
 local use_block_spinner = true
 
 --- @type CodeCompanion.InlineExtmark
 local default_opts = {
-  unique_line_sign_text = '',
-  first_line_sign_text = '┌',
-  last_line_sign_text = '└',
+  unique_line_sign_text = "",
+  first_line_sign_text = "┌",
+  last_line_sign_text = "└",
   extmark = {
     sign_hl_group = hl_group,
-    sign_text = '│',
+    sign_text = "│",
     priority = priority,
   },
 }
@@ -26,10 +26,10 @@ local default_opts = {
 --- @type VirtualTextBlockSpinner.SpinnerOpts
 --- @diagnostic disable-next-line: missing-fields
 local virtual_text_spinners_opts = {
-  hl_group = 'Comment',
+  hl_group = "Comment",
   repeat_interval = repeat_interval,
   extmark = {
-    virt_text_pos = 'overlay',
+    virt_text_pos = "overlay",
     priority = priority,
   },
 }
@@ -49,7 +49,7 @@ local function set_line_extmark(bufnr, ns_id, line_num, opts, sign_type)
     ns_id,
     line_num - 1, -- Convert to 0-based index
     0,
-    vim.tbl_deep_extend('force', opts.extmark or {}, {
+    vim.tbl_deep_extend("force", opts.extmark or {}, {
       sign_text = opts[sign_type] or opts.extmark.sign_text,
     })
   )
@@ -69,7 +69,7 @@ local function start_spinners(bufnr, ns_id, start_line, end_line)
   local block_spinner = nil
   if use_block_spinner then
     -- Use block spinner if configured
-    block_spinner = require('plugins.codecompanion.utils.block_spinner').new({
+    block_spinner = require("plugins.codecompanion.utils.block_spinner").new({
       bufnr = bufnr,
       ns_id = ns_id,
       start_line = start_line,
@@ -80,14 +80,14 @@ local function start_spinners(bufnr, ns_id, start_line, end_line)
 
   local spinner_width = block_spinner and block_spinner.width or 0
   local spinner_line = block_spinner and start_line + math.floor((end_line - start_line) / 2) or start_line
-  local spinner = require('plugins.codecompanion.utils.spinner').new({
+  local spinner = require("plugins.codecompanion.utils.spinner").new({
     bufnr = bufnr,
     ns_id = ns_id,
     line_num = spinner_line,
     width = spinner_width,
     opts = {
       repeat_interval = repeat_interval,
-      extmark = { virt_text_pos = 'overlay', priority = priority + 1 },
+      extmark = { virt_text_pos = "overlay", priority = priority + 1 },
     },
   })
 
@@ -129,12 +129,12 @@ local function create_extmarks(opts, data, ns_id)
 
   -- Handle the case where start and end lines are the same (unique line)
   if context.start_line == context.end_line then
-    set_line_extmark(context.bufnr, ns_id, context.start_line, opts, 'unique_line_sign_text')
+    set_line_extmark(context.bufnr, ns_id, context.start_line, opts, "unique_line_sign_text")
     return
   end
 
   -- Set extmark for the first line with special options
-  set_line_extmark(context.bufnr, ns_id, context.start_line, opts, 'first_line_sign_text')
+  set_line_extmark(context.bufnr, ns_id, context.start_line, opts, "first_line_sign_text")
 
   -- Set extmarks for the middle lines with standard options
   for i = context.start_line + 1, context.end_line - 1 do
@@ -143,15 +143,15 @@ local function create_extmarks(opts, data, ns_id)
 
   -- Set extmark for the last line with special options
   if context.end_line > context.start_line then
-    set_line_extmark(context.bufnr, ns_id, context.end_line, opts, 'last_line_sign_text')
+    set_line_extmark(context.bufnr, ns_id, context.end_line, opts, "last_line_sign_text")
   end
 end
 
 --- Creates autocmds for CodeCompanionRequest events
 --- @param opts CodeCompanion.InlineExtmark Configuration options passed from setup
 local function create_autocmds(opts)
-  vim.api.nvim_create_autocmd('User', {
-    pattern = 'CodeCompanionRequest*',
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "CodeCompanionInlineStarted",
     callback = function(event)
       local data = event.data or {}
       local context = data.buffer_context or {}
@@ -160,14 +160,23 @@ local function create_autocmds(opts)
         return
       end
 
-      local ns_id = vim.api.nvim_create_namespace('CodeCompanionInline_' .. data.id)
+      local ns_id = vim.api.nvim_create_namespace("CodeCompanionInline_" .. data.id)
+      create_extmarks(opts, data, ns_id)
+    end,
+  })
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "CodeCompanionInlineFinished",
+    callback = function(event)
+      local data = event.data or {}
+      local context = data.buffer_context or {}
 
-      if event.match:find('Started') and data.strategy == 'inline' then
-        create_extmarks(opts, data, ns_id)
-      elseif event.match:find('Finished') and data.strategy == 'inline' then
-        stop_spinners(ns_id)
-        vim.api.nvim_buf_clear_namespace(context.bufnr, ns_id, 0, -1)
+      if vim.tbl_isempty(context) then
+        return
       end
+
+      local ns_id = vim.api.nvim_create_namespace("CodeCompanionInline_" .. data.id)
+      stop_spinners(ns_id)
+      vim.api.nvim_buf_clear_namespace(context.bufnr, ns_id, 0, -1)
     end,
   })
 end
@@ -183,11 +192,11 @@ end
 --- @param opts? CodeCompanion.InlineExtmark Optional configuration to override defaults
 function M.setup(opts)
   vim.api.nvim_create_user_command(
-    'CodeCompanionClearInlineExtmarks',
+    "CodeCompanionClearInlineExtmarks",
     M.clear_all,
-    { desc = 'CodeCompanion clear inline extmarks' }
+    { desc = "CodeCompanion clear inline extmarks" }
   )
-  create_autocmds(vim.tbl_deep_extend('force', default_opts, opts or {}))
+  create_autocmds(vim.tbl_deep_extend("force", default_opts, opts or {}))
 end
 
 return M

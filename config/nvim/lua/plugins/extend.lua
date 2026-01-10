@@ -850,7 +850,7 @@ return {
     -- },
   },
   {
-      "nvim-treesitter/nvim-treesitter",
+    "nvim-treesitter/nvim-treesitter",
     -- FIXME: 2025-12-20のコミット8cdffc6でvim/highlights.scmに"tab"ノードが追加されたが、
     -- Archなどのディストロがパッケージしているtree-sitter-vim 0.7.0にはこのノードが存在しない。
     -- → "Query error at 113:4. Invalid node type 'tab'" エラーが発生する。
