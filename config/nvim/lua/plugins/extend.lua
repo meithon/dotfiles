@@ -87,6 +87,23 @@ end
 
 ---@type Plugin[]
 return {
+
+  { -- reuse_winをfalseにする
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        ["*"] = {
+          keys = {
+            -- ~/.local/share/nvim/lazy/LazyVim/lua/lazyvim/plugins/extras/editor/telescope.lua:292:1
+            { "gd", function() require("telescope.builtin").lsp_definitions({ reuse_win = false }) end, desc = "Goto Definition", has = "definition" },
+            { "gr", "<cmd>Telescope lsp_references<cr>", desc = "References", nowait = true },
+            { "gI", function() require("telescope.builtin").lsp_implementations({ reuse_win = false }) end, desc = "Goto Implementation" },
+            { "gy", function() require("telescope.builtin").lsp_type_definitions({ reuse_win = false }) end, desc = "Goto T[y]pe Definition" },
+          },
+        },
+      },
+    },
+ },
   -- {
   --   "catppuccin/nvim",
   --   -- NOTE: typescriptでconst, exportの色が変になるので、変更しないようにする

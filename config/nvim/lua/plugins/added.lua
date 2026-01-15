@@ -1075,9 +1075,9 @@ return {
     keys = {
       "<Leader>a",
       { "ga", "<cmd>CodeCompanionChat Add<cr>", mode = { "v" } },
-      { "<C-a>", "<cmd>CodeCompanionChat<cr>", mode = { "n", "v" } },
+      { "<C-a>", "<cmd>CodeCompanionActions<cr>", mode = { "n", "v" } },
       -- keydでcaps +aをhomeにリマッピングしてるから`<Find>`になる
-      { "<Find>", "<cmd>CodeCompanionChat<cr>", mode = { "n", "v" } },
+      { "<Find>", "<cmd>CodeCompanionActions<cr>", mode = { "n", "v" } },
       { "<leader>aj", "<cmd>'<,'>CodeCompanion<cr>", mode = { "v" }, desc = "Code Companion Inline Prompt" },
     },
     dependencies = {
