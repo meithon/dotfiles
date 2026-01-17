@@ -2,6 +2,10 @@
 .DS_Store?
 
 .vscode/
+home/.codex/*
+!home/.codex/AGENTS.md
+home/.claude/*
+!home/.codex/CLAUDE.md
 
 # Ignore plain secrets; track only encrypted files
 /secrets/*
