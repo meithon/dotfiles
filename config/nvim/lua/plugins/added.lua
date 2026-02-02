@@ -5,6 +5,56 @@ local map = vim.keymap.setadded
 ---
 ---
 return {
+  { "skywind3000/asyncrun.vim" },
+  {
+    "stevearc/overseer.nvim",
+    lazy = false,
+    cmd = { "OverseerToggle", "OS" },
+    ---@module 'overseer'
+    ---@type overseer.SetupOpts
+    config = function()
+      local overseer = require("overseer")
+      print("add template hook")
+      overseer.setup({
+        component_aliases = {
+          default = {
+            "on_exit_set_status",
+            "on_complete_notify",
+            { "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
+            "fidget_progress_bridge",
+          },
+        },
+      })
+
+      
+
+      -- overseer.add_template_hook({}, function(task_defn, util)
+      --   util.add_component(task_defn, { "fidget_progress_bridge" })
+      --   -- util.add_component(task_defn, "myplugin.fidget_progress")
+      -- end)
+    end,
+    init = function()
+      vim.cmd.cnoreabbrev("OS OverseerShell")
+    end,
+    keys = {
+      {
+        "<leader>os",
+        "<cmd>OverseerToggle<cr>",
+        desc = "Overseer Toggle",
+      },
+    },
+  },
+  {
+    "al1-ce/just.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim", -- async jobs
+      "j-hui/fidget.nvim", -- task progress (optional)
+    },
+    config = true,
+    keys = {
+      { "<leader>js", "<cmd>JustSelect<cr>", desc = "Select just task" },
+    },
+  },
   -- {
   --   "floatstack",
   --   dir = "/Users/mei/workspace/private/tools/floatstack.nvim",
