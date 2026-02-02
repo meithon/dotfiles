@@ -8,12 +8,11 @@ return {
   {
     "stevearc/overseer.nvim",
     -- lazy = false,
-    cmd = { "OverseerToggle", "OS" },
+    cmd = { "OverseerToggle", "OS", "OverseerShell" },
     ---@module 'overseer'
     ---@type overseer.SetupOpts
     config = function()
       local overseer = require("overseer")
-      print("add template hook")
       overseer.setup({
         component_aliases = {
           default = {
