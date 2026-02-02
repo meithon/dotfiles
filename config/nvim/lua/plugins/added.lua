@@ -5,10 +5,9 @@ local map = vim.keymap.setadded
 ---
 ---
 return {
-  { "skywind3000/asyncrun.vim" },
   {
     "stevearc/overseer.nvim",
-    lazy = false,
+    -- lazy = false,
     cmd = { "OverseerToggle", "OS" },
     ---@module 'overseer'
     ---@type overseer.SetupOpts
@@ -25,8 +24,6 @@ return {
           },
         },
       })
-
-      
 
       -- overseer.add_template_hook({}, function(task_defn, util)
       --   util.add_component(task_defn, { "fidget_progress_bridge" })
