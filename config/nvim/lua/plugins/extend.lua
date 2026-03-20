@@ -1546,36 +1546,6 @@ return {
   -- },
 
   {
-    "nvim-treesitter/playground",
-    cmd = "TSPlaygroundToggle",
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require("nvim-treesitter.configs").setup({
-        playground = {
-          enable = true,
-        },
-      })
-    end,
-  },
-  { -- Treesitter text object
-    "meithon/treeswing.nvim",
-    vscode = true,
-    dependencies = "nvim-treesitter/nvim-treesitter",
-    keys = function()
-      ---@type Key[]
-      return {
-        { "vi", "<cmd>TSWSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
-        { "va", "<cmd>TSWSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
-        { "N", "<cmd>TSWSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
-        { "P", "<cmd>TSWSelectPrevSiblingNode<cr>", mode = "x", desc = "Select Previous Sibling Node" },
-        { "K", "<cmd>TSWSelectParentNode<cr>", mode = "x", desc = "Select Parent Node" },
-        { "J", "<cmd>TSWSelectChildNode<cr>", mode = "x", desc = "Select Child Node" },
-      }
-    end,
-    opts = {},
-  },
-  {
     "akinsho/bufferline.nvim",
     opts = function(_, opts)
       -- table.insert(opts.options, { show_close_icon = false })
@@ -2406,6 +2376,8 @@ return {
       -- overwrite lazyvim default on_attach
       -- for disable keymaps
       opts.on_attach = nil
+      -- allow attach to untracked files so cache is created
+      opts.attach_to_untracked = true
     end,
   },
   -- {

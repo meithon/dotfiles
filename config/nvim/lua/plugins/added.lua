@@ -5,6 +5,24 @@ local map = vim.keymap.setadded
 ---
 ---
 return {
+  { -- Treesitter text object
+    "meithon/treeswing.nvim",
+    dir = "/home/mei/ghq/github.com/meithon/treeswing.nvim",
+    vscode = true,
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    keys = function()
+      ---@type Key[]
+      return {
+        { "vi", "<cmd>TSWSelectCurrentNode<cr>", mode = "n", desc = "Select Current Node" },
+        { "va", "<cmd>TSWSelectMasterNode<cr>", mode = "n", desc = "Select Master Node" },
+        { "N", "<cmd>TSWSelectNextSiblingNode<cr>", mode = "x", desc = "Select Next Sibling Node" },
+        { "P", "<cmd>TSWSelectPrevSiblingNode<cr>", mode = "x", desc = "Select Previous Sibling Node" },
+        { "K", "<cmd>TSWSelectParentNode<cr>", mode = "x", desc = "Select Parent Node" },
+        { "J", "<cmd>TSWSelectChildNode<cr>", mode = "x", desc = "Select Child Node" },
+      }
+    end,
+    opts = {},
+  },
   {
     "stevearc/overseer.nvim",
     -- lazy = false,
