@@ -1,6 +1,5 @@
 local M = {}
 
-
 -- type definition
 
 ---@alias Provider "openai" | "anthropic" | "azure" | "bing" | "chatgpt" | "cohere" | "databricks" | "deepai" | "deepset" | "gpt-4" | "gpt-4-0314" | "gpt-4-32k" | "gpt-4-32k-0314"
@@ -10,7 +9,6 @@ local M = {}
 ---@field model string
 
 ---@alias Adapter Provider | AdapterNameAndModel
-
 
 -- class definition
 
@@ -85,7 +83,7 @@ function ConfigBuilder:extend_history()
   })
 end
 
-function ConfigBuilder:set_general()
+function ConfigBuilder:setup_general_option()
   return self:_merge({
     opts = {
       -- log_level = "TRACE", -- Set logging level (options: TRACE, DEBUG, INFO, ERROR)
@@ -518,6 +516,336 @@ function ConfigBuilder:add_prompt_library()
   })
 end
 
+function ConfigBuilder:add_prompt_libraryv2()
+  return self:_merge({
+    prompt_library = {
+
+      ["Generate a Commit Message for Staged Files"] = {
+        strategy = "inline",
+        description = "staged file commit messages",
+        opts = {
+          index = 15,
+          is_default = false,
+          is_slash_cmd = true,
+          short_name = "scommit",
+          auto_submit = true,
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function()
+              return "You are an expert at following the Conventional Commit specification. Given the git diff listed below, please generate a commit message for me:"
+                .. "\n\n```diff\n"
+                .. vim.fn.system("git diff --staged")
+                .. "\n```"
+            end,
+          },
+        },
+      },
+      ["Add Documentation"] = {
+        strategy = "inline",
+        description = "Add documentation to the selected code",
+        opts = {
+          index = 16,
+          is_default = false,
+          modes = { "v" },
+          short_name = "doc",
+          is_slash_cmd = true,
+          auto_submit = true,
+          user_prompt = false,
+          stop_context_insertion = true,
+        },
+        prompts = {
+          {
+            role = "system",
+            content = "When asked to add documentation, follow these steps:\n"
+              .. "1. **Identify Key Points**: Carefully read the provided code to understand its functionality.\n"
+              .. "2. **Review the Documentation**: Ensure the documentation:\n"
+              .. "  - Includes necessary explanations.\n"
+              .. "  - Helps in understanding the code's functionality.\n"
+              .. "  - Follows best practices for readability and maintainability.\n"
+              .. "  - Is formatted correctly.\n\n"
+              .. "For C/C++ code: use Doxygen comments using `\\` instead of `@`.\n"
+              .. "For Python code: Use Docstring numpy-notypes format.",
+            opts = {
+              visible = false,
+            },
+          },
+          {
+            role = "user",
+            content = function(context)
+              local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+              return "Please document the selected code:\n\n```" .. context.filetype .. "\n" .. code .. "\n```\n\n"
+            end,
+            opts = {
+              contains_code = true,
+            },
+          },
+        },
+      },
+      ["Refactor"] = {
+        strategy = "chat",
+        description = "Refactor the selected code for readability, maintainability and performances",
+        opts = {
+          index = 17,
+          is_default = false,
+          modes = { "v" },
+          short_name = "refactor",
+          is_slash_cmd = true,
+          auto_submit = true,
+          user_prompt = false,
+          stop_context_insertion = true,
+        },
+        prompts = {
+          {
+            role = "system",
+            content = "When asked to optimize code, follow these steps:\n"
+              .. "1. **Analyze the Code**: Understand the functionality and identify potential bottlenecks.\n"
+              .. "2. **Implement the Optimization**: Apply the optimizations including best practices to the code.\n"
+              .. "3. **Shorten the code**: Remove unnecessary code and refactor the code to be more concise.\n"
+              .. "3. **Review the Optimized Code**: Ensure the code is optimized for performance and readability. Ensure the code:\n"
+              .. "  - Maintains the original functionality.\n"
+              .. "  - Is more efficient in terms of time and space complexity.\n"
+              .. "  - Follows best practices for readability and maintainability.\n"
+              .. "  - Is formatted correctly.\n\n"
+              .. "Use Markdown formatting and include the programming language name at the start of the code block.",
+            opts = {
+              visible = false,
+            },
+          },
+          {
+            role = "user",
+            content = function(context)
+              local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+
+              return "Please optimize the selected code:\n\n```" .. context.filetype .. "\n" .. code .. "\n```\n\n"
+            end,
+            opts = {
+              contains_code = true,
+            },
+          },
+        },
+      },
+      ["PullRequest"] = {
+        strategy = "chat",
+        description = "Generate a Pull Request message description",
+        opts = {
+          index = 18,
+          is_default = false,
+          short_name = "pr",
+          is_slash_cmd = true,
+          auto_submit = true,
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function()
+              return "You are an expert at writing detailed and clear pull request descriptions."
+                .. "Please create a pull request message following standard convention from the provided diff changes."
+                .. "Ensure the title, description, type of change, checklist, related issues, and additional notes sections are well-structured and informative."
+                .. "\n\n```diff\n"
+                .. vim.fn.system("git diff $(git merge-base HEAD main)...HEAD")
+                .. vim.fn.system("git diff $(git merge-base HEAD develop)...HEAD")
+                .. "\n```"
+            end,
+          },
+        },
+      },
+      ["Spell"] = {
+        strategy = "inline",
+        description = "Correct grammar and reformulate",
+        opts = {
+          index = 19,
+          is_default = false,
+          short_name = "spell",
+          is_slash_cmd = true,
+          auto_submit = true,
+          adapter = {
+            name = "copilot",
+            model = "gpt-4.1",
+          },
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = false,
+            content = function(context)
+              local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+              return "Correct grammar and reformulate:\n\n" .. text
+            end,
+          },
+        },
+      },
+      ["Bug Finder"] = {
+        strategy = "chat",
+        description = "Find potential bugs from the provided diff changes",
+        opts = {
+          index = 20,
+          is_default = false,
+          short_name = "bugs",
+          is_slash_cmd = true,
+          auto_submit = true,
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function()
+              local question = "<question>\n"
+                .. "Check if there is any bugs that have been introduced from the provided diff changes.\n"
+                .. "Perform a complete analysis and do not stop at first issue found.\n"
+                .. "If available, provide absolute file path and line number for code snippets.\n"
+                .. "</question>"
+
+              local branch = "$(git merge-base HEAD origin/develop)...HEAD"
+              local changes = "changes.diff"
+              vim.fn.system("git diff --unified=10000 " .. branch .. " > " .. changes)
+
+              --- @type CodeCompanion.Chat
+              local chat = require("codecompanion").buf_get_chat(vim.api.nvim_get_current_buf())
+              local path = vim.fn.getcwd() .. "/" .. changes
+              local id = "<file>" .. changes .. "</file>"
+              local lines = vim.fn.readfile(path)
+              local content = table.concat(lines, "\n")
+
+              chat:add_message({
+                role = "user",
+                content = "git diff content from " .. path .. ":\n" .. content,
+              }, { reference = id, visible = false })
+
+              chat.context:add({
+                id = id,
+                path = path,
+                source = "",
+              })
+
+              return question
+            end,
+          },
+        },
+      },
+      ["Split Commits"] = {
+        strategy = "chat",
+        description = "agent mode with explicit set of tools",
+        opts = {
+          index = 21,
+          is_default = false,
+          short_name = "commits",
+          is_slash_cmd = true,
+          auto_submit = false,
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function()
+              local current_branch = vim.fn.system("git rev-parse --abbrev-ref HEAD")
+              local logs = vim.fn.system('git log --pretty=format:"%s%n%b" -n 50')
+              local commit_history = "Commit history for branch " .. current_branch .. ":\n" .. logs .. "\n\n"
+              local staged_changes = "Staged files:\n" .. vim.fn.system("git diff --cached --name-only")
+              local prompt = "<prompt>" .. commit_history .. staged_changes .. "</prompt> \n\n"
+              local task = "You are an expert Git assistant.\n"
+                .. "Your task is to help the user create well-structured and conventional commits from their currently staged changes.\n\n"
+                .. "Based on the provided commit logs and branch name, first, infer the established commit message convention\n"
+                .. "Next, use the staged changes to determine the logical grouping of changes and generate appropriate commit messages.\n\n"
+                .. "Your primary goal is to analyze these staged changes and determine if they should be split into multiple logical and separate commits.\n"
+                .. "If the staged changes are empty or too trivial for a meaningful commit, please state that.\n\n"
+                .. "Use @{cmd_runner} to execute git commands for staging and un-staging files to group staged changes into meaningful commits when necessary."
+              return prompt .. task
+            end,
+          },
+        },
+      },
+      ["Gitlab MR Notes"] = {
+        strategy = "chat",
+        description = "Get the unresolved comments of the current MR",
+        opts = {
+          index = 22,
+          is_default = false,
+          short_name = "glab_mr_notes",
+          is_slash_cmd = true,
+          auto_submit = false,
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function()
+              local notes = require("util.glab.notes").get_unresolved_discussions()
+              return "Here is a list of notes from Pull Request:\n" .. notes .. "\n"
+            end,
+          },
+        },
+      },
+      ["qflist"] = {
+        strategy = "chat",
+        description = "Send errors to qflist and diagnostics",
+        opts = {
+          index = 23,
+          is_default = false,
+          short_name = "qflist",
+          is_slash_cmd = true,
+          auto_submit = false,
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function()
+              local content =
+                "Create a neovim command line for `:` to send the current errors to qflist and diagnostics using neovim api.\n"
+              local example = [[
+                :lua do local ns = vim.api.nvim_create_namespace('review');
+
+                  -- For each files:
+                  local bufnr = vim.fn.bufnr('/full/path/to/your/file.txt');
+                  if bufnr ~= -1 then
+                    local diagnostics = {{bufnr=bufnr, lnum=324, col=0, message='This is the ErrorMessage', severity=vim.diagnostic.severity.ERROR}};
+                    vim.diagnostic.set(ns, bufnr, diagnostics);
+                    vim.fn.setqflist(vim.diagnostic.toqflist(diagnostics), 'a');
+                  end
+                end
+                ]]
+              return content .. "\nExample:\n" .. example:gsub("\n", " "):gsub(" +", " ")
+            end,
+          },
+        },
+      },
+      ["agent"] = {
+        strategy = "inline",
+        description = "Ask agent",
+        opts = {
+          index = 24,
+          is_default = false,
+          short_name = "agent",
+          is_slash_cmd = false,
+          auto_submit = true,
+          user_prompt = true,
+          adapter = {
+            name = "copilot",
+            model = "gpt-4.1",
+          },
+        },
+        prompts = {
+          {
+            role = "user",
+            contains_code = true,
+            content = function(context)
+              buffer = "#{buffer}\n"
+              tools = "@{cmd_runner} @{files} @{insert_edit_into_file}\n"
+              return buffer
+                .. tools
+                .. require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+            end,
+          },
+        },
+      },
+    },
+  })
+end
+
 function ConfigBuilder:change_chat_role_display()
   return self:_merge({
     interactions = {
@@ -571,7 +899,7 @@ function ConfigBuilder:extend_chat_tools()
   })
 end
 
-function ConfigBuilder:change_display()
+function ConfigBuilder:integrate_minidiff()
   -- https://codecompanion.olimorris.dev/usage/inline-assistant
   return self:_merge({
     display = {
@@ -685,32 +1013,106 @@ function ConfigBuilder:add_openrouter_adapter()
   })
 end
 
+function ConfigBuilder:add_codex_oauth_adapter()
+  local codex_oauth = require("opencode_openai_codex_auth.integrate.codecompanion")
+  local adapter = codex_oauth.adapter_config()
+
+  return self:_merge({
+    adapters = {
+      http = {
+        codex_oauth = function()
+          return require("codecompanion.adapters").extend("openai_responses", adapter)
+        end,
+      },
+    },
+  })
+end
+
+function ConfigBuilder:add_codex_acp_adapter()
+  return self:_merge({
+    adapters = {
+      acp = {
+        codex = function()
+          return require("codecompanion.adapters").extend("codex", {
+            defaults = {
+              auth_method = "chatgpt", -- "openai-api-key"|"codex-api-key"|"chatgpt"
+            },
+          })
+        end,
+      },
+    },
+  })
+end
+
+---@param adapter AdapterNameAndModel
+function ConfigBuilder:set_title_generator_adapter(adapter)
+  -- local adapter_name = type(adapter) == "table" and adapter.name or adapter
+  -- local adapter_model = type(adapter) == "table" and adapter.model or nil
+
+  -- NOTE:
+  -- codecompanion-history title generation currently breaks for some custom
+  -- HTTP adapters when `title_generation_opts.model` is set.
+  -- For codex_oauth we force adapter only, and leave model unset.
+  -- if adapter_name == "codex_oauth" then
+  --   adapter_model = nil
+  -- end
+
+  self:_merge({
+    extensions = {
+      history = {
+        opts = {
+          title_generation_opts = {
+            adapter = adapter.name,
+            model = adapter.model,
+          },
+        },
+      },
+    },
+  })
+
+  return self
+end
+
+function ConfigBuilder:chat_edit_plugin()
+  require("plugins.codecompanion.utils.chat-edit").setup({})
+  return self
+end
+
 function ConfigBuilder:build()
   return self.opts
 end
 
-function M.get_opts()
+---@param adapter AdapterNameAndModel
+function M.get_opts(adapter)
   local builder = ConfigBuilder.new()
 
+  -- https://github.com/zed-industries/codex-acp
+  if vim.fn.executable("codex-acp") == 1 then
+    builder:add_codex_acp_adapter()
+  elseif adapter == "codex" then
+    error("codex-acp is not installed")
+  end
+
+  if adapter.name == "codex_oauth" then
+    builder:add_codex_oauth_adapter()
+  end
+
   builder
-    :specific_chat_adapter({
-      name = "anthropic",
-      model = "claude-haiku-4-5",
-    })
-    :set_inline_adapter({
-      name = "anthropic",
-      model = "claude-haiku-4-5",
-    })
+    :specific_chat_adapter(adapter)
+    :set_inline_adapter(adapter)
+    :set_title_generator_adapter(adapter)
     :change_chat_role_display()
-    :extend_chat_tools()
-    :set_general()
-    :add_prompt_library()
+    -- :add_prompt_libraryv2()
+    -- :chat_edit_plugin()
+    -- :extend_chat_tools()
+    :setup_general_option()
+    -- :add_prompt_library()
     :set_inline_keybind()
     :extend_mcphub()
     :extend_history()
-    :change_display()
-    :add_chat_slash_commands()
-    :add_openrouter_adapter()
+    :integrate_minidiff()
+  -- :add_chat_slash_commands()
+  -- :add_openrouter_adapter()
 
   return builder:build()
 end
