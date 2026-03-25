@@ -154,7 +154,7 @@ autoload -Uz zmv
 
 alias clear=z4h-clear-screen-soft-bottom
 
-eval "$(devbox global shellenv --init-hook)"
+# eval "$(devbox global shellenv --init-hook)"
 
 
 source ~/.config/zsh/z4h/alias.zsh
@@ -170,8 +170,8 @@ export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 alias k='kubecolor'
 alias kubectl='kubecolor'
 source <(kubectl completion zsh);compdef kubecolor="kubectl"
-source <(devbox completion zsh)
-fpath=($(devbox global path)/.devbox/nix/profile/default-6-link/share/zsh/site-functions $fpath)
+# source <(devbox completion zsh)
+# fpath=($(devbox global path)/.devbox/nix/profile/default-6-link/share/zsh/site-functions $fpath)
 
 
 # homebrew completion

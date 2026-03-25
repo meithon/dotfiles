@@ -10,6 +10,12 @@ return {
     dir = "/home/mei/ghq/github.com/meithon/treeswing.nvim",
     vscode = true,
     dependencies = "nvim-treesitter/nvim-treesitter",
+    cmd = {
+      "TSWJumpToStartOfMasterNode",
+      "TSWJumpToEndOfMasterNode",
+      "TSWSelectCurrentNode",
+      "TSWSelectMasterNode",
+    },
     keys = function()
       ---@type Key[]
       return {
@@ -1135,6 +1141,8 @@ return {
       "CodeCompanionActions",
       "CodeCompanionCmd",
       "CodeCompanionHistory",
+      "CodeCompanionTmuxWorkflow",
+      "CodexOAuth",
     },
     keys = {
       "<Leader>a",
@@ -1155,6 +1163,11 @@ return {
       },
       "ravitemer/mcphub.nvim",
       "ravitemer/codecompanion-history.nvim",
+      -- "meithon/opencode-openai-codex-auth.nvim",
+      {
+        dir = "~/ghq/github.com/numman-ali/opencode-openai-codex-auth/opencode-openai-codex-auth.nvim",
+        name = "opencode-openai-codex-auth.nvim",
+      },
       {
         "nvim-mini/mini.diff",
         opts = {
@@ -1170,7 +1183,17 @@ return {
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
 
-      local opts = require("plugins.codecompanion.plugin-opts").get_opts()
+      -- local anthropicAdapter = {
+      --   name = "anthropic",
+      --   model = "claude-haiku-4-5",
+      -- }
+
+      local plugin_opts = require("plugins.codecompanion.plugin-opts")
+      local opts = plugin_opts.get_opts({
+        name = "codex_oauth",
+        model = "gpt-5.2-codex",
+      })
+
       require("codecompanion").setup(opts)
       -- FIXME: bugが多いし、なくても困ってないので一旦無効化
       -- require("plugins.codecompanion.utils.extmarks").setup()
@@ -1536,7 +1559,13 @@ return {
   -- },
   {
     "rasulomaroff/telepath.nvim",
-    dependencies = "ggandor/leap.nvim",
+    dependencies = {
+      "andyg/leap.nvim",
+      -- {
+      --   name = "andyg/leap.nvim",
+      --   url = "https://codeberg.org/andyg/leap.nvim",
+      -- },
+    },
     -- there's no sense in using lazy loading since telepath won't load the main module
     -- until you actually use mappings
     lazy = false,

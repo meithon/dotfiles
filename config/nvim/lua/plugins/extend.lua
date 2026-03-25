@@ -808,9 +808,6 @@ return {
           color_correction = "dynamic",
         },
       }
-      opts.sections.lualine_x = {
-        require("codex").status(), -- drop in to your lualine sections
-      }
     end,
   },
   { -- not extend but used by lualine
@@ -908,6 +905,46 @@ return {
           ["%.zlogin"] = "bash",
           ["%.zlogout"] = "bash",
         },
+      })
+      local function recreate_user_command(name, rhs, opts)
+        pcall(vim.api.nvim_del_user_command, name)
+        vim.api.nvim_create_user_command(name, rhs, opts or {})
+      end
+
+      recreate_user_command("TSPlaygroundToggle", function(cmd)
+        local buf = vim.api.nvim_get_current_buf()
+        local inspect_win = vim.b[buf].dev_inspect
+        if inspect_win and vim.api.nvim_win_is_valid(inspect_win) then
+          vim.api.nvim_win_close(inspect_win, true)
+          vim.b[buf].dev_inspect = nil
+          return
+        end
+
+        vim.cmd((cmd.mods ~= "" and (cmd.mods .. " ") or "") .. "InspectTree")
+      end, {
+        desc = "Toggle treesitter inspector",
+        nargs = 0,
+      })
+
+      recreate_user_command("TSNodeUnderCursor", function()
+        vim.cmd("Inspect! ")
+      end, {
+        desc = "Inspect treesitter node under cursor",
+        nargs = 0,
+      })
+
+      recreate_user_command("TSCaptureUnderCursor", function()
+        vim.cmd("Inspect")
+      end, {
+        desc = "Inspect captures under cursor",
+        nargs = 0,
+      })
+
+      recreate_user_command("TSHighlightCapturesUnderCursor", function()
+        vim.cmd("Inspect")
+      end, {
+        desc = "Inspect captures under cursor",
+        nargs = 0,
       })
     end,
   },

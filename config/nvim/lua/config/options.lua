@@ -19,7 +19,8 @@ vim.g.neovide_touch_drag_timeout = 0.17
 
 vim.g.neovide_cursor_trail_size = 0.8
 vim.g.neovide_cursor_animation_length = 0.02
-vim.g.neovide_input_ime = true
+-- fcitx5-remote で手動制御するため、Neovideの自動IME切替は無効化する
+vim.g.neovide_input_ime = false
 -- vim.g.neovide_floating_blur_amount_x = 2.3
 --
 -- vim.g.neovide_floating_blur_amount_y = 2.3
@@ -93,7 +94,7 @@ end
 --     end
 --   end
 -- })
-vim.api.nvim_create_autocmd({"BufReadPost", "BufNewFile", "BufEnter"}, {
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile", "BufEnter" }, {
   pattern = "*",
   callback = function()
     vim.opt_local.spell = false
@@ -113,21 +114,8 @@ vim.api.nvim_create_autocmd("FileType", {
 -- Insertモードに入ったとき、直前のIME状態（日本語/英語）を復元する
 -- EscでNormalモードに戻るときは必ず英語にする
 -- IME状態は InsertLeave で記録し、InsertEnter で復元する
-local ime_state = 0
-vim.api.nvim_create_autocmd("InsertLeave", {
-  callback = function()
-    local handle = io.popen("fcitx5-remote")
-    ime_state = tonumber(handle:read("*a")) or 0
-    handle:close()
-    -- 強制的に英語へ
-    os.execute("fcitx5-remote -c")
-  end,
-})
-vim.api.nvim_create_autocmd("InsertEnter", {
-  callback = function()
-    if ime_state == 2 then
-      os.execute("fcitx5-remote -o")
-    end
-  end,
+require("config.ime").setup({
+  english_im = "keyboard-us",
 })
 
+vim.g.mapleader = ";"

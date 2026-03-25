@@ -15,3 +15,12 @@
 	ui = auto
 [remind]
 	paths = /Users/mei/workspace/private/*
+[user]
+	email = you@example.com
+	name = Your Name
+[credential "https://github.com"]
+	helper = 
+	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/home/linuxbrew/.linuxbrew/bin/gh auth git-credential

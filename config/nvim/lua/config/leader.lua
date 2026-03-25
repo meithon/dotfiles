@@ -6,12 +6,17 @@ local function nmap(key, icmd)
 end
 
 nmap("<space>e", "Neotree toggle")
+
+nmap("<space>y", "Neogit")
+nmap("<space>m", "ObsidianQuickSwitch")
 nmap("<space>r", "Lspsaga finder")
+nmap("<space>cr", "Lspsaga rename")
+
 nmap("<space>k", "Gitsigns prev_hunk")
 nmap("<space>j", "Gitsigns next_hunk")
 
 --
-map("n", "<space>s", function()
+map({ "n", "v" }, "<space>s", function()
   require("gitsigns.actions").stage_hunk()
 end, { noremap = true, silent = true, nowait = true })
 

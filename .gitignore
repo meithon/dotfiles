@@ -11,3 +11,6 @@ home/.claude/*
 /secrets/*
 !/secrets/*.secret
 !/secrets/README.md
+
+*.lock
+*.log

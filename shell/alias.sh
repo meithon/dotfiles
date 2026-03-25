@@ -80,3 +80,15 @@ function c() {
   git commit -m "$1"
   git push
 }
+
+function tmux-executing-command() {
+  tmux list-panes -a -F '#{pane_id} #{pane_pid}' |
+    while read pane pid; do
+      ps -o cmd= --ppid "$pid" |
+        sed "s/^/$pane /"
+    done
+  # output example:
+  # %3 node index.js --watch
+  # %4 python app.py --port 8000
+  # %7 nvim src/main.ts
+}
