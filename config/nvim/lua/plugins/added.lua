@@ -1,10 +1,23 @@
-local map = vim.keymap.setadded
-
 ---@alias Plugins plugins.Plugin[]
 ---@type Plugins
----
----
 return {
+
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("config.harpoon").setup()
+    end,
+    cmd = {
+      "HarpoonAdd",
+      "HarpoonMenu",
+      "HarpoonNext",
+      "HarpoonPrev",
+      "HarpoonGo",
+      "HarpoonRemove",
+    },
+  },
   { -- Treesitter text object
     "meithon/treeswing.nvim",
     dir = "/home/mei/ghq/github.com/meithon/treeswing.nvim",
@@ -1560,11 +1573,10 @@ return {
   {
     "rasulomaroff/telepath.nvim",
     dependencies = {
-      "andyg/leap.nvim",
-      -- {
-      --   name = "andyg/leap.nvim",
-      --   url = "https://codeberg.org/andyg/leap.nvim",
-      -- },
+      {
+        "andyg/leap.nvim",
+        url = "https://codeberg.org/andyg/leap.nvim",
+      },
     },
     -- there's no sense in using lazy loading since telepath won't load the main module
     -- until you actually use mappings
